@@ -8,7 +8,7 @@ import i18n from "../config/i18n";
 import fileUpload from 'express-fileupload';
 
 //routes
-import exampleRoutes from "../routes/example";
+import Routes from "../routes/router.Router";
 
 class Server {
   private app: Application;
@@ -62,7 +62,7 @@ class Server {
 
   routes() {
     // example
-    this.app.use(this.path.example, exampleRoutes);
+    this.app.use(this.path.example, Routes);
   }
 
   listen() {

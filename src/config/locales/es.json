@@ -10,10 +10,9 @@
 		"not_file": "No hay archivos que subir - key: archivo",
 		"error_routes": "Error en los campos requeridos"
 	},
-	"example": {
-		"validate_id": "El _id es requerido",
+	"bolivar": {
 		"succesfull": "OK",
-		"errorInRepository": "Verifica los logs para el repository: {{name}}",
-		"idComposed": "Ejemplo id: {{_id}}"
+		"emptyResponse": "No se encontró información",
+		"error_server": "Ocurrió un error en el servidor"
 	}
 }
