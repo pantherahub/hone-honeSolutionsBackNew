@@ -10,9 +10,21 @@ export interface DepartmentsRepositoryService {
 }
 
 export interface CitiesRepositoryService {
-    idDepartament?: string | { translationParams: string},
     code: number,
     message: string| { translationKey: string },
     data?: any
 }
+
+export interface PlansRepositoryService {
+    code: number,
+    message: string| { translationKey: string },
+    data?: any
+}
+
+export interface SpecialitiesRepositoryService {
+    code: number,
+    message: string| { translationKey: string },
+    data?: any
+}
+
 
