@@ -47,10 +47,10 @@ export interface dataCity{
     idDepartamento?: number;
 }
 export interface dataProvider  {
-    idDepartamento?: number;
-    idCiudad?: number;
-    idPlan?: number;
-    idEspecialidad?: number;
+    idDepartamento?: string;
+    idCiudad?: string;
+    idPlan?: string;
+    idEspecialidad?: string;
     nombreComercial?: string;
     tamano?: number;
     pagina?: number;
