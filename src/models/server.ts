@@ -23,7 +23,7 @@ class Server {
     this.path = {
       // exmple
       example: this.base_url,
-      ticket: `${this.base_url}/ticket`,
+      ticket: `/ticket`,
     };
 
     // Conectar a bd
