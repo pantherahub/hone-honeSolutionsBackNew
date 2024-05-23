@@ -19,10 +19,10 @@ class Server {
 
   constructor() {
     this.app = express();
-    this.port = config.port ?? '8080';
+    this.port = config.port || '8080';
     this.path = {
       // exmple
-      example: this.base_url,
+      // example: this.base_url,
       ticket: `/ticket`,
     };
 
@@ -65,7 +65,7 @@ class Server {
 
   routes() {
     // example
-    this.app.use(this.path.example, Routes);
+    // this.app.use(this.path.example, Routes);
     this.app.use(this.path.ticket, RoutesTicket);
   }
 
