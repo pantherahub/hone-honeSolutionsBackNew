@@ -8,7 +8,7 @@ const routes = Router();
 
 routes.post(
     "/create",
-    [checkSchema(CreateTicketSchema), validateApiKEY] as RequestHandler[],
+    checkSchema(CreateTicketSchema),
     createTicket
 )
 
