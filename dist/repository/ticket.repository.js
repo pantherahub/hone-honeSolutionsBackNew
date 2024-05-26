@@ -13,19 +13,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createTicket = void 0;
-const handlebars_1 = __importDefault(require("handlebars"));
 const config_1 = __importDefault(require("../config/config"));
 const ticket_model_1 = __importDefault(require("../models/ticket.model"));
-const fs_1 = __importDefault(require("fs"));
-const path_1 = __importDefault(require("path"));
 const emailNotification_model_1 = __importDefault(require("../models/emailNotification.model"));
+const html_template_1 = require("./templates/ticket/html.template");
 const createTicket = (request) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = prepareData(request);
         const ticket = yield ticket_model_1.default.create(data);
         const recordEmail = yield emailNotification_model_1.default.findOne({ where: { idClientHone: ticket.idClientHoneSolutions } });
+        const adminEmail = yield emailNotification_model_1.default.findOne({ where: { idClientHone: 7 } });
         if (recordEmail) {
             yield sendEmail(request.idRole, recordEmail.email, ticket);
+        }
+        if (adminEmail) {
+            yield sendEmail(request.idRole, adminEmail.email, ticket);
         }
         return {
             code: 200,
@@ -76,13 +78,7 @@ const getTemplate = (idRole, ticket) => {
         email: ticket === null || ticket === void 0 ? void 0 : ticket.email,
         observaciones: ticket === null || ticket === void 0 ? void 0 : ticket.observaciones
     };
-    const base_url = path_1.default.join(__dirname, 'templates/ticket');
-    const fileTemplate = idRole === 10
-        ? path_1.default.join(base_url, 'role10.template.html')
-        : path_1.default.join(base_url, 'basic.template.html');
-    const htmlTemplate = fs_1.default.readFileSync(fileTemplate, 'utf8');
-    const template = handlebars_1.default.compile(htmlTemplate);
-    return template(newData);
+    return (0, html_template_1.basicTemplate)(newData);
 };
 const prepareData = (request) => {
     return {
