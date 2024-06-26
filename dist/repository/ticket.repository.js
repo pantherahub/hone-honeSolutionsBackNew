@@ -94,6 +94,7 @@ const prepareData = (request) => {
         idUsuarios: request.userId,
         email: request.email,
         idClientHoneSolutions: request.idClientHone,
+        userLoggedIn: request.userLogged
     };
 };
 const formatDate = (date = new Date()) => {

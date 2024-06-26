@@ -87,6 +87,7 @@ const prepareData = (request: IRequestCreate): ITicketModel => {
         idUsuarios: request.userId,
         email: request.email,
         idClientHoneSolutions: request.idClientHone,
+        userLoggedIn: request.userLogged
     };
 };
 

@@ -74,6 +74,13 @@ Ticket.init({
             key: "idClientHoneSolutions"
         }
     },
+    userLoggedIn: {
+        type: sequelize_1.DataTypes.INTEGER,
+        references: {
+            model: config_1.default.db_table_name_providers,
+            key: "idProvider"
+        }
+    },
 }, {
     sequelize: config_2.connectionSequelizeSql,
     modelName: config_1.default.db_table_name_ticket,
