@@ -23,7 +23,6 @@ const getDepartments = () => __awaiter(void 0, void 0, void 0, function* () {
                 LEFT JOIN TB_ClientHoneSolutions AS tch ON tch.idClientHoneSolutions = toc.idClientHoneSolutions
                 WHERE tch.idClientHoneSolutions = 5`));
         const rows = data[0];
-        console.log(data);
         if (rows.recordset.length === 0) {
             return {
                 code: 204,
@@ -246,26 +245,29 @@ const getProvidersBolivar = (data) => __awaiter(void 0, void 0, void 0, function
         INNER JOIN TB_City AS tc WITH(NOLOCK) ON tc.idCity = topr.idCity
         WHERE tr.idRoles = 9 AND tpap.idPublicationPrioritizacion != 5
         `;
-        if (idDepartamento !== undefined) {
-            basic_query += ` AND td.idDepartament=${idDepartamento}`;
-            basic_count += ` AND td.idDepartament=${idDepartamento}`;
-        }
-        if (idCiudad !== undefined) {
-            basic_query += ` AND tc.idCity=${idCiudad}`;
-            basic_count += ` AND tc.idCity=${idCiudad}`;
-        }
-        if (idPlan !== undefined) {
-            basic_query += ` AND tp.idPlan=${idPlan}`;
-            basic_count += ` AND tp.idPlan=${idPlan}`;
-        }
-        if (idEspecialidad !== undefined) {
-            basic_query += ` AND tse.idSpeciality=${idEspecialidad}`;
-            basic_count += ` AND tse.idSpeciality=${idEspecialidad}`;
-        }
-        if (nombreComercial !== undefined) {
-            const nombreComercialSinComillas = nombreComercial.replace(/[']/gi, '');
-            basic_query += ` AND topr.OfficeProviderName='${nombreComercialSinComillas}'`;
-            basic_count += ` AND topr.OfficeProviderName='${nombreComercialSinComillas}'`;
+        const filters = {
+            idDepartamento: 'td.idDepartament',
+            idCiudad: 'tc.idCity',
+            idPlan: 'tp.idPlan',
+            idEspecialidad: 'tse.idSpeciality',
+            nombreComercial: 'topr.OfficeProviderName'
+        };
+        for (const [key, value] of Object.entries(filters)) {
+            if (typeof value === 'function') {
+                const dataValue = data[key];
+                if (dataValue !== undefined) {
+                    const processedValue = value(dataValue);
+                    basic_query += ` AND ${processedValue}`;
+                    basic_count += ` AND ${processedValue}`;
+                }
+            }
+            else {
+                const dataValue = data[key];
+                if (dataValue !== undefined) {
+                    basic_query += ` AND ${value}='${dataValue}'`;
+                    basic_count += ` AND ${value}='${dataValue}'`;
+                }
+            }
         }
         basic_query = basic_query +
             '\nGROUP BY ' +
@@ -326,7 +328,6 @@ const getProvidersBolivar = (data) => __awaiter(void 0, void 0, void 0, function
         const count = yield (db === null || db === void 0 ? void 0 : db.request().query(basic_count));
         const rows = yield (db === null || db === void 0 ? void 0 : db.request().query(basic_query));
         const cant = count.recordset[0];
-        console.log(count.recordset[0]);
         if (rows.recordset.length === 0) {
             return {
                 code: 204,
