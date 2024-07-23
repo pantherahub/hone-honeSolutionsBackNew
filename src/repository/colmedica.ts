@@ -194,7 +194,6 @@ export const saveNegotiationTabTypeIncrementColmedica = async (
            ,@idTypeIncrement)
   `;
 
-  
     const request = db.request();
     request.input("id_NegotiationTabColmedica", id_NegotiationTabColmedica);
     request.input("idTypeIncrement", idTypeIncrement);
