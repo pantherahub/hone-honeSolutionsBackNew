@@ -57,3 +57,4 @@ export const getProvidersBolivar: RequestHandler = async (req, res) => {
         res.status(500).json({ message: parseMessageI18n('error_server', req) });
     }
 }
+
