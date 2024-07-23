@@ -18,4 +18,3 @@ routes.get("/especialidades", validateApiKEY, getSpecialties);
 routes.get("/provedoresBolivar", validateApiKEY, getProvidersBolivar);
 
 export default routes;
-
