@@ -31,7 +31,7 @@ jobs:
         run: zip release.zip ./* -r
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: node-app
           path: release.zip
@@ -47,7 +47,7 @@ jobs:
 
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: node-app
 
@@ -55,15 +55,15 @@ jobs:
         run: unzip release.zip
       
       - name: Login to Azure
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_7D893333B58449E6869FBDF617B14288 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_2BD8EEEF88C1447E987E8A13FFA2007B }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_37EE70CF24E740F1808F5AA1550D3CF0 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_D72073B3110F4F59B9574B32E72EB480 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E8F4F2717C074F43B03DB2435B422304 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_1A8FB92BEC0642D3816B2C1A3A0972E6 }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
+        uses: azure/webapps-deploy@v3
         with:
           app-name: 'honeSolutionsBackNew'
           slot-name: 'Production'
