@@ -8,7 +8,10 @@
 		"not_authorization": "You do not have authorization permissions",
 		"not_found": "The resource was not found",
 		"not_file": "No files to upload - key: file",
-		"error_routes": "Error in required fields"
+		"error_routes": "Error in required fields",
+		"error_in_repository": "global.error_in_repository",
+		"string_type_field":"The field must be type string",
+        "int_type_field":"The field must be type int"
 	},
 	"bolivar": {
 		"succesfull": "OK",
@@ -19,5 +22,9 @@
 		"succesfull": "OK",
 		"error_server": "An error occurred on the server",
 		"successful": "ticket.successful"
-	}
+	},
+	"auth": {
+		"ok_login": "auth.ok_login"
+	},
+	"ok": "ok"
 }

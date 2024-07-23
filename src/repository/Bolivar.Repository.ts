@@ -1,8 +1,6 @@
 import { connectToSqlServer } from "../DB/config"
 import { CitiesRepositoryService, IresponseRepositoryService, PlansRepositoryService, SpecialitiesRepositoryService, dataCity, dataPlan, dataProvider, dataSpeciality } from "../interface/Bolivar.Interface";
 
-
-
 export const getDepartments = async () => {
     try {
         const db = await connectToSqlServer();

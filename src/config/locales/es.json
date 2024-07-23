@@ -8,7 +8,9 @@
 		"not_authorization": "No tienes permisos de autorizacion",
 		"not_found": "No se encontro el recurso",
 		"not_file": "No hay archivos que subir - key: archivo",
-		"error_routes": "Error en los campos requeridos"
+		"error_routes": "Error en los campos requeridos",
+		"string_type_field":"El campo debe de ser de tipo string",
+        "int_type_field":"El campo debe de ser de tipo type int"
 	},
 	"bolivar": {
 		"succesfull": "OK",

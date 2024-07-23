@@ -7,9 +7,7 @@ export interface IResponse<T> {
 export interface IResponseCreate {
     code: number,
     message: string | { translationKey: string }
-    data: {
-
-    }
+    data: {}
 }
 
 export interface IRequestCreate {

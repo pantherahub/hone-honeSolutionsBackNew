@@ -10,6 +10,8 @@ import fileUpload from 'express-fileupload';
 //routes
 import Routes from "../routes/router.Router";
 import RoutesTicket from "../routes/ticket.router";
+import colmedica from "../routes/colmedica.router";
+
 
 class Server {
   private app: Application;
@@ -24,6 +26,8 @@ class Server {
       // exmple
       example: this.base_url,
       ticket: "/ticket",
+      colmedica: "/colmedica",
+
     };
 
     // Conectar a bd
@@ -67,6 +71,8 @@ class Server {
     // example
     this.app.use(this.path.example, Routes);
     this.app.use(this.path.ticket, RoutesTicket);
+    this.app.use(this.path.colmedica, colmedica);
+
   }
 
   listen() {
