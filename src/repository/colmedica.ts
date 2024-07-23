@@ -118,7 +118,6 @@ export const saveNegotiationTabPlansColmedica = async (
   }
 };
 
-
 export const saveNegotiationTabRendomColmedica = async (
   negotiationTabColmedica: INegotiationTabRendomColmedica
 ): Promise<IresponseRepositoryService> => {
