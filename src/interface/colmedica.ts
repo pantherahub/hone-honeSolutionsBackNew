@@ -89,3 +89,5 @@ export interface INegotiationTabPlansColmedica {
   idPlan: number;
   idTypeService: number;
 }
+
+
