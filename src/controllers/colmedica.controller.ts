@@ -92,6 +92,17 @@ export const getProductColmedica: RequestHandler = async (req, res) => {
 };
 
 
+export const getTypeServiceColmedica: RequestHandler = async (req, res) => {
+    try {
+        const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.getTypeServiceColmedica();
+        res.status(code).json({message: parseMessageI18n(message, req),  ...resto});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: parseMessageI18n('error_server', req) });
+    }
+};
+
+
 export const getOccupationColmedica: RequestHandler = async (req, res) => {
     try {
         const idOccupation = req.query.idOccupation;

@@ -176,7 +176,7 @@ export const saveNegotiationTabTypeIncrementColmedica = async (
   negotiationTabColmedica: INegotiationTabTypeIncrementColmedica
 ): Promise<IresponseRepositoryService> => {
   try {
-    const { id_NegotiationTabColmedica,idTypeIncrement } = negotiationTabColmedica;
+    const { id_NegotiationTabColmedica,idTypeIncrement,valueIncrement } = negotiationTabColmedica;
     const db = await connectToSqlServer();
 
     if (!db) {
@@ -186,16 +186,20 @@ export const saveNegotiationTabTypeIncrementColmedica = async (
     const queryPlans = `
    INSERT INTO [dbo].[TB_NegotiationTabTypeIncrement]
            ([id_NegotiationTabColmedica]
-           ,[idTypeIncrement])
+           ,[idTypeIncrement]
+           ,[valueIncrement])
             OUTPUT inserted.*
      VALUES
            (@id_NegotiationTabColmedica
-           ,@idTypeIncrement)
+           ,@idTypeIncrement
+           ,@valueIncrement)
   `;
 
     const request = db.request();
     request.input("id_NegotiationTabColmedica", id_NegotiationTabColmedica);
     request.input("idTypeIncrement", idTypeIncrement);
+    request.input("valueIncrement", valueIncrement);
+
 
     const result = await request.query(queryPlans);
 
@@ -362,6 +366,43 @@ export const getProductColmedica = async (): Promise<IresponseRepositoryService>
 
     const queryProviders = `
       select * from TB_Product
+    `;
+
+    const request = db.request();
+
+    const result = await request.query(queryProviders);
+
+    const providers: IProductColmedica[] = result.recordset;
+
+    return {
+      code: 200,
+      message: "ok",
+      data: providers,
+    };
+  } catch (err: any) {
+    console.error("Error in getProductColmedica", err);
+    return {
+      code: 400,
+      message: {
+        translationKey: "global.error_in_repository",
+        translationParams: { name: "getProductColmedica" },
+      },
+    };
+  }
+};
+
+
+
+export const getTypeServiceColmedica = async (): Promise<IresponseRepositoryService> => {
+  try {
+    const db = await connectToSqlServer();
+
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+
+    const queryProviders = `
+    SELECT * FROM TB_TypeService WHERE idTypeService != 3
     `;
 
     const request = db.request();

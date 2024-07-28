@@ -1,3 +1,5 @@
+import { Decimal128 } from "mongoose";
+
 export interface INegotiationTabColmedica {
     idOfficeProvider: string;
     dateBegin: string;
@@ -43,6 +45,7 @@ export interface INegotiationTabRendomColmedica {
 export interface INegotiationTabTypeIncrementColmedica {
   id_NegotiationTabColmedica: number;
   idTypeIncrement: number;
+  valueIncrement: Decimal128;
 }
 
 export interface INegotiationTabTypeIncrement {

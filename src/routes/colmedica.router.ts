@@ -13,7 +13,8 @@ import {
     getTypeRendomColmedica,
     saveNegotiationTabRendomColmedica,
     getTypeIncrementColmedica,
-    saveNegotiationTabTypeIncrementColmedica
+    saveNegotiationTabTypeIncrementColmedica,
+    getTypeServiceColmedica
 } from "../controllers/colmedica.controller";
 import { query } from "express-validator";
 import { Router } from "express";
@@ -109,6 +110,11 @@ routes.get(
 routes.get(
     "/typeRendomColmedica",
     getTypeRendomColmedica
+)
+
+routes.get(
+    "/typeServiceColmedica",
+    getTypeServiceColmedica
 )
 
 routes.get(
