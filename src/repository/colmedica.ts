@@ -470,6 +470,50 @@ export const getOccupationColmedica = async (idOccupation: string | any | undefi
 
 
 
+export const getServicesColmedica = async (idClasificationTypeService: string | any | undefined): Promise<IresponseRepositoryService> => {
+  try {
+    const db = await connectToSqlServer();
+
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+
+    const queryProviders = `
+      SELECT sp.speciality,sp.idSpeciality FROM TB_ClasificationTypeService AS cls
+      INNER JOIN TB_ClasificationTypeServiceSpeciality AS cl ON cl.idClasificationTypeService = cls.idClasificationTypeService
+      INNER JOIN TB_ClasificationTypeServiceClientHoneSolutions AS ct ON cls.idClasificationTypeService = ct.idClasificationTypeService
+      INNER JOIN TB_Speciality AS sp ON sp.idSpeciality = cl.idSpeciality
+      --WHERE sp.speciality IS NOT NULL AND ct.idClientHoneSolutions = 9 AND cls.idClasificationTypeService = 18 
+      WHERE cls.idClasificationTypeService = @idClasificationTypeService
+    `;
+
+    const inputIdClasificationTypeService = idClasificationTypeService !== undefined ? idClasificationTypeService : null;
+
+    const request = db.request();
+    request.input('idClasificationTypeService', inputIdClasificationTypeService);
+
+    const result = await request.query(queryProviders);
+
+    const providers: IOccupationColmedica[] = result.recordset;
+
+    return {
+      code: 200,
+      message: "ok",
+      data: providers,
+    };
+  } catch (err: any) {
+    console.error("Error in getContactsProviderColmedica", err);
+    return {
+      code: 400,
+      message: {
+        translationKey: "global.error_in_repository",
+        translationParams: { name: "getContactsProviderColmedica" },
+      },
+    };
+  }
+};
+
+
 export const getTypeFaresColmedica = async (): Promise<IresponseRepositoryService> => {
   try {
     const db = await connectToSqlServer();
@@ -577,6 +621,46 @@ export const getTypeIncrementColmedica = async (): Promise<IresponseRepositorySe
     };
   }
 };
+
+
+
+export const getClasificationTypeServiceColmedica = async (): Promise<IresponseRepositoryService> => {
+  try {
+    const db = await connectToSqlServer();
+
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+
+    const queryProviders = `
+     	SELECT * FROM TB_ClasificationTypeService AS cls
+      --LEFT JOIN TB_ClasificationTypeServiceClientHoneSolutions AS ct ON cls.idClasificationTypeService = ct.idClasificationTypeService
+      --WHERE idClasificationTypeServiceClientHoneSolutions = 9
+    `;
+
+    const request = db.request();
+
+    const result = await request.query(queryProviders);
+
+    const providers: ITypeIncrementColmedica[] = result.recordset;
+
+    return {
+      code: 200,
+      message: "ok",
+      data: providers,
+    };
+  } catch (err: any) {
+    console.error("Error in getTypeIncrementColmedica", err);
+    return {
+      code: 400,
+      message: {
+        translationKey: "global.error_in_repository",
+        translationParams: { name: "getTypeIncrementColmedica" },
+      },
+    };
+  }
+};
+
 
 
 

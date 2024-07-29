@@ -114,6 +114,18 @@ export const getOccupationColmedica: RequestHandler = async (req, res) => {
     }
 };
 
+export const getServicesColmedica: RequestHandler = async (req, res) => {
+    try {
+        const idClasificationTypeService = req.query.idClasificationTypeService;
+        const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.getServicesColmedica(idClasificationTypeService);
+        res.status(code).json({message: parseMessageI18n(message, req),  ...resto});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: parseMessageI18n('error_server', req) });
+    }
+};
+
+
 export const getPlansColmedica: RequestHandler = async (req, res) => {
     try {
         const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.getPlansColmedica();
@@ -148,6 +160,16 @@ export const getTypeRendomColmedica: RequestHandler = async (req, res) => {
 export const getTypeIncrementColmedica: RequestHandler = async (req, res) => {
     try {
         const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.getTypeIncrementColmedica();
+        res.status(code).json({message: parseMessageI18n(message, req),  ...resto});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: parseMessageI18n('error_server', req) });
+    }
+};
+
+export const getClasificationTypeServiceColmedica: RequestHandler = async (req, res) => {
+    try {
+        const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.getClasificationTypeServiceColmedica();
         res.status(code).json({message: parseMessageI18n(message, req),  ...resto});
     } catch (err) {
         console.error(err);

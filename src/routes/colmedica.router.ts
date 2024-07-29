@@ -14,7 +14,9 @@ import {
     saveNegotiationTabRendomColmedica,
     getTypeIncrementColmedica,
     saveNegotiationTabTypeIncrementColmedica,
-    getTypeServiceColmedica
+    getTypeServiceColmedica,
+    getClasificationTypeServiceColmedica,
+    getServicesColmedica
 } from "../controllers/colmedica.controller";
 import { query } from "express-validator";
 import { Router } from "express";
@@ -98,6 +100,15 @@ routes.get(
 )
 
 routes.get(
+    "/servicesColmedica",
+    [
+        query("idClasificationTypeService", "global.int_type_field").optional().isInt(),
+        validateEnpoint
+    ],
+    getServicesColmedica
+)
+
+routes.get(
     "/plansColmedica",
     getPlansColmedica
 )
@@ -120,6 +131,11 @@ routes.get(
 routes.get(
     "/typeIncrementColmedica",
     getTypeIncrementColmedica
+)
+
+routes.get(
+    "/clasificationTypeServiceColmedica",
+    getClasificationTypeServiceColmedica
 )
 
 
