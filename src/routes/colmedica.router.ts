@@ -17,7 +17,8 @@ import {
     getTypeServiceColmedica,
     getClasificationTypeServiceColmedica,
     getServicesColmedica,
-    getReferenceRateColmedica
+    getReferenceRateColmedica,
+    getNegotiationTabColmedica
 } from "../controllers/colmedica.controller";
 import { query } from "express-validator";
 import { Router } from "express";
@@ -137,5 +138,15 @@ routes.get(
     getClasificationTypeServiceColmedica
 )
 
+routes.get(
+    "/getClasificationTypeServiceColmedica",
+    getClasificationTypeServiceColmedica
+)
+
+
+routes.get(
+    "/negotiationTabColmedica",
+    getNegotiationTabColmedica
+)
 
 export default routes;

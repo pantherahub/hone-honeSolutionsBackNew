@@ -189,3 +189,14 @@ export const getClasificationTypeServiceColmedica: RequestHandler = async (req, 
         res.status(500).json({ message: parseMessageI18n('error_server', req) });
     }
 };
+
+
+export const getNegotiationTabColmedica: RequestHandler = async (req, res) => {
+    try {
+        const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.getNegotiationTabColmedica();
+        res.status(code).json({message: parseMessageI18n(message, req),  ...resto});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: parseMessageI18n('error_server', req) });
+    }
+};

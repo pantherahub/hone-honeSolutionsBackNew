@@ -556,6 +556,55 @@ export const getReferenceRateColmedica = async (): Promise<IresponseRepositorySe
   }
 };
 
+export const getNegotiationTabColmedica = async (): Promise<IresponseRepositoryService> => {
+  try {
+    const db = await connectToSqlServer();
+
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+
+    const queryProviders = `
+    SELECT 
+    offi.OfficeProviderName,
+    pr.Product,
+    ne.dateBegin,
+    ne.dateEnd,
+    CASE 
+        WHEN ne.dateEnd < GETDATE() THEN 'vencida'
+        ELSE 'vigente'
+    END AS Estado
+    FROM 
+        TB_NegotiationTabColmedica AS ne
+    INNER JOIN 
+        TB_OfficeProvider AS offi ON offi.idOfficeProvider = ne.idOfficeProvider
+    INNER JOIN 
+        TB_Product AS pr ON pr.idProduct = ne.idProduct;
+    `;
+
+    const request = db.request();
+
+    const result = await request.query(queryProviders);
+
+    const providers: IProductColmedica[] = result.recordset;
+
+    return {
+      code: 200,
+      message: "ok",
+      data: providers,
+    };
+  } catch (err: any) {
+    console.error("Error in getProductColmedica", err);
+    return {
+      code: 400,
+      message: {
+        translationKey: "global.error_in_repository",
+        translationParams: { name: "getProductColmedica" },
+      },
+    };
+  }
+};
+
 
 
 export const getOccupationColmedica = async (idOccupation: string | any | undefined): Promise<IresponseRepositoryService> => {
