@@ -42,6 +42,27 @@ export interface INegotiationTabRendomColmedica {
   id_NegotiationTabColmedica: number;
 }
 
+export interface INegotiationTabServiceColmedica {
+  id_NegotiationTabColmedic: number;
+  idSpeciality: number;
+  idTypeService: number;
+  idTypeFareGamaAltaU: number;
+  fareGamaAltaOperation: Decimal128;
+  idTypeFareGamaAltaD: number;
+  idTypeFareHumanAltaU: number;
+  fareHumanOperation: Decimal128;
+  idTypeFareHumanD: number;
+  idTypeFareGamaMediaU: number;
+  fareGamaMediaOperation: Decimal128;
+  idTypeFareGamaMediaD: number;
+  idTypeFareGamaMenorU: number;
+  fareGamaMenorOperation: Decimal128;
+  idTypeFareGamaMenorD: number;
+  idTypeFarePreferencialU: number;
+  farePreferenciaOperation: Decimal128;
+  idTypeFarePreferenciaD: number;
+}
+
 export interface INegotiationTabTypeIncrementColmedica {
   id_NegotiationTabColmedica: number;
   idTypeIncrement: number;

@@ -12,7 +12,8 @@ import {
   ITypeRendomColmedica,
   INegotiationTabRendomColmedica,
   ITypeIncrementColmedica,
-  INegotiationTabTypeIncrementColmedica
+  INegotiationTabTypeIncrementColmedica,
+  INegotiationTabServiceColmedica
 } from "../interface/colmedica";
 
 export const saveNegotiationTabColmedica = async (
@@ -172,11 +173,100 @@ export const saveNegotiationTabRendomColmedica = async (
 };
 
 
+
+// export const saveNegotiationTabServiceColmedicaColmedica = async (
+//   negotiationTabColmedica: INegotiationTabServiceColmedica
+// ): Promise<IresponseRepositoryService> => {
+//   try {
+//     const { id_NegotiationTabColmedic, idSpeciality, idTypeService,
+
+//      } = negotiationTabColmedica;
+//     const db = await connectToSqlServer();
+
+//     if (!db) {
+//       throw new Error("Database connection failed");
+//     }
+
+//     const queryPlans = `
+//    INSERT INTO [dbo].[TB_NegotiationTabServiceColmedica]
+//            ([id_NegotiationTabColmedica]
+//            ,[idSpeciality]
+//            ,[idTypeService]
+//            ,[idTypeFareGamaAltaU]
+//            ,[fareGamaAltaOperation]
+//            ,[idTypeFareGamaAltaD]
+//            ,[idTypeFareHumanAltaU]
+//            ,[fareHumanOperation]
+//            ,[idTypeFareHumanD]
+//            ,[idTypeFareGamaMediaU]
+//            ,[fareGamaMediaOperation] 
+//            ,[idTypeFareGamaMediaD]
+//            ,[idTypeFareGamaMenorU]
+//            ,[fareGamaMenorOperation]
+//            ,[idTypeFareGamaMenorD]
+//            ,[idTypeFarePreferencialU]
+//            ,[farePreferenciaOperation]
+//            ,[idTypeFarePreferenciaD])
+//      VALUES
+//            (<id_NegotiationTabColmedica, int,>
+//            ,<idSpeciality, int,>
+//            ,<idTypeService, int,>
+//            ,<idTypeFareGamaAltaU, int,>
+//            ,<fareGamaAltaOperation, decimal(18,2),>
+//            ,<idTypeFareGamaAltaD, int,>
+//            ,<idTypeFareHumanAltaU, int,>
+//            ,<fareHumanOperation, decimal(18,2),>
+//            ,<idTypeFareHumanD, int,>
+//            ,<idTypeFareGamaMediaU, int,>
+//            ,<fareGamaMediaOperation, decimal(18,2),>
+//            ,<idTypeFareGamaMediaD, int,>
+//            ,<idTypeFareGamaMenorU, int,>
+//            ,<fareGamaMenorOperation, decimal(18,2),>
+//            ,<idTypeFareGamaMenorD, int,>
+//            ,<idTypeFarePreferencialU, int,>
+//            ,<farePreferenciaOperation, decimal(18,2),>
+//            ,<idTypeFarePreferenciaD, int,>)
+// GO
+
+//   `;
+
+//     const request = db.request();
+//     request.input("id_NegotiationTabColmedica", id_NegotiationTabColmedica);
+//     request.input("idTypeRendom", idTypeRendom);
+//     request.input("idTypeService", idTypeService);
+
+//     const result = await request.query(queryPlans);
+
+//     if (!result.recordset || result.recordset.length === 0) {
+//       throw new Error("Failed to insert and retrieve the record");
+//     }
+
+//     const insertedRecord = result.recordset[0];
+
+//     return {
+//       code: 200,
+//       message: "ok",
+//       data: insertedRecord,
+//     };
+//   } catch (err: any) {
+//     console.error("Error in saveNegotiationTabColmedica", err);
+//     return {
+//       code: 400,
+//       message: {
+//         translationKey: "global.error_in_repository",
+//         translationParams: { name: "saveNegotiationTabColmedica" },
+//       },
+//     };
+//   }
+// };
+
+
+
 export const saveNegotiationTabTypeIncrementColmedica = async (
   negotiationTabColmedica: INegotiationTabTypeIncrementColmedica
 ): Promise<IresponseRepositoryService> => {
   try {
-    const { id_NegotiationTabColmedica,idTypeIncrement,valueIncrement } = negotiationTabColmedica;
+    const { id_NegotiationTabColmedica, idTypeIncrement, valueIncrement } = negotiationTabColmedica;
     const db = await connectToSqlServer();
 
     if (!db) {
@@ -403,6 +493,44 @@ export const getTypeServiceColmedica = async (): Promise<IresponseRepositoryServ
 
     const queryProviders = `
     SELECT * FROM TB_TypeService WHERE idTypeService != 3
+    `;
+
+    const request = db.request();
+
+    const result = await request.query(queryProviders);
+
+    const providers: IProductColmedica[] = result.recordset;
+
+    return {
+      code: 200,
+      message: "ok",
+      data: providers,
+    };
+  } catch (err: any) {
+    console.error("Error in getProductColmedica", err);
+    return {
+      code: 400,
+      message: {
+        translationKey: "global.error_in_repository",
+        translationParams: { name: "getProductColmedica" },
+      },
+    };
+  }
+};
+
+
+export const getReferenceRateColmedica = async (): Promise<IresponseRepositoryService> => {
+  try {
+    const db = await connectToSqlServer();
+
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+
+    const queryProviders = `
+    select ntf.idTypeFare,typeFare from TB_NegotiationTabFareBaseColmedica as ntf
+    inner join TB_TypeFares as tf on tf.idTypeFare = ntf.idTypeFare
+    where idNegotiationTabColmedica = 8 
     `;
 
     const request = db.request();
