@@ -78,34 +78,43 @@ export const saveNegotiationTabPlansColmedica = async (
     }
 
     const queryPlans = `
-     INSERT INTO [dbo].[TB_NegotiationTabPlansColmedica]
-           ([idNegotiationTabColmedica]
-           ,[idPlan]
-           ,[idTypeService])
-           OUTPUT inserted.*
-     VALUES
-           (@idNegotiationTabColmedica
-           ,@idPlan
-           ,@idTypeService)
-  `;
+      INSERT INTO [dbo].[TB_NegotiationTabPlansColmedica]
+        ([idNegotiationTabColmedica]
+        ,[idPlan]
+        ,[idTypeService])
+      OUTPUT inserted.*
+      VALUES
+        (@idNegotiationTabColmedica
+        ,@idPlan
+        ,@idTypeService)
+    `;
 
-    const request = db.request();
-    request.input("idNegotiationTabColmedica", idNegotiationTabColmedica);
-    request.input("idPlan", idPlan);
-    request.input("idTypeService", idTypeService);
+    const insertedRecords = [];
 
-    const result = await request.query(queryPlans);
+    for (let i = 0; i < idTypeService.length; i++) {
+      const typeService = idTypeService[i];
+      const plansForService = idPlan[i];
 
-    if (!result.recordset || result.recordset.length === 0) {
-      throw new Error("Failed to insert and retrieve the record");
+      for (const plan of plansForService) {
+        const request = db.request();
+        request.input("idNegotiationTabColmedica", idNegotiationTabColmedica);
+        request.input("idPlan", plan);
+        request.input("idTypeService", typeService);
+
+        const result = await request.query(queryPlans);
+
+        if (!result.recordset || result.recordset.length === 0) {
+          throw new Error("Failed to insert and retrieve the record");
+        }
+
+        insertedRecords.push(result.recordset[0]);
+      }
     }
-
-    const insertedRecord = result.recordset[0];
 
     return {
       code: 200,
       message: "ok",
-      data: insertedRecord,
+      data: insertedRecords,
     };
   } catch (err: any) {
     console.error("Error in saveNegotiationTabColmedica", err);
@@ -131,34 +140,43 @@ export const saveNegotiationTabRendomColmedica = async (
     }
 
     const queryPlans = `
-    INSERT INTO [dbo].[TB_NegotiationTabRendomColmedica]
-           ([id_NegotiationTabColmedica]
-           ,[idTypeRendom]
-           ,[idTypeService])
-            OUTPUT inserted.*
-     VALUES
-           (@id_NegotiationTabColmedica
-           ,@idTypeRendom
-           ,@idTypeService)
-  `;
+      INSERT INTO [dbo].[TB_NegotiationTabRendomColmedica]
+        ([id_NegotiationTabColmedica]
+        ,[idTypeRendom]
+        ,[idTypeService])
+      OUTPUT inserted.*
+      VALUES
+        (@id_NegotiationTabColmedica
+        ,@idTypeRendom
+        ,@idTypeService)
+    `;
 
-    const request = db.request();
-    request.input("id_NegotiationTabColmedica", id_NegotiationTabColmedica);
-    request.input("idTypeRendom", idTypeRendom);
-    request.input("idTypeService", idTypeService);
+    const insertedRecords = [];
 
-    const result = await request.query(queryPlans);
+    for (let i = 0; i < idTypeRendom.length; i++) {
+      const typeRendom = idTypeRendom[i];
+      const servicesForRendom = idTypeService[i];
 
-    if (!result.recordset || result.recordset.length === 0) {
-      throw new Error("Failed to insert and retrieve the record");
+      for (const service of servicesForRendom) {
+        const request = db.request();
+        request.input("id_NegotiationTabColmedica", id_NegotiationTabColmedica);
+        request.input("idTypeRendom", typeRendom);
+        request.input("idTypeService", service);
+
+        const result = await request.query(queryPlans);
+
+        if (!result.recordset || result.recordset.length === 0) {
+          throw new Error("Failed to insert and retrieve the record");
+        }
+
+        insertedRecords.push(result.recordset[0]);
+      }
     }
-
-    const insertedRecord = result.recordset[0];
 
     return {
       code: 200,
       message: "ok",
-      data: insertedRecord,
+      data: insertedRecords,
     };
   } catch (err: any) {
     console.error("Error in saveNegotiationTabColmedica", err);
@@ -261,7 +279,6 @@ export const saveNegotiationTabRendomColmedica = async (
 // };
 
 
-
 export const saveNegotiationTabTypeIncrementColmedica = async (
   negotiationTabColmedica: INegotiationTabTypeIncrementColmedica
 ): Promise<IresponseRepositoryService> => {
@@ -273,44 +290,50 @@ export const saveNegotiationTabTypeIncrementColmedica = async (
       throw new Error("Database connection failed");
     }
 
-    const queryPlans = `
-   INSERT INTO [dbo].[TB_NegotiationTabTypeIncrement]
-           ([id_NegotiationTabColmedica]
-           ,[idTypeIncrement]
-           ,[valueIncrement])
-            OUTPUT inserted.*
-     VALUES
-           (@id_NegotiationTabColmedica
-           ,@idTypeIncrement
-           ,@valueIncrement)
-  `;
+    const queryIncrements = `
+      INSERT INTO [dbo].[TB_NegotiationTabTypeIncrement]
+        ([id_NegotiationTabColmedica]
+        ,[idTypeIncrement]
+        ,[valueIncrement])
+      OUTPUT inserted.*
+      VALUES
+        (@id_NegotiationTabColmedica
+        ,@idTypeIncrement
+        ,@valueIncrement)
+    `;
 
-    const request = db.request();
-    request.input("id_NegotiationTabColmedica", id_NegotiationTabColmedica);
-    request.input("idTypeIncrement", idTypeIncrement);
-    request.input("valueIncrement", valueIncrement);
+    const insertedRecords = [];
 
+    for (let i = 0; i < idTypeIncrement.length; i++) {
+      const typeIncrement = idTypeIncrement[i];
+      const incrementValue = valueIncrement[i];
 
-    const result = await request.query(queryPlans);
+      const request = db.request();
+      request.input("id_NegotiationTabColmedica", id_NegotiationTabColmedica);
+      request.input("idTypeIncrement", typeIncrement);
+      request.input("valueIncrement", incrementValue);
 
-    if (!result.recordset || result.recordset.length === 0) {
-      throw new Error("Failed to insert and retrieve the record");
+      const result = await request.query(queryIncrements);
+
+      if (!result.recordset || result.recordset.length === 0) {
+        throw new Error("Failed to insert and retrieve the record");
+      }
+
+      insertedRecords.push(result.recordset[0]);
     }
-
-    const insertedRecord = result.recordset[0];
 
     return {
       code: 200,
       message: "ok",
-      data: insertedRecord,
+      data: insertedRecords,
     };
   } catch (err: any) {
-    console.error("Error in saveNegotiationTabColmedica", err);
+    console.error("Error in saveNegotiationTabTypeIncrementColmedica", err);
     return {
       code: 400,
       message: {
         translationKey: "global.error_in_repository",
-        translationParams: { name: "saveNegotiationTabColmedica" },
+        translationParams: { name: "saveNegotiationTabTypeIncrementColmedica" },
       },
     };
   }

@@ -37,9 +37,9 @@ export interface IContactsProviderColmedica {
 }
 
 export interface INegotiationTabRendomColmedica {
-  idTypeService: number;
-  idTypeRendom: number;
   id_NegotiationTabColmedica: number;
+  idTypeRendom: number[];
+  idTypeService: number[][];
 }
 
 export interface INegotiationTabServiceColmedica {
@@ -65,8 +65,8 @@ export interface INegotiationTabServiceColmedica {
 
 export interface INegotiationTabTypeIncrementColmedica {
   id_NegotiationTabColmedica: number;
-  idTypeIncrement: number;
-  valueIncrement: Decimal128;
+  idTypeIncrement: number[];
+  valueIncrement: Decimal128[];
 }
 
 export interface INegotiationTabTypeIncrement {
@@ -110,8 +110,7 @@ export interface ITypeFaresColmedica {
 
 export interface INegotiationTabPlansColmedica {
   idNegotiationTabColmedica: number;
-  idPlan: number;
-  idTypeService: number;
+  idPlan: number[][];
+  idTypeService: number[];
 }
-
 
