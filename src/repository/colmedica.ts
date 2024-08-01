@@ -114,20 +114,6 @@ export const saveLogicNegotiationTabCupsColmedica = async (
 
     await request.query(insertQuery);
 
-    // const selectQuery = `
-    //   SELECT * 
-    //   FROM [TB_NegotiationTabCupsColmedica] 
-    //   WHERE id_NegotiationTabColmedica = @id_NegotiationTabColmedica
-    // `;
-
-    // const result = await request.query(selectQuery);
-
-    // if (!result.recordset || result.recordset.length === 0) {
-    //   throw new Error("Failed to retrieve the inserted record");
-    // }
-
-    // const insertedRecord = result.recordset[0];
-
     return {
       code: 200,
       message: "ok",
