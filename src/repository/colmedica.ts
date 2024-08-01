@@ -14,7 +14,8 @@ import {
   ITypeIncrementColmedica,
   INegotiationTabTypeIncrementColmedica,
   INegotiationTabServiceColmedica,
-  ISaveNegotiationTabFareBaseColmedica
+  ISaveNegotiationTabFareBaseColmedica,
+  IUpdateNegotiationTabServiceColmedica
 } from "../interface/colmedica";
 
 
@@ -409,7 +410,76 @@ export const saveNegotiationTabTypeIncrementColmedica = async (
   }
 };
 
+export const updateNegotiationTabServiceColmedica = async (
+  negotiationTabColmedica: Partial<IUpdateNegotiationTabServiceColmedica>
+): Promise<IresponseRepositoryService> => {
+  try {
+    const db = await connectToSqlServer();
 
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+
+    if (!negotiationTabColmedica.idNegotiationTabServiceColmedica) {
+      throw new Error("idNegotiationTabServiceColmedica is required for update");
+    }
+
+    let queryUpdate = `
+      UPDATE [dbo].[TB_NegotiationTabServiceColmedica]
+      SET `;
+    const updates: string[] = [];
+    const params: { [key: string]: any } = {};
+
+    // Construye dinámicamente los campos a actualizar
+    for (const key in negotiationTabColmedica) {
+      if (key !== "idNegotiationTabServiceColmedica") {
+        updates.push(`[${key}] = @${key}`);
+        params[key] = (negotiationTabColmedica as any)[key];
+      }
+    }
+
+    if (updates.length === 0) {
+      throw new Error("No fields to update");
+    }
+
+    queryUpdate += updates.join(", ") + `
+      WHERE [idNegotiationTabServiceColmedica] = @idNegotiationTabServiceColmedica
+      SELECT * FROM [dbo].[TB_NegotiationTabServiceColmedica]
+      WHERE [idNegotiationTabServiceColmedica] = @idNegotiationTabServiceColmedica
+    `;
+
+    const request = db.request();
+    request.input("idNegotiationTabServiceColmedica", negotiationTabColmedica.idNegotiationTabServiceColmedica);
+
+    // Añade los parámetros dinámicamente
+    for (const param in params) {
+      request.input(param, params[param]);
+    }
+
+    const result = await request.query(queryUpdate);
+
+    if (!result.recordset || result.recordset.length === 0) {
+      throw new Error("Failed to update and retrieve the record");
+    }
+
+    const updatedRecord = result.recordset[0];
+
+    return {
+      code: 200,
+      message: "ok",
+      data: updatedRecord,
+    };
+  } catch (err: any) {
+    console.error("Error in updateNegotiationTabServiceColmedica", err);
+    return {
+      code: 400,
+      message: {
+        translationKey: "global.error_in_repository",
+        translationParams: { name: "updateNegotiationTabServiceColmedica" },
+      },
+    };
+  }
+};
 
 export const getProvidersColmedica = async (idProvider: string | any | undefined): Promise<IresponseRepositoryService> => {
   try {
@@ -493,8 +563,6 @@ export const getOfficeProvidersColmedica = async (idOfficeProvider: string | any
 };
 
 
-
-
 export const getContactsProviderColmedica = async (idProvider: string | any | undefined): Promise<IresponseRepositoryService> => {
   try {
     const db = await connectToSqlServer();
@@ -535,8 +603,6 @@ export const getContactsProviderColmedica = async (idProvider: string | any | un
     };
   }
 };
-
-
 
 
 export const getProductColmedica = async (): Promise<IresponseRepositoryService> => {
