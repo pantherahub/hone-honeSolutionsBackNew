@@ -18,7 +18,9 @@ import {
     getClasificationTypeServiceColmedica,
     getServicesColmedica,
     getReferenceRateColmedica,
-    getNegotiationTabColmedica
+    getNegotiationTabColmedica,
+    saveNegotiationTabServiceColmedica,
+    saveNegotiationTabFareBaseColmedica
 } from "../controllers/colmedica.controller";
 import { query } from "express-validator";
 import { Router } from "express";
@@ -33,18 +35,28 @@ routes.post(
 )
 
 routes.post(
+    "/negotiationTabFareBaseColmedica",
+    checkSchema(CreateTicketSchema),
+    saveNegotiationTabFareBaseColmedica
+)
+
+routes.post(
+    "/negotiationTabServiceColmedica",
+    checkSchema(CreateTicketSchema),
+    saveNegotiationTabServiceColmedica
+)
+
+routes.post(
     "/negotiationTabPlansColmedica",
     checkSchema(CreateTicketSchema),
     saveNegotiationTabPlansColmedica
 )
-
 
 routes.post(
     "/negotiationTabRendomColmedica",
     checkSchema(CreateTicketSchema),
     saveNegotiationTabRendomColmedica
 )
-
 
 routes.post(
     "/negotiationTabTypeIncrementColmedica",

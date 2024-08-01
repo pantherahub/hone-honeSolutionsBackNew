@@ -42,8 +42,14 @@ export interface INegotiationTabRendomColmedica {
   idTypeService: number[][];
 }
 
+export interface ISaveNegotiationTabFareBaseColmedica {
+  idNegotiationTabColmedica: number;
+  idTypeFare: number[];
+}
+
+
 export interface INegotiationTabServiceColmedica {
-  id_NegotiationTabColmedic: number;
+  id_NegotiationTabColmedica: number;
   idSpeciality: number;
   idTypeService: number;
   idTypeFareGamaAltaU: number;

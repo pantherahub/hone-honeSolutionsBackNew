@@ -13,6 +13,25 @@ export const saveNegotiationTabColmedica: RequestHandler = async (req, res) => {
     }
 };
 
+export const saveNegotiationTabFareBaseColmedica: RequestHandler = async (req, res) => {
+    try {
+        const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.saveNegotiationTabFareBaseColmedica(req?.body);
+        res.status(code).json({message: parseMessageI18n(message, req),  ...resto});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: parseMessageI18n('error_server', req) });
+    }
+};
+
+export const saveNegotiationTabServiceColmedica: RequestHandler = async (req, res) => {
+    try {
+        const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.saveNegotiationTabServiceColmedicaColmedica(req?.body);
+        res.status(code).json({message: parseMessageI18n(message, req),  ...resto});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: parseMessageI18n('error_server', req) });
+    }
+};
 
 export const saveNegotiationTabTypeIncrementColmedica: RequestHandler = async (req, res) => {
     try {
