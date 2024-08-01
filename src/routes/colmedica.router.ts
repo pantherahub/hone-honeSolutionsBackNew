@@ -21,7 +21,8 @@ import {
     getNegotiationTabColmedica,
     saveNegotiationTabServiceColmedica,
     saveNegotiationTabFareBaseColmedica,
-    updateNegotiationTabServiceColmedica
+    updateNegotiationTabServiceColmedica,
+    saveLogicNegotiationTabCupsColmedica
 } from "../controllers/colmedica.controller";
 import { query } from "express-validator";
 import { Router } from "express";
@@ -63,6 +64,12 @@ routes.post(
     "/negotiationTabTypeIncrementColmedica",
     checkSchema(CreateTicketSchema),
     saveNegotiationTabTypeIncrementColmedica
+)
+
+routes.post(
+    "/saveLogicNegotiationTabCupsColmedica",
+    checkSchema(CreateTicketSchema),
+    saveLogicNegotiationTabCupsColmedica
 )
 
 routes.put(

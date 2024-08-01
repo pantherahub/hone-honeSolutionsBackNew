@@ -15,7 +15,8 @@ import {
   INegotiationTabTypeIncrementColmedica,
   INegotiationTabServiceColmedica,
   ISaveNegotiationTabFareBaseColmedica,
-  IUpdateNegotiationTabServiceColmedica
+  IUpdateNegotiationTabServiceColmedica,
+  ILogicNegotiationTabCupsColmedica
 } from "../interface/colmedica";
 
 
@@ -64,6 +65,81 @@ export const saveNegotiationTabColmedica = async (
       message: {
         translationKey: "global.error_in_repository",
         translationParams: { name: "saveNegotiationTabColmedica" },
+      },
+    };
+  }
+};
+
+
+export const saveLogicNegotiationTabCupsColmedica = async (
+  negotiationTabColmedica: ILogicNegotiationTabCupsColmedica
+): Promise<IresponseRepositoryService> => {
+  try {
+    const { id_NegotiationTabColmedica } = negotiationTabColmedica;
+    const db = await connectToSqlServer();
+
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+
+    // Inserción de datos
+    const insertQuery = `
+      INSERT INTO [TB_NegotiationTabCupsColmedica] 
+      SELECT
+        8, ts.idSpeciality, ma.idMedicalAct, ntti.idTypeIncrement, ma.code, ma.code, ma.code, 1, '',
+        ntb.idTypeFareGamaAltaU,
+        CAST(REPLACE((fs.fare + ((1 + (ntb.fareGamaAltaOperation) / 100) + (1 + (fs.fare) / 100) / 100) * fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaAltaA,
+        CAST(REPLACE((fs.fare + ((1 + (ntb.fareHumanOperation) / 100) + (1 + (fs.fare) / 100) / 100) * fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaHumanaA,
+        CAST(REPLACE((fs.fare + ((1 + (ntb.fareGamaMediaOperation) / 100) + (1 + (fs.fare) / 100) / 100) * fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMediaA,
+        CAST(REPLACE((fs.fare + ((1 + (ntb.fareGamaMenorOperation) / 100) + (1 + (fs.fare) / 100) / 100) * fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMenorA,
+        CAST(REPLACE((fs.fare + ((1 + (ntb.farePreferenciaOperation) / 100) + (1 + (fs.fare) / 100) / 100) * fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaPreferencialA,
+        ntb.idTypeFareGamaAltaU,
+        CAST(REPLACE((fs.fare + ((1 + (ntb.fareGamaAltaOperation) / 100) + (1 + (fs.fare) / 100) / 100) * fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaAltaH,
+        CAST(REPLACE((fs.fare + ((1 + (ntb.fareHumanOperation) / 100) + (1 + (fs.fare) / 100) / 100) * fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaHumanaH,
+        CAST(REPLACE((fs.fare + ((1 + (ntb.fareGamaMediaOperation) / 100) + (1 + (fs.fare) / 100) / 100) * fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMediaH,
+        CAST(REPLACE((fs.fare + ((1 + (ntb.fareGamaMenorOperation) / 100) + (1 + (fs.fare) / 100) / 100) * fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMenorH,
+        CAST(REPLACE((fs.fare + ((1 + (ntb.farePreferenciaOperation) / 100) + (1 + (fs.fare) / 100) / 100) * fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaPreferencialH
+      FROM TB_NegotiationTabServiceColmedica AS ntb
+      INNER JOIN TB_Speciality AS ts ON ntb.idSpeciality = ts.idSpeciality
+      INNER JOIN TB_MedicalAct AS ma ON ma.idSpeciality = ts.idSpeciality
+      INNER JOIN TB_FareSoat AS fs ON fs.idMedicalAct = ma.idMedicalAct
+      INNER JOIN TB_NegotiationTabTypeIncrement AS ntti ON ntti.id_NegotiationTabColmedica = ntti.id_NegotiationTabColmedica
+      INNER JOIN TB_ClasificationTypeServiceSpeciality AS cts ON cts.idSpeciality = ts.idSpeciality
+      INNER JOIN TB_ClasificationTypeService AS ct ON ct.idClasificationTypeService = cts.idClasificationTypeService
+      WHERE ntb.id_NegotiationTabColmedica = @id_NegotiationTabColmedica
+    `;
+
+    const request = db.request();
+    request.input("id_NegotiationTabColmedica", id_NegotiationTabColmedica);
+
+    await request.query(insertQuery);
+
+    const selectQuery = `
+      SELECT * 
+      FROM [TB_NegotiationTabCupsColmedica] 
+      WHERE id_NegotiationTabColmedica = @id_NegotiationTabColmedica
+    `;
+
+    const result = await request.query(selectQuery);
+
+    if (!result.recordset || result.recordset.length === 0) {
+      throw new Error("Failed to retrieve the inserted record");
+    }
+
+    const insertedRecord = result.recordset[0];
+
+    return {
+      code: 200,
+      message: "ok",
+      data: insertedRecord,
+    };
+  } catch (err: any) {
+    console.error("Error in saveLogicNegotiationTabCupsColmedica", err);
+    return {
+      code: 400,
+      message: {
+        translationKey: "global.error_in_repository",
+        translationParams: { name: "saveLogicNegotiationTabCupsColmedica" },
       },
     };
   }
@@ -687,9 +763,10 @@ export const getReferenceRateColmedica = async (): Promise<IresponseRepositorySe
     }
 
     const queryProviders = `
-    select ntf.idTypeFare,typeFare from TB_NegotiationTabFareBaseColmedica as ntf
-    inner join TB_TypeFares as tf on tf.idTypeFare = ntf.idTypeFare
-    where idNegotiationTabColmedica = 8 
+    	SELECT idTypeFare,typeFare  FROM TB_TypeFares
+	 --select ntf.idTypeFare,typeFare from TB_NegotiationTabFareBaseColmedica as ntf
+   --inner join TB_TypeFares as tf on tf.idTypeFare = ntf.idTypeFare
+   --where idNegotiationTabColmedica =
     `;
 
     const request = db.request();

@@ -8,6 +8,11 @@ export interface INegotiationTabColmedica {
     idContactsProvider: string;
   }
   
+
+  export interface ILogicNegotiationTabCupsColmedica {
+    id_NegotiationTabColmedica: number;
+  }
+
 export interface IProviderColmedica {
     idProvider: number;
     razonSocial: string;

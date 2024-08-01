@@ -63,6 +63,15 @@ export const saveNegotiationTabPlansColmedica: RequestHandler = async (req, res)
     }
 };
 
+export const saveLogicNegotiationTabCupsColmedica: RequestHandler = async (req, res) => {
+    try {
+        const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.saveLogicNegotiationTabCupsColmedica(req?.body);
+        res.status(code).json({message: parseMessageI18n(message, req),  ...resto});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: parseMessageI18n('error_server', req) });
+    }
+};
 
 export const updateNegotiationTabServiceColmedica: RequestHandler = async (req, res) => {
     try {
