@@ -177,6 +177,17 @@ export const getServicesColmedica: RequestHandler = async (req, res) => {
     }
 };
 
+export const getInfoLogicColmedica: RequestHandler = async (req, res) => {
+    try {
+        const id_NegotiationTabColmedica = req.query.id_NegotiationTabColmedica;
+        const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.getInfoLogicColmedica(id_NegotiationTabColmedica);
+        res.status(code).json({message: parseMessageI18n(message, req),  ...resto});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: parseMessageI18n('error_server', req) });
+    }
+};
+
 
 export const getPlansColmedica: RequestHandler = async (req, res) => {
     try {

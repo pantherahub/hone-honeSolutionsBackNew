@@ -22,7 +22,8 @@ import {
     saveNegotiationTabServiceColmedica,
     saveNegotiationTabFareBaseColmedica,
     updateNegotiationTabServiceColmedica,
-    saveLogicNegotiationTabCupsColmedica
+    saveLogicNegotiationTabCupsColmedica,
+    getInfoLogicColmedica
 } from "../controllers/colmedica.controller";
 import { query } from "express-validator";
 import { Router } from "express";
@@ -72,6 +73,7 @@ routes.post(
     saveLogicNegotiationTabCupsColmedica
 )
 
+
 routes.put(
     "/negotiationTabServiceColmedica",
     checkSchema(CreateTicketSchema),
@@ -86,6 +88,17 @@ routes.get(
     ],
     getProvidersColmedica
 )
+
+
+routes.get(
+    "/infoLogicColmedica",
+    [
+        query("id_NegotiationTabColmedica", "global.int_type_field").optional().isInt(),
+        validateEnpoint
+    ],
+    getInfoLogicColmedica
+)
+
 
 routes.get(
     "/contactsProviderColmedica",
@@ -127,6 +140,18 @@ routes.get(
     ],
     getServicesColmedica
 )
+
+
+
+routes.get(
+    "/servicesColmedica",
+    [
+        query("idClasificationTypeService", "global.int_type_field").optional().isInt(),
+        validateEnpoint
+    ],
+    getServicesColmedica
+)
+
 
 routes.get(
     "/plansColmedica",

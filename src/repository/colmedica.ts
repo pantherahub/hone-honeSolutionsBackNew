@@ -927,6 +927,57 @@ export const getServicesColmedica = async (idClasificationTypeService: string | 
 };
 
 
+export const getInfoLogicColmedica = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
+  try {
+    const db = await connectToSqlServer();
+
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+
+    const queryProviders = `
+    select ct.clasificationTypeService as 'AGRUPADOR',s.speciality as 'SUBAGRUPADOR', ntcc.codigoCups,ntcc.codigoIPS,ntcc.codigoISS,ma.medicalAct as 'DESCRIPCIÓN CUPS', contratado, Iss2001uvrUvrOTarifa,
+    ti.TypeIncrement,ntti.valueIncrement,tf.typeFare,fareGamaAltaA,fareGamaHumanaA,fareGamaMediaA,fareGamaMenorA,farePreferencialA
+    ,tfd.typeFare,fareGamaAltaA,fareGamaHumanaA,fareGamaMediaA,fareGamaMenorA,farePreferencialA
+    from TB_NegotiationTabCupsColmedica as ntcc
+    inner join TB_NegotiationTabTypeIncrement as ntti on ntti.id_NegotiationTabColmedica = ntcc.id_NegotiationTabColmedica
+    inner join TB_Speciality as s on ntcc.idSpeciality = ntcc.idSpeciality
+    inner join TB_MedicalAct as ma on ma.idSpeciality = s.idSpeciality
+    inner join TB_TypeIncrement as ti on ti.idTypeIncrement = ntti.idTypeIncrement
+    inner join TB_TypeFares as tf on tf.idTypeFare = idTypeFareReferenceA
+    inner join TB_TypeFares as tfd on tfd.idTypeFare = idTypeFareReferenceH
+    inner join TB_ClasificationTypeServiceSpeciality as cts on cts.idSpeciality = s.idSpeciality
+    inner join TB_ClasificationTypeService as ct on ct.idClasificationTypeService = cts.idClasificationTypeService
+    where ntcc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica
+    `;
+
+    const inputIdNegotiationTabColmedica = id_NegotiationTabColmedica !== undefined ? id_NegotiationTabColmedica : null;
+
+    const request = db.request();
+    request.input('id_NegotiationTabColmedica', inputIdNegotiationTabColmedica);
+
+    const result = await request.query(queryProviders);
+
+    const providers: IOccupationColmedica[] = result.recordset;
+
+    return {
+      code: 200,
+      message: "ok",
+      data: providers,
+    };
+  } catch (err: any) {
+    console.error("Error in getContactsProviderColmedica", err);
+    return {
+      code: 400,
+      message: {
+        translationKey: "global.error_in_repository",
+        translationParams: { name: "getContactsProviderColmedica" },
+      },
+    };
+  }
+};
+
+
 export const getTypeFaresColmedica = async (): Promise<IresponseRepositoryService> => {
   try {
     const db = await connectToSqlServer();
