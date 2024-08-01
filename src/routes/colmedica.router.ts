@@ -90,6 +90,7 @@ routes.get(
 )
 
 
+
 routes.get(
     "/infoLogicColmedica",
     [
