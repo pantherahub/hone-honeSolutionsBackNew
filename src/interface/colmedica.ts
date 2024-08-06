@@ -11,6 +11,8 @@ export interface INegotiationTabColmedica {
 
   export interface ILogicNegotiationTabCupsColmedica {
     id_NegotiationTabColmedica: number;
+    idTypeIncrement: number;
+
   }
 
 export interface IProviderColmedica {
