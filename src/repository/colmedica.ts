@@ -482,9 +482,11 @@ export const updateNegotiationTabServiceColmedica = async (
       throw new Error("Database connection failed");
     }
 
-    if (!negotiationTabColmedica.idNegotiationTabServiceColmedica) {
-      throw new Error("idNegotiationTabServiceColmedica is required for update");
+    if (!negotiationTabColmedica.idNegotiationTabServiceColmedica || !negotiationTabColmedica.idSpeciality) {
+      throw new Error("idNegotiationTabServiceColmedica and idSpeciality are required for update");
     }
+
+    console.log("Received fields for update:", negotiationTabColmedica);
 
     let queryUpdate = `
       UPDATE [dbo].[TB_NegotiationTabServiceColmedica]
@@ -494,7 +496,7 @@ export const updateNegotiationTabServiceColmedica = async (
 
     // Construye dinámicamente los campos a actualizar
     for (const key in negotiationTabColmedica) {
-      if (key !== "idNegotiationTabServiceColmedica") {
+      if (key !== "idNegotiationTabServiceColmedica" && key !== "idSpeciality") {
         updates.push(`[${key}] = @${key}`);
         params[key] = (negotiationTabColmedica as any)[key];
       }
@@ -506,12 +508,15 @@ export const updateNegotiationTabServiceColmedica = async (
 
     queryUpdate += updates.join(", ") + `
       WHERE [idNegotiationTabServiceColmedica] = @idNegotiationTabServiceColmedica
+      AND [idSpeciality] = @idSpeciality
       SELECT * FROM [dbo].[TB_NegotiationTabServiceColmedica]
       WHERE [idNegotiationTabServiceColmedica] = @idNegotiationTabServiceColmedica
+      AND [idSpeciality] = @idSpeciality
     `;
 
     const request = db.request();
     request.input("idNegotiationTabServiceColmedica", negotiationTabColmedica.idNegotiationTabServiceColmedica);
+    request.input("idSpeciality", negotiationTabColmedica.idSpeciality);
 
     // Añade los parámetros dinámicamente
     for (const param in params) {
@@ -543,6 +548,8 @@ export const updateNegotiationTabServiceColmedica = async (
   }
 };
 
+
+
 export const getProvidersColmedica = async (idProvider: string | any | undefined): Promise<IresponseRepositoryService> => {
   try {
     const db = await connectToSqlServer();
@@ -552,11 +559,10 @@ export const getProvidersColmedica = async (idProvider: string | any | undefined
     }
 
     const queryProviders = `
-      SELECT pr.idProvider,razonSocial,pr.idTypeDocument,ty.typeDocument,pr.identificacion,offi.idCity,ci.city,offi.idOfficeProvider FROM TB_Provider AS pr
-      LEFT JOIN TB_OfficeProvider AS offi ON offi.idProvider = pr.idProvider
-      LEFT JOIN TB_typeDocument AS ty ON pr.idTypeDocument = ty.idTypeDocument
-      LEFT JOIN TB_City AS ci ON ci.idCity = offi.idCity
-      WHERE @idProvider IS NULL OR pr.idProvider = @idProvider;
+    select distinct p.idProvider,p.razonSocial + ' ' + identificacion as razonSocial from TB_Provider as p
+    inner join TB_OfficeProvider as op on op.idProvider = p.idProvider
+    inner join TB_OfficeProviderClientHoneSolution as opch on opch.idOfficeProvider = op.idOfficeProvider
+    where idClientHoneSolutions = 9 AND @idProvider IS NULL OR op.idProvider = @idProvider;
     `;
 
     const request = db.request();
@@ -584,6 +590,46 @@ export const getProvidersColmedica = async (idProvider: string | any | undefined
 };
 
 
+export const getInfoOfficeProvider = async (idProvider: string | any | undefined): Promise<IresponseRepositoryService> => {
+  try {
+    const db = await connectToSqlServer();
+
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+
+    const queryProviders = `
+    select distinct op.idOfficeProvider,op.OfficeProviderName as clientColmedica from TB_Provider as p
+    inner join TB_OfficeProvider as op on op.idProvider = p.idProvider
+    inner join TB_OfficeProviderClientHoneSolution as opch on opch.idOfficeProvider = op.idOfficeProvider
+    where idClientHoneSolutions = 9 and p.idProvider = @idProvider;
+    `;
+
+    const request = db.request();
+    request.input('idProvider', idProvider || null);
+
+    const result = await request.query(queryProviders);
+
+    const providers: IProviderColmedica[] = result.recordset;
+
+    return {
+      code: 200,
+      message: "ok",
+      data: providers,
+    };
+  } catch (err: any) {
+    console.error("Error in getInfoOfficeProvider", err);
+    return {
+      code: 400,
+      message: {
+        translationKey: "global.error_in_repository",
+        translationParams: { name: "getInfoOfficeProvider" },
+      },
+    };
+  }
+};
+
+
 export const getOfficeProvidersColmedica = async (idOfficeProvider: string | any | undefined): Promise<IresponseRepositoryService> => {
   try {
     const db = await connectToSqlServer();
@@ -593,9 +639,14 @@ export const getOfficeProvidersColmedica = async (idOfficeProvider: string | any
     }
 
     const queryProviders = `
-      SELECT ISNULL(idOfficeProvider, 0) AS idOfficeProvider, ISNULL(OfficeProviderName, 'N/A') AS OfficeProviderName, ISNULL(idProvider, 0) AS idProvider
-      FROM TB_OfficeProvider
-      WHERE @idOfficeProvider IS NULL OR idOfficeProvider = @idOfficeProvider;
+     select distinct idOfficeProvider,o.razonSocial,op.OfficeProviderName,td.typeDocument,o.identificacion,d.departament,c.city,
+     op.address  from TB_OfficeProvider as op
+     inner join TB_Provider as o on o.idProvider = op.idProvider
+     inner join TB_typeDocument as td on td.idTypeDocument = o.idTypeDocument
+     inner join TB_Department as d on op.idDepartament = d.idDepartament 
+     inner join TB_City as c on c.idCity = op.idCity
+     inner join TB_ContactsProvider as cp on cp.idProvider = o.idProvider
+     where op.idOfficeProvider =  ISNULL(@idOfficeProvider,op.idOfficeProvider)
     `;
 
     const inputIdOfficeProvider = idOfficeProvider !== undefined ? idOfficeProvider : null;
@@ -878,12 +929,10 @@ export const getServicesColmedica = async (idClasificationTypeService: string | 
     }
 
     const queryProviders = `
-      SELECT sp.speciality,sp.idSpeciality FROM TB_ClasificationTypeService AS cls
-      INNER JOIN TB_ClasificationTypeServiceSpeciality AS cl ON cl.idClasificationTypeService = cls.idClasificationTypeService
-      INNER JOIN TB_ClasificationTypeServiceClientHoneSolutions AS ct ON cls.idClasificationTypeService = ct.idClasificationTypeService
-      INNER JOIN TB_Speciality AS sp ON sp.idSpeciality = cl.idSpeciality
-      --WHERE sp.speciality IS NOT NULL AND ct.idClientHoneSolutions = 9 AND cls.idClasificationTypeService = 18 
-      WHERE cls.idClasificationTypeService = @idClasificationTypeService
+  	  select s.idSpeciality,s.speciality,* from TB_ClasificationTypeServiceSpeciality as ct
+      inner join TB_Speciality as s on s.idSpeciality = ct.idSpeciality
+      inner join TB_SpecialityClientHoneSolutions as sch on sch.idSpeciality = s.idSpeciality
+      where ct.idClasificationTypeService = @idClasificationTypeService and sch.idClientHoneSolutions = 9
     `;
 
     const inputIdClasificationTypeService = idClasificationTypeService !== undefined ? idClasificationTypeService : null;
@@ -963,6 +1012,65 @@ export const getInfoLogicColmedica = async (id_NegotiationTabColmedica: string |
   }
 };
 
+
+export const getInfoLogicTableColmedica = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
+  try {
+    const db = await connectToSqlServer();
+
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+
+    const queryProviders = `
+    select clasificationTypeService,ts.speciality,tsd.typeService,
+    tfga.typeFare + ' +' + CAST(ntb.fareGamaAltaOperation AS VARCHAR(20)) + '% ' + isnull(tfgad.typeFare,'') as 'TARIFA GAMA ALTA',
+    tfh.typeFare + ' +' + CAST(ntb.fareHumanOperation AS VARCHAR(20)) + '% ' + isnull(tfhd.typeFare,'') as 'TARIFA HUMANA (PLUS Y TRADICIONAL)', 
+    tfm.typeFare + ' +' + CAST(ntb.fareGamaMediaOperation AS VARCHAR(20)) + '% ' + isnull(tfhd.typeFare,'') as 'TARIFA GAMA MEDIA',
+    tfme.typeFare + ' +' + CAST(ntb.fareGamaMenorOperation AS VARCHAR(20)) + '% ' + isnull(tfmed.typeFare,'') as 'TARIFA GAMA MENOR',
+    tfp.typeFare + ' +' + CAST(ntb.farePreferenciaOperation AS VARCHAR(20)) + '% ' + isnull(tfpd.typeFare,'') as 'TARIFA PREFERENCIAL' 
+    from TB_NegotiationTabServiceColmedica as ntb
+    left join TB_Speciality as ts on ntb.idSpeciality = ts.idSpeciality
+    left join TB_ClasificationTypeServiceSpeciality as cts on cts.idSpeciality = ts.idSpeciality
+    left join TB_ClasificationTypeService as ct on ct.idClasificationTypeService = cts.idClasificationTypeService
+    left join TB_TypeService as tsd on tsd.idTypeService = ntb.idTypeService
+    left join [TB_TypeFares] as tfga on tfga.idTypeFare = ntb.idTypeFareGamaAltaU
+    left join [TB_TypeFares] as tfgad on tfgad.idTypeFare = ntb.idTypeFareGamaAltaD
+    left join [TB_TypeFares] as tfh on tfh.idTypeFare = ntb.idTypeFareHumanAltaU
+    left join [TB_TypeFares] as tfhd on tfhd.idTypeFare = ntb.idTypeFareHumanD
+    left join [TB_TypeFares] as tfm on tfm.idTypeFare = ntb.idTypeFareGamaMediaU
+    left join [TB_TypeFares] as tfmd on tfmd.idTypeFare = ntb.idTypeFareGamaMediaD
+    left join [TB_TypeFares] as tfme on tfme.idTypeFare = ntb.idTypeFareGamaMenorU
+    left join [TB_TypeFares] as tfmed on tfmed.idTypeFare = ntb.idTypeFareGamaMenorD
+    left join [TB_TypeFares] as tfp on tfp.idTypeFare = ntb.idTypeFarePreferencialU
+    left join [TB_TypeFares] as tfpd on tfpd.idTypeFare = ntb.idTypeFarePreferenciaD
+    where id_NegotiationTabColmedica  = @id_NegotiationTabColmedica
+    `;
+
+    const inputIdNegotiationTabColmedica = id_NegotiationTabColmedica !== undefined ? id_NegotiationTabColmedica : null;
+
+    const request = db.request();
+    request.input('id_NegotiationTabColmedica', inputIdNegotiationTabColmedica);
+
+    const result = await request.query(queryProviders);
+
+    const providers: IOccupationColmedica[] = result.recordset;
+
+    return {
+      code: 200,
+      message: "ok",
+      data: providers,
+    };
+  } catch (err: any) {
+    console.error("Error in getContactsProviderColmedica", err);
+    return {
+      code: 400,
+      message: {
+        translationKey: "global.error_in_repository",
+        translationParams: { name: "getContactsProviderColmedica" },
+      },
+    };
+  }
+};
 
 export const getTypeFaresColmedica = async (): Promise<IresponseRepositoryService> => {
   try {
@@ -1083,9 +1191,9 @@ export const getClasificationTypeServiceColmedica = async (): Promise<IresponseR
     }
 
     const queryProviders = `
-     	SELECT * FROM TB_ClasificationTypeService AS cls
-      --LEFT JOIN TB_ClasificationTypeServiceClientHoneSolutions AS ct ON cls.idClasificationTypeService = ct.idClasificationTypeService
-      --WHERE idClasificationTypeServiceClientHoneSolutions = 9
+      select cts.idClasificationTypeService,clasificationTypeService from TB_ClasificationTypeService as cts
+      inner join TB_ClasificationTypeServiceClientHoneSolutions as ctsch on cts.idClasificationTypeService = ctsch.idClasificationTypeService
+      where ctsch.idClientHoneSolutions = 9
     `;
 
     const request = db.request();
