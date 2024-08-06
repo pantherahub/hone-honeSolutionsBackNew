@@ -75,7 +75,7 @@ export interface INegotiationTabServiceColmedica {
 }
 
 export interface IUpdateNegotiationTabServiceColmedica {
-  idNegotiationTabServiceColmedica: number;
+  id_NegotiationTabColmedica: number;
   idSpeciality: number;
   idTypeService: number;
   idTypeFareGamaAltaU: number;

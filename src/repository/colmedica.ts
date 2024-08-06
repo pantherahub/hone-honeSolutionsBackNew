@@ -482,8 +482,8 @@ export const updateNegotiationTabServiceColmedica = async (
       throw new Error("Database connection failed");
     }
 
-    if (!negotiationTabColmedica.idNegotiationTabServiceColmedica || !negotiationTabColmedica.idSpeciality) {
-      throw new Error("idNegotiationTabServiceColmedica and idSpeciality are required for update");
+    if (!negotiationTabColmedica.id_NegotiationTabColmedica || !negotiationTabColmedica.idSpeciality) {
+      throw new Error("id_NegotiationTabColmedica and idSpeciality are required for update");
     }
 
     console.log("Received fields for update:", negotiationTabColmedica);
@@ -496,7 +496,7 @@ export const updateNegotiationTabServiceColmedica = async (
 
     // Construye dinámicamente los campos a actualizar
     for (const key in negotiationTabColmedica) {
-      if (key !== "idNegotiationTabServiceColmedica" && key !== "idSpeciality") {
+      if (key !== "id_NegotiationTabColmedica" && key !== "idSpeciality") {
         updates.push(`[${key}] = @${key}`);
         params[key] = (negotiationTabColmedica as any)[key];
       }
@@ -507,15 +507,15 @@ export const updateNegotiationTabServiceColmedica = async (
     }
 
     queryUpdate += updates.join(", ") + `
-      WHERE [idNegotiationTabServiceColmedica] = @idNegotiationTabServiceColmedica
+      WHERE [id_NegotiationTabColmedica] = @id_NegotiationTabColmedica
       AND [idSpeciality] = @idSpeciality
       SELECT * FROM [dbo].[TB_NegotiationTabServiceColmedica]
-      WHERE [idNegotiationTabServiceColmedica] = @idNegotiationTabServiceColmedica
+      WHERE [id_NegotiationTabColmedica] = @id_NegotiationTabColmedica
       AND [idSpeciality] = @idSpeciality
     `;
 
     const request = db.request();
-    request.input("idNegotiationTabServiceColmedica", negotiationTabColmedica.idNegotiationTabServiceColmedica);
+    request.input("id_NegotiationTabColmedica", negotiationTabColmedica.id_NegotiationTabColmedica);
     request.input("idSpeciality", negotiationTabColmedica.idSpeciality);
 
     // Añade los parámetros dinámicamente
@@ -947,7 +947,7 @@ export const getServicesColmedica = async (idClasificationTypeService: string | 
     return {
       code: 200,
       message: "ok",
-      data: providers,
+      data: "ok",
     };
   } catch (err: any) {
     console.error("Error in getContactsProviderColmedica", err);
