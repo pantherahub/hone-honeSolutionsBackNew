@@ -84,7 +84,7 @@ export const saveLogicNegotiationTabCupsColmedica = async (
 
     const insertQuery = `
     insert into [TB_NegotiationTabCupsColmedica] 
-    select  9,ts.idSpeciality,ma.idMedicalAct,ntti.idTypeIncrement,ma.code,ma.code,ma.code,1,
+    select  @id_NegotiationTabColmedica,ts.idSpeciality,ma.idMedicalAct,ntti.idTypeIncrement,ma.code,ma.code,ma.code,1,
     ntb.idTypeFareGamaAltaU,
     CAST(REPLACE((fs.fare + (ntb.fareGamaAltaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaAltaA
     ,CAST(REPLACE((fs.fare + (ntb.fareHumanOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaHumanaA
@@ -107,7 +107,7 @@ export const saveLogicNegotiationTabCupsColmedica = async (
     where ntb.id_NegotiationTabColmedica = @id_NegotiationTabColmedica  and ntti.idTypeIncrement = 1
 
     insert into [TB_NegotiationTabCupsColmedica] 
-    select  8,ts.idSpeciality,ma.idMedicalAct,ntti.idTypeIncrement,ma.code,ma.code,ma.code,1,
+    select  @id_NegotiationTabColmedica,ts.idSpeciality,ma.idMedicalAct,ntti.idTypeIncrement,ma.code,ma.code,ma.code,1,
     ntb.idTypeFareGamaAltaU,
     CAST(REPLACE((fs.fare + (ntb.fareGamaAltaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaAltaA
     ,CAST(REPLACE((fs.fare + (ntb.fareHumanOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaHumanaA
@@ -993,7 +993,7 @@ export const getInfoLogicColmedica = async (id_NegotiationTabColmedica: string |
     }
 
     const queryProviders = `
-      select ct.clasificationTypeService as 'AGRUPADOR',s.speciality as 'SUBAGRUPADOR', ntcc.codigoCups,ntcc.codigoIPS,ntcc.codigoISS,ma.medicalAct as 'DESCRIPCIÓN CUPS', contratado, Iss2001uvrUvrOTarifa,
+      select ct.clasificationTypeService as 'AGRUPADOR',s.speciality as 'SUBAGRUPADOR', ntcc.codigoCups,ntcc.codigoIPS,ntcc.codigoISS,ma.medicalAct as 'DESCRIPCION CUPS', contratado, Iss2001uvrUvrOTarifa,
       ti.TypeIncrement,ntti.valueIncrement,tf.typeFare,fareGamaAltaA,fareGamaHumanaA,fareGamaMediaA,fareGamaMenorA,farePreferencialA
       ,tfd.typeFare,fareGamaAltaA,fareGamaHumanaA,fareGamaMediaA,fareGamaMenorA,farePreferencialA
       from TB_NegotiationTabCupsColmedica as ntcc
