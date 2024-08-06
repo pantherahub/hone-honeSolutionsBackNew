@@ -947,7 +947,7 @@ export const getServicesColmedica = async (idClasificationTypeService: string | 
     return {
       code: 200,
       message: "ok",
-      data: "ok",
+      data: providers,
     };
   } catch (err: any) {
     console.error("Error in getContactsProviderColmedica", err);
