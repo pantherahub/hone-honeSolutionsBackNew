@@ -874,7 +874,8 @@ export const getNegotiationTabColmedica = async (): Promise<IresponseRepositoryS
     INNER JOIN 
         TB_OfficeProvider AS offi ON offi.idOfficeProvider = ne.idOfficeProvider
     INNER JOIN 
-        TB_Product AS pr ON pr.idProduct = ne.idProduct;
+        TB_Product AS pr ON pr.idProduct = ne.idProduct
+    ORDER BY ne.idProduct DESC
     `;
 
     const request = db.request();
@@ -984,6 +985,56 @@ export const getServicesColmedica = async (idClasificationTypeService: string | 
 };
 
 
+// export const getInfoLogicColmedica = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
+//   try {
+//     const db = await connectToSqlServer();
+
+//     if (!db) {
+//       throw new Error("Database connection failed");
+//     }
+
+//     const queryProviders = `
+//       select ct.clasificationTypeService as 'AGRUPADOR',s.speciality as 'SUBAGRUPADOR', ntcc.codigoCups,ntcc.codigoIPS,ntcc.codigoISS,ma.medicalAct as 'DESCRIPCION CUPS', contratado, Iss2001uvrUvrOTarifa,
+//       ti.TypeIncrement,ntti.valueIncrement,tf.typeFare,fareGamaAltaA,fareGamaHumanaA,fareGamaMediaA,fareGamaMenorA,farePreferencialA
+//       ,tfd.typeFare,fareGamaAltaA,fareGamaHumanaA,fareGamaMediaA,fareGamaMenorA,farePreferencialA
+//       from TB_NegotiationTabCupsColmedica as ntcc
+//       left join TB_NegotiationTabTypeIncrement as ntti on ntti.id_NegotiationTabColmedica = ntcc.id_NegotiationTabColmedica
+//       left join TB_Speciality as s on s.idSpeciality = ntcc.idSpeciality
+//       left join TB_MedicalAct as ma on ma.idSpeciality = s.idSpeciality
+//       left join TB_TypeIncrement as ti on ti.idTypeIncrement = ntti.idTypeIncrement
+//       left join TB_TypeFares as tf on tf.idTypeFare = idTypeFareReferenceA
+//       left join TB_TypeFares as tfd on tfd.idTypeFare = idTypeFareReferenceH
+//       left join TB_ClasificationTypeServiceSpeciality as cts on cts.idSpeciality = s.idSpeciality
+//       left join TB_ClasificationTypeService as ct on ct.idClasificationTypeService = cts.idClasificationTypeService
+//       where ntcc.id_NegotiationTabColmedica  = @id_NegotiationTabColmedica
+//     `;
+
+//     const inputIdNegotiationTabColmedica = id_NegotiationTabColmedica !== undefined ? id_NegotiationTabColmedica : null;
+
+//     const request = db.request();
+//     request.input('id_NegotiationTabColmedica', inputIdNegotiationTabColmedica);
+
+//     const result = await request.query(queryProviders);
+
+//     const providers: IOccupationColmedica[] = result.recordset;
+
+//     return {
+//       code: 200,
+//       message: "ok",
+//       data: providers,
+//     };
+//   } catch (err: any) {
+//     console.error("Error in getContactsProviderColmedica", err);
+//     return {
+//       code: 400,
+//       message: {
+//         translationKey: "global.error_in_repository",
+//         translationParams: { name: "getContactsProviderColmedica" },
+//       },
+//     };
+//   }
+// };
+
 export const getInfoLogicColmedica = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
   try {
     const db = await connectToSqlServer();
@@ -993,9 +1044,9 @@ export const getInfoLogicColmedica = async (id_NegotiationTabColmedica: string |
     }
 
     const queryProviders = `
-      select ct.clasificationTypeService as 'AGRUPADOR',s.speciality as 'SUBAGRUPADOR', ntcc.codigoCups,ntcc.codigoIPS,ntcc.codigoISS,ma.medicalAct as 'DESCRIPCION CUPS', contratado, Iss2001uvrUvrOTarifa,
-      ti.TypeIncrement,ntti.valueIncrement,tf.typeFare,fareGamaAltaA,fareGamaHumanaA,fareGamaMediaA,fareGamaMenorA,farePreferencialA
-      ,tfd.typeFare,fareGamaAltaA,fareGamaHumanaA,fareGamaMediaA,fareGamaMenorA,farePreferencialA
+      select ct.clasificationTypeService as 'AGRUPADOR', s.speciality as 'SUBAGRUPADOR', ntcc.codigoCups, ntcc.codigoIPS, ntcc.codigoISS, ma.medicalAct as 'DESCRIPCION CUPS', 
+      contratado, Iss2001uvrUvrOTarifa, ti.TypeIncrement, ntti.valueIncrement, tf.typeFare as 'typeFare1', fareGamaAltaA, fareGamaHumanaA, fareGamaMediaA, fareGamaMenorA, farePreferencialA,
+      tfd.typeFare as 'typeFare2', fareGamaAltaA as 'fareGamaAltaA2', fareGamaHumanaA as 'fareGamaHumanaA2', fareGamaMediaA as 'fareGamaMediaA2', fareGamaMenorA as 'fareGamaMenorA2', farePreferencialA as 'farePreferencialA2'
       from TB_NegotiationTabCupsColmedica as ntcc
       left join TB_NegotiationTabTypeIncrement as ntti on ntti.id_NegotiationTabColmedica = ntcc.id_NegotiationTabColmedica
       left join TB_Speciality as s on s.idSpeciality = ntcc.idSpeciality
@@ -1005,7 +1056,7 @@ export const getInfoLogicColmedica = async (id_NegotiationTabColmedica: string |
       left join TB_TypeFares as tfd on tfd.idTypeFare = idTypeFareReferenceH
       left join TB_ClasificationTypeServiceSpeciality as cts on cts.idSpeciality = s.idSpeciality
       left join TB_ClasificationTypeService as ct on ct.idClasificationTypeService = cts.idClasificationTypeService
-      where ntcc.id_NegotiationTabColmedica  = @id_NegotiationTabColmedica
+      where ntcc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica
     `;
 
     const inputIdNegotiationTabColmedica = id_NegotiationTabColmedica !== undefined ? id_NegotiationTabColmedica : null;
@@ -1015,7 +1066,30 @@ export const getInfoLogicColmedica = async (id_NegotiationTabColmedica: string |
 
     const result = await request.query(queryProviders);
 
-    const providers: IOccupationColmedica[] = result.recordset;
+    const providers = result.recordset.map(record => ({
+      AGRUPADOR: record.AGRUPADOR,
+      SUBAGRUPADOR: record.SUBAGRUPADOR,
+      codigoCups: record.codigoCups,
+      codigoIPS: record.codigoIPS,
+      codigoISS: record.codigoISS,
+      'DESCRIPCION CUPS': record['DESCRIPCION CUPS'],
+      contratado: record.contratado,
+      Iss2001uvrUvrOTarifa: record.Iss2001uvrUvrOTarifa,
+      TypeIncrement: record.TypeIncrement,
+      valueIncrement: record.valueIncrement,
+      typeFare1: record.typeFare1,
+      fareGamaAltaA: record.fareGamaAltaA,
+      fareGamaHumanaA: record.fareGamaHumanaA,
+      fareGamaMediaA: record.fareGamaMediaA,
+      fareGamaMenorA: record.fareGamaMenorA,
+      farePreferencialA: record.farePreferencialA,
+      typeFare2: record.typeFare2,
+      fareGamaAltaA2: record.fareGamaAltaA2,
+      fareGamaHumanaA2: record.fareGamaHumanaA2,
+      fareGamaMediaA2: record.fareGamaMediaA2,
+      fareGamaMenorA2: record.fareGamaMenorA2,
+      farePreferencialA2: record.farePreferencialA2,
+    }));
 
     return {
       code: 200,
