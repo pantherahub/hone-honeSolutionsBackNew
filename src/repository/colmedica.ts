@@ -83,55 +83,77 @@ export const saveLogicNegotiationTabCupsColmedica = async (
     }
 
     const insertQuery = `
-  insert into [TB_NegotiationTabCupsColmedica] 
-  select  @id_NegotiationTabColmedica,ts.idSpeciality,ma.idMedicalAct,ntti.idTypeIncrement,ma.code,ma.code,ma.code,1,
-  ntb.idTypeFareGamaAltaU,
-  CAST(REPLACE((fs.fare + (ntb.fareGamaAltaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaAltaA
-  ,CAST(REPLACE((fs.fare + (ntb.fareHumanOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaHumanaA
-  ,CAST(REPLACE((fs.fare + (ntb.fareGamaMediaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMediaA
-  ,CAST(REPLACE((fs.fare + (ntb.fareGamaMenorOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMenorA
-  ,CAST(REPLACE((fs.fare + (ntb.farePreferenciaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaPreferencialA
-  ,ntb.idTypeFareGamaAltaU
-  ,ntb.idTypeFareGamaAltaU,CAST(REPLACE((fs.fare + (ntb.fareGamaAltaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaAltaA
-  ,CAST(REPLACE((fs.fare + (ntb.fareHumanOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaHumanaH
-  ,CAST(REPLACE((fs.fare + (ntb.fareGamaMediaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMediaH
-  ,CAST(REPLACE((fs.fare + (ntb.fareGamaMenorOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMenorH
-  ,CAST(REPLACE((fs.fare + (ntb.farePreferenciaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaPreferencialH
-  from TB_NegotiationTabServiceColmedica as ntb
-  left join TB_Speciality as ts on ntb.idSpeciality = ts.idSpeciality
-  left join TB_MedicalAct as ma on ma.idSpeciality = ts.idSpeciality
-  inner join TB_FareSoat  as fs on fs.idMedicalAct = ma.idMedicalAct
-  left join TB_NegotiationTabTypeIncrement as ntti on ntti.id_NegotiationTabColmedica = ntb.id_NegotiationTabColmedica
-  left join TB_ClasificationTypeServiceSpeciality as cts on cts.idSpeciality = ts.idSpeciality
-  left join TB_ClasificationTypeService as ct on ct.idClasificationTypeService = cts.idClasificationTypeService
-  where ntb.id_NegotiationTabColmedica = @id_NegotiationTabColmedica and ntti.idTypeIncrement = 1
+      insert into [TB_NegotiationTabCupsColmedica] 
+      select  @id_NegotiationTabColmedica,ts.idSpeciality,ma.idMedicalAct,'' as idTypeIncrement,ma.code,ma.code,ma.code,1,'',
+      ntb.idTypeFareGamaAltaU,
+      ntb.fareGamaAltaOperation AS PrecioGamaAltaA
+      ,ntb.fareHumanOperation AS PrecioGamaHumanaA
+      ,ntb.fareGamaMediaOperation AS PrecioGamaMediaA
+      ,ntb.fareGamaMenorOperation AS PrecioGamaMenorA
+      ,ntb.farePreferenciaOperation AS PrecioGamaPreferencialA
+      ,ntb.idTypeFareGamaAltaU,
+      ntb.fareGamaAltaOperation AS PrecioGamaAltaA
+      ,ntb.fareHumanOperation AS PrecioGamaHumanaH
+      ,ntb.fareGamaMediaOperation AS PrecioGamaMediaH
+      ,ntb.fareGamaMenorOperation AS PrecioGamaMenorH
+      ,ntb.farePreferenciaOperation AS PrecioGamaPreferencialH
+      from TB_NegotiationTabServiceColmedica as ntb
+      inner join TB_Speciality as ts on ntb.idSpeciality = ts.idSpeciality
+      inner join TB_MedicalAct as ma on ma.idSpeciality = ts.idSpeciality
+      inner join TB_ClasificationTypeServiceSpeciality as cts on cts.idSpeciality = ts.idSpeciality
+      inner join TB_ClasificationTypeService as ct on ct.idClasificationTypeService = cts.idClasificationTypeService
+      where ntb.id_NegotiationTabColmedica = @id_NegotiationTabColmedica and idTypeFareGamaAltaU in (6,18)
     `;
 
     const insertQuery2 = `
-   
-  insert into [TB_NegotiationTabCupsColmedica] 
-  select  @id_NegotiationTabColmedica,ts.idSpeciality,ma.idMedicalAct,ntti.idTypeIncrement,ma.code,ma.code,ma.code,1,
-  ntb.idTypeFareGamaAltaU,
-  CAST(REPLACE((fs.fare + (ntb.fareGamaAltaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaAltaA
-  ,CAST(REPLACE((fs.fare + (ntb.fareHumanOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaHumanaA
-  ,CAST(REPLACE((fs.fare + (ntb.fareGamaMediaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMediaA
-  ,CAST(REPLACE((fs.fare + (ntb.fareGamaMenorOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMenorA
-  ,CAST(REPLACE((fs.fare + (ntb.farePreferenciaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaPreferencialA
-  ,ntb.idTypeFareGamaAltaU
-  ,ntb.idTypeFareGamaAltaU,CAST(REPLACE((fs.fare + (ntb.fareGamaAltaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaAltaA
-  ,CAST(REPLACE((fs.fare + (ntb.fareHumanOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaHumanaH
-  ,CAST(REPLACE((fs.fare + (ntb.fareGamaMediaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMediaH
-  ,CAST(REPLACE((fs.fare + (ntb.fareGamaMenorOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMenorH
-  ,CAST(REPLACE((fs.fare + (ntb.farePreferenciaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaPreferencialH
-  from TB_NegotiationTabServiceColmedica as ntb
-  inner join TB_Speciality as ts on ntb.idSpeciality = ts.idSpeciality
-  inner join TB_MedicalAct as ma on ma.idSpeciality = ts.idSpeciality
-  inner join TB_FareSoat  as fs on fs.idMedicalAct = ma.idMedicalAct
-  inner join TB_NegotiationTabTypeIncrement as ntti on ntti.id_NegotiationTabColmedica = ntb.id_NegotiationTabColmedica
-  inner join TB_ClasificationTypeServiceSpeciality as cts on cts.idSpeciality = ts.idSpeciality
-  inner join TB_ClasificationTypeService as ct on ct.idClasificationTypeService = cts.idClasificationTypeService
-  where ntb.id_NegotiationTabColmedica = @id_NegotiationTabColmedica and ntti.idTypeIncrement = 2
+      insert into [TB_NegotiationTabCupsColmedica] 
+      select  @id_NegotiationTabColmedica,ts.idSpeciality,ma.idMedicalAct,ntti.idTypeIncrement,ma.code,ma.code,ma.code,1,
+      ntb.idTypeFareGamaAltaU,
+      CAST(REPLACE((fs.fare + (ntb.fareGamaAltaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaAltaA
+      ,CAST(REPLACE((fs.fare + (ntb.fareHumanOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaHumanaA
+      ,CAST(REPLACE((fs.fare + (ntb.fareGamaMediaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMediaA
+      ,CAST(REPLACE((fs.fare + (ntb.fareGamaMenorOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMenorA
+      ,CAST(REPLACE((fs.fare + (ntb.farePreferenciaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaPreferencialA
+      ,ntb.idTypeFareGamaAltaU
+      ,ntb.idTypeFareGamaAltaU,CAST(REPLACE((fs.fare + (ntb.fareGamaAltaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaAltaA
+      ,CAST(REPLACE((fs.fare + (ntb.fareHumanOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaHumanaH
+      ,CAST(REPLACE((fs.fare + (ntb.fareGamaMediaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMediaH
+      ,CAST(REPLACE((fs.fare + (ntb.fareGamaMenorOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMenorH
+      ,CAST(REPLACE((fs.fare + (ntb.farePreferenciaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaPreferencialH
+      from TB_NegotiationTabServiceColmedica as ntb
+      left join TB_Speciality as ts on ntb.idSpeciality = ts.idSpeciality
+      left join TB_MedicalAct as ma on ma.idSpeciality = ts.idSpeciality
+      inner join TB_FareSoat  as fs on fs.idMedicalAct = ma.idMedicalAct
+      left join TB_NegotiationTabTypeIncrement as ntti on ntti.id_NegotiationTabColmedica = ntb.id_NegotiationTabColmedica
+      left join TB_ClasificationTypeServiceSpeciality as cts on cts.idSpeciality = ts.idSpeciality
+      left join TB_ClasificationTypeService as ct on ct.idClasificationTypeService = cts.idClasificationTypeService
+      where ntb.id_NegotiationTabColmedica = @id_NegotiationTabColmedica and ntti.idTypeIncrement = 1
     `;
+
+    const insertQuery3 = `
+    insert into [TB_NegotiationTabCupsColmedica] 
+    select  @id_NegotiationTabColmedica,ts.idSpeciality,ma.idMedicalAct,ntti.idTypeIncrement,ma.code,ma.code,ma.code,1,
+    ntb.idTypeFareGamaAltaU,
+    CAST(REPLACE((fs.fare + (ntb.fareGamaAltaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaAltaA
+    ,CAST(REPLACE((fs.fare + (ntb.fareHumanOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaHumanaA
+    ,CAST(REPLACE((fs.fare + (ntb.fareGamaMediaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMediaA
+    ,CAST(REPLACE((fs.fare + (ntb.fareGamaMenorOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMenorA
+    ,CAST(REPLACE((fs.fare + (ntb.farePreferenciaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaPreferencialA
+    ,ntb.idTypeFareGamaAltaU
+    ,ntb.idTypeFareGamaAltaU,CAST(REPLACE((fs.fare + (ntb.fareGamaAltaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaAltaA
+    ,CAST(REPLACE((fs.fare + (ntb.fareHumanOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaHumanaH
+    ,CAST(REPLACE((fs.fare + (ntb.fareGamaMediaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMediaH
+    ,CAST(REPLACE((fs.fare + (ntb.fareGamaMenorOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMenorH
+    ,CAST(REPLACE((fs.fare + (ntb.farePreferenciaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaPreferencialH
+    from TB_NegotiationTabServiceColmedica as ntb
+    inner join TB_Speciality as ts on ntb.idSpeciality = ts.idSpeciality
+    inner join TB_MedicalAct as ma on ma.idSpeciality = ts.idSpeciality
+    inner join TB_FareSoat  as fs on fs.idMedicalAct = ma.idMedicalAct
+    inner join TB_NegotiationTabTypeIncrement as ntti on ntti.id_NegotiationTabColmedica = ntb.id_NegotiationTabColmedica
+    inner join TB_ClasificationTypeServiceSpeciality as cts on cts.idSpeciality = ts.idSpeciality
+    inner join TB_ClasificationTypeService as ct on ct.idClasificationTypeService = cts.idClasificationTypeService
+    where ntb.id_NegotiationTabColmedica = @id_NegotiationTabColmedica and ntti.idTypeIncrement = 2
+  `;
 
     const request = db.request();
     request.input("id_NegotiationTabColmedica", id_NegotiationTabColmedica);
@@ -139,6 +161,8 @@ export const saveLogicNegotiationTabCupsColmedica = async (
 
     await request.query(insertQuery);
     await request.query(insertQuery2);
+    await request.query(insertQuery3);
+
 
 
     return {
