@@ -27,5 +27,6 @@
 		"ok_login": "auth.ok_login"
 	},
 	"ok": "ok",
-	"Update successful": "Update successful"
+	"Update successful": "Update successful",
+	"Deletion successful": "Deletion successful"
 }

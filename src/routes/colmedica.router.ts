@@ -1,5 +1,3 @@
-import { checkSchema } from "express-validator";
-import { CreateTicketSchema } from "./schemas/ticket.schema";
 import {
     saveNegotiationTabColmedica,
     getProvidersColmedica,
@@ -31,7 +29,8 @@ import {
     updateNegotiationTabPlansColmedica,
     updateNegotiationTabRendomColmedica,
     updateNegotiationTabFareBaseColmedica,
-    updateNegotiationTabTypeIncrementColmedica
+    updateNegotiationTabTypeIncrementColmedica,
+    deleteNegotiationTabServiceColmedicaController
 } from "../controllers/colmedica.controller";
 import { query } from "express-validator";
 import { Router } from "express";
@@ -227,10 +226,18 @@ routes.get(
     getClasificationTypeServiceColmedica
 )
 
-
 routes.get(
     "/negotiationTabColmedica",
     getNegotiationTabColmedica
 )
+
+routes.delete(
+    "/negotiationTabServiceColmedica/:idNegotiationTabServiceColmedica",
+    [
+        query("idClasificationTypeService", "global.int_type_field").optional().isInt(),
+        validateEnpoint
+    ],
+     deleteNegotiationTabServiceColmedicaController
+);
 
 export default routes;

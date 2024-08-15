@@ -428,3 +428,29 @@ export const getNegotiationTabColmedica: RequestHandler = async (req, res) => {
         res.status(500).json({ message: parseMessageI18n('error_server', req) });
     }
 };
+
+export const deleteNegotiationTabServiceColmedicaController: RequestHandler = async (req, res) => {
+    try {
+      // Extraer el id desde los parámetros de la solicitud
+      const { idNegotiationTabServiceColmedica } = req.params;
+  
+      // Validar que el id es un número
+      if (!idNegotiationTabServiceColmedica || isNaN(Number(idNegotiationTabServiceColmedica))) {
+        return res.status(400).json({
+          message: parseMessageI18n("invalid_request_id", req),
+        });
+      }
+      // Llamar al servicio de eliminación con el id extraído
+      const { code, message, data } = await repository.deleteNegotiationTabServiceColmedica(Number(idNegotiationTabServiceColmedica));
+  
+      return res.status(code).json({
+        message: parseMessageI18n(message, req),
+        data,
+      });
+    } catch (err) {
+      console.error("Error in deleteNegotiationTabServiceColmedicaController:", err);
+      return res.status(500).json({
+        message: parseMessageI18n("error_server", req),
+      });
+    }
+  };

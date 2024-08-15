@@ -70,7 +70,6 @@ export const saveNegotiationTabColmedica = async (
   }
 };
 
-
 export const saveLogicNegotiationTabCupsColmedica = async (
   negotiationTabColmedica: ILogicNegotiationTabCupsColmedica
 ): Promise<IresponseRepositoryService> => {
@@ -974,10 +973,14 @@ export const getNegotiationTabColmedica = async (): Promise<IresponseRepositoryS
     }
 
     const queryProviders = `
-    SELECT 
-    ne.id_NegotiationTabColmedica,
+    SELECT
+	  ne.id_NegotiationTabColmedica,
+	  ne.idOfficeProvider,
+	  offi.idProvider,
     offi.OfficeProviderName,
+	  cp.idContactsProvider,
     pr.Product,
+	  pr.idProduct,
     ne.dateBegin,
     ne.dateEnd,
     CASE 
@@ -986,10 +989,12 @@ export const getNegotiationTabColmedica = async (): Promise<IresponseRepositoryS
     END AS Estado
     FROM 
         TB_NegotiationTabColmedica AS ne
-    INNER JOIN 
+    LEFT JOIN 
         TB_OfficeProvider AS offi ON offi.idOfficeProvider = ne.idOfficeProvider
-    INNER JOIN 
+    LEFT JOIN 
         TB_Product AS pr ON pr.idProduct = ne.idProduct
+    LEFT JOIN 
+        TB_ContactsProvider AS cp ON cp.idProvider = offi.idProvider
     ORDER BY ne.idProduct DESC
     `;
 
@@ -1029,26 +1034,30 @@ export const getNegotiationDetails = async (id: number): Promise<IresponseReposi
 
     // Consulta 1: Obtener la información principal de la negociación
     const queryNegotiation = `
-    SELECT
+      SELECT
       ne.id_NegotiationTabColmedica,
       ne.idOfficeProvider,
+      offi.idProvider,
       offi.OfficeProviderName,
+      cp.idContactsProvider,
       pr.Product,
       pr.idProduct,
       ne.dateBegin,
       ne.dateEnd,
       CASE 
-          WHEN ne.dateEnd < GETDATE() THEN 'vencida'
-          ELSE 'vigente'
+        WHEN ne.dateEnd < GETDATE() THEN 'vencida'
+        ELSE 'vigente'
       END AS Estado
-    FROM 
-      TB_NegotiationTabColmedica AS ne
-    LEFT JOIN 
-      TB_OfficeProvider AS offi ON offi.idOfficeProvider = ne.idOfficeProvider
-    LEFT JOIN 
-      TB_Product AS pr ON pr.idProduct = ne.idProduct
-    WHERE 
-      ne.id_NegotiationTabColmedica = @id`;
+      FROM 
+          TB_NegotiationTabColmedica AS ne
+      LEFT JOIN 
+          TB_OfficeProvider AS offi ON offi.idOfficeProvider = ne.idOfficeProvider
+      LEFT JOIN 
+          TB_Product AS pr ON pr.idProduct = ne.idProduct
+      LEFT JOIN 
+          TB_ContactsProvider AS cp ON cp.idProvider = offi.idProvider
+      WHERE 
+        ne.id_NegotiationTabColmedica = @id`;
 
     // Consulta 2: Obtener los planes
     const queryPlans = `
@@ -1148,7 +1157,7 @@ export const updateNegotiationTabPlansColmedica = async (
 
     const deleteRequest = db.request();
     deleteRequest.input("idNegotiationTabColmedica", idNegotiationTabColmedica);
-    
+
     await deleteRequest.query(queryDelete);
 
     // Variables para construir la consulta de inserción
@@ -1215,7 +1224,7 @@ export const updateNegotiationTabFareBaseColmedica = async (params: {
       DELETE FROM [dbo].[TB_NegotiationTabFareBaseColmedica]
       WHERE idNegotiationTabColmedica = @idNegotiationTabColmedica;
     `;
-    
+
     const deleteRequest = db.request();
     deleteRequest.input("idNegotiationTabColmedica", idNegotiationTabColmedica);
     await deleteRequest.query(queryDelete);
@@ -1279,7 +1288,7 @@ export const updateNegotiationTabRendomColmedica = async (
 
     const deleteRequest = db.request();
     deleteRequest.input("id_NegotiationTabColmedica", id_NegotiationTabColmedica);
-    
+
     await deleteRequest.query(queryDelete);
 
     // Insertar nuevos registros
@@ -1802,3 +1811,41 @@ export const getPlansColmedica = async (): Promise<IresponseRepositoryService> =
 };
 
 
+export const deleteNegotiationTabServiceColmedica = async (idNegotiationTabServiceColmedica: number): Promise<IresponseRepositoryService> => {
+  try {
+    const db = await connectToSqlServer();
+
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+
+    const queryDelete = `
+      DELETE FROM [dbo].[TB_NegotiationTabServiceColmedica]
+      WHERE idNegotiationTabServiceColmedica = @idNegotiationTabServiceColmedica;
+    `;
+
+    const request = db.request();
+    request.input("idNegotiationTabServiceColmedica", idNegotiationTabServiceColmedica);
+
+    const result = await request.query(queryDelete);
+
+    if (result.rowsAffected[0] === 0) {
+      throw new Error("No record found to delete");
+    }
+
+    return {
+      code: 200,
+      message: "Deletion successful",
+      data: { idNegotiationTabServiceColmedica },
+    };
+  } catch (err: any) {
+    console.error("Error in deleteNegotiationTabServiceColmedica", err);
+    return {
+      code: 400,
+      message: {
+        translationKey: "global.error_in_repository",
+        translationParams: { name: "deleteNegotiationTabServiceColmedica" },
+      },
+    };
+  }
+};
