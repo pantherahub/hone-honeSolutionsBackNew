@@ -25,7 +25,13 @@ import {
     saveLogicNegotiationTabCupsColmedica,
     getInfoLogicColmedica,
     getInfoOfficeProvider,
-    getInfoLogicTableColmedica
+    getInfoLogicTableColmedica,
+    getNegotiationDetails,
+    updateNegotiationTabColmedica,
+    updateNegotiationTabPlansColmedica,
+    updateNegotiationTabRendomColmedica,
+    updateNegotiationTabFareBaseColmedica,
+    updateNegotiationTabTypeIncrementColmedica
 } from "../controllers/colmedica.controller";
 import { query } from "express-validator";
 import { Router } from "express";
@@ -35,52 +41,68 @@ const routes = Router();
 
 routes.post(
     "/negotiationTabColmedica",
-    checkSchema(CreateTicketSchema),
     saveNegotiationTabColmedica
 )
 
 routes.post(
     "/negotiationTabFareBaseColmedica",
-    checkSchema(CreateTicketSchema),
     saveNegotiationTabFareBaseColmedica
 )
 
 routes.post(
     "/negotiationTabServiceColmedica",
-    checkSchema(CreateTicketSchema),
     saveNegotiationTabServiceColmedica
 )
 
 routes.post(
     "/negotiationTabPlansColmedica",
-    checkSchema(CreateTicketSchema),
     saveNegotiationTabPlansColmedica
 )
 
 routes.post(
     "/negotiationTabRendomColmedica",
-    checkSchema(CreateTicketSchema),
     saveNegotiationTabRendomColmedica
 )
 
 routes.post(
     "/negotiationTabTypeIncrementColmedica",
-    checkSchema(CreateTicketSchema),
     saveNegotiationTabTypeIncrementColmedica
 )
 
 routes.post(
     "/saveLogicNegotiationTabCupsColmedica",
-    checkSchema(CreateTicketSchema),
     saveLogicNegotiationTabCupsColmedica
 )
 
-
 routes.put(
     "/negotiationTabServiceColmedica",
-    checkSchema(CreateTicketSchema),
     updateNegotiationTabServiceColmedica
 )
+
+routes.put(
+    '/negotiationTabColmedica/:id',
+    updateNegotiationTabColmedica
+);
+
+routes.put(
+    '/negotiationTabPlansColmedica/:id',
+    updateNegotiationTabPlansColmedica
+);
+
+routes.put(
+    '/negotiationTabFareBaseColmedica',
+    updateNegotiationTabFareBaseColmedica
+);
+
+routes.put(
+    '/negotiationTabRendomColmedica',
+    updateNegotiationTabRendomColmedica
+);
+
+routes.put(
+    '/negotiationTabTypeIncrementColmedica',
+    updateNegotiationTabTypeIncrementColmedica
+);
 
 routes.get(
     "/providersColmedicas",
@@ -110,7 +132,14 @@ routes.get(
     getInfoLogicColmedica
 )
 
-
+routes.get(
+    "/negotiationDetails",
+    [
+        query("id", "global.int_type_field").optional().isInt(),
+        validateEnpoint
+    ],
+    getNegotiationDetails
+)
 
 routes.get(
     "/infoLogicTableColmedica",

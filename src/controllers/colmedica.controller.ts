@@ -84,6 +84,139 @@ export const updateNegotiationTabServiceColmedica: RequestHandler = async (req, 
 };
 
 
+export const updateNegotiationTabColmedica: RequestHandler = async (req, res) => {
+    try {
+      const id = parseInt(req.params.id, 10);
+  
+      if (isNaN(id)) {
+        return res.status(400).json({ message: parseMessageI18n('invalid_id', req) });
+      }
+  
+      const updates = req.body;
+  
+      const { code, message, data } = await repository.updateNegotiationTabColmedica(id, updates);
+  
+      res.status(code).json({ message: parseMessageI18n(message, req), data });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: parseMessageI18n('error_server', req) });
+    }
+  };
+  
+
+  export const updateNegotiationTabPlansColmedica: RequestHandler = async (req, res) => {
+    try {
+      const id = parseInt(req.params.id, 10);
+  
+      if (isNaN(id)) {
+        return res.status(400).json({ message: parseMessageI18n('invalid_id', req) });
+      }
+  
+      const updates = req.body;
+  
+      const { code, message, data } = await repository.updateNegotiationTabPlansColmedica(id, updates);
+  
+      res.status(code).json({ message: parseMessageI18n(message, req), data });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: parseMessageI18n('error_server', req) });
+    }
+  };
+
+export const updateNegotiationTabFareBaseColmedica: RequestHandler = async (req, res) => {
+  try {
+    // Extraer valores desde req.body
+    const { idNegotiationTabColmedica, idTypeFare } = req.body;
+
+    // Validar que los valores esperados están presentes
+    if (!idNegotiationTabColmedica || !Array.isArray(idTypeFare)) {
+      return res.status(400).json({
+        message: "Invalid request body",
+      });
+    }
+
+    // Llamar al servicio con los datos extraídos
+    const { code, message, data } = await repository.updateNegotiationTabFareBaseColmedica({
+      idNegotiationTabColmedica,
+      idTypeFare,
+    });
+
+    return res.status(code).json({
+      message,
+      data,
+    });
+  } catch (err) {
+    console.error("Error in updateNegotiationTabFareBaseColmedicaController:", err);
+    return res.status(500).json({
+      message: "Server error",
+    });
+  }
+};
+
+export const updateNegotiationTabRendomColmedica: RequestHandler = async (req, res) => {
+    try {
+      // Extraer los valores desde req.body
+      const { id_NegotiationTabColmedica, idTypeRendom, idTypeService } = req.body;
+  
+      // Validar que los valores esperados están presentes
+      if (!id_NegotiationTabColmedica || !Array.isArray(idTypeRendom) || !Array.isArray(idTypeService)) {
+        return res.status(400).json({
+          message: 'Invalid request body. Ensure id_NegotiationTabColmedica is provided and idTypeRendom, idTypeService are arrays.',
+        });
+      }
+  
+      // Llamar al servicio con los datos extraídos
+      const { code, message, data } = await repository.updateNegotiationTabRendomColmedica({
+        id_NegotiationTabColmedica,
+        idTypeRendom,
+        idTypeService,
+      });
+  
+      return res.status(code).json({
+        message,
+        data,
+      });
+    } catch (err) {
+      console.error("Error in updateNegotiationTabRendomColmedicaController:", err);
+      return res.status(500).json({
+        message: 'Server error. Please try again later.',
+      });
+    }
+  };
+  
+  export const updateNegotiationTabTypeIncrementColmedica: RequestHandler = async (req, res) => {
+    try {
+      // Extraer directamente los valores desde req.body
+      const { id_NegotiationTabColmedica, idTypeIncrement, valueIncrement } = req.body;
+  
+      // Validar que los valores esperados están presentes
+      if (!id_NegotiationTabColmedica || !Array.isArray(idTypeIncrement) || !Array.isArray(valueIncrement) || idTypeIncrement.length !== valueIncrement.length) {
+        return res.status(400).json({
+          message: "Invalid request body",
+        });
+      }
+  
+      // Llamar al servicio con los datos extraídos
+      const { code, message, data } = await repository.updateNegotiationTabTypeIncrementColmedica({
+        id_NegotiationTabColmedica,
+        idTypeIncrement,
+        valueIncrement,
+      });
+  
+      return res.status(code).json({
+        message,
+        data,
+      });
+    } catch (err) {
+      console.error("Error in updateNegotiationTabTypeIncrementColmedicaController:", err);
+      return res.status(500).json({
+        message: "Server error",
+      });
+    }
+  };
+
+    
+
 export const getProvidersColmedica: RequestHandler = async (req, res) => {
     try {
         const idProvider = req.query.idProvider;
@@ -95,6 +228,28 @@ export const getProvidersColmedica: RequestHandler = async (req, res) => {
     }
 };
 
+
+export const getNegotiationDetails: RequestHandler = async (req, res) => {
+    try {
+        const id = req.query.id;
+        
+        if (!id || Array.isArray(id)) {
+            return res.status(400).json({ message: parseMessageI18n('invalid_id', req) });
+        }
+
+        const numericId = parseInt(id as string, 10);
+
+        if (isNaN(numericId)) {
+            return res.status(400).json({ message: parseMessageI18n('invalid_id', req) });
+        }
+
+        const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.getNegotiationDetails(numericId);
+        res.status(code).json({ message: parseMessageI18n(message, req), ...resto });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: parseMessageI18n('error_server', req) });
+    }
+};
 
 export const getInfoOfficeProvider: RequestHandler = async (req, res) => {
     try {
