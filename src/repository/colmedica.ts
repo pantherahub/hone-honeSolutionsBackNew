@@ -1061,9 +1061,10 @@ export const getNegotiationDetails = async (id: number): Promise<IresponseReposi
 
     // Consulta 2: Obtener los planes
     const queryPlans = `
-    SELECT * 
-    FROM TB_NegotiationTabPlansColmedica 
-    WHERE idNegotiationTabColmedica = @id`;
+    SELECT idNegotiationTabPlansColmedica,	idNegotiationTabColmedica,nt.idPlan,idTypeService,pl.[plan] AS namePlan
+    FROM TB_NegotiationTabPlansColmedica AS nt
+    LEFT JOIN TB_Plans AS pl ON pl.idPlan = nt.idPlan
+    WHERE idNegotiationTabColmedica =  @id`;
 
     // Consulta 3: Obtener las tarifas base
     const queryFareBase = `
