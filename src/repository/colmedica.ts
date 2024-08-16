@@ -1573,7 +1573,7 @@ export const getInfoLogicTableColmedica = async (id_NegotiationTabColmedica: str
     }
 
     const queryProviders = `
-    select clasificationTypeService,ts.speciality,tsd.typeService,
+    select ntb.idNegotiationTabServiceColmedica,clasificationTypeService,ts.speciality,tsd.typeService,
     tfga.typeFare + ' +' + CAST(ntb.fareGamaAltaOperation AS VARCHAR(20)) + '% ' + isnull(tfgad.typeFare,'') as 'TARIFA GAMA ALTA',
     tfh.typeFare + ' +' + CAST(ntb.fareHumanOperation AS VARCHAR(20)) + '% ' + isnull(tfhd.typeFare,'') as 'TARIFA HUMANA (PLUS Y TRADICIONAL)', 
     tfm.typeFare + ' +' + CAST(ntb.fareGamaMediaOperation AS VARCHAR(20)) + '% ' + isnull(tfhd.typeFare,'') as 'TARIFA GAMA MEDIA',
@@ -1594,7 +1594,7 @@ export const getInfoLogicTableColmedica = async (id_NegotiationTabColmedica: str
     left join [TB_TypeFares] as tfmed on tfmed.idTypeFare = ntb.idTypeFareGamaMenorD
     left join [TB_TypeFares] as tfp on tfp.idTypeFare = ntb.idTypeFarePreferencialU
     left join [TB_TypeFares] as tfpd on tfpd.idTypeFare = ntb.idTypeFarePreferenciaD
-    where id_NegotiationTabColmedica  = @id_NegotiationTabColmedica
+    where id_NegotiationTabColmedica = @id_NegotiationTabColmedica
     `;
 
     const inputIdNegotiationTabColmedica = id_NegotiationTabColmedica !== undefined ? id_NegotiationTabColmedica : null;
