@@ -10,14 +10,13 @@
 		"not_file": "No files to upload - key: file",
 		"error_routes": "Error in required fields",
 		"error_in_repository": "global.error_in_repository",
-		"string_type_field":"The field must be type string",
-        "int_type_field":"The field must be type int"
+		"string_type_field": "The field must be type string",
+		"int_type_field": "The field must be type int"
 	},
 	"bolivar": {
 		"succesfull": "OK",
 		"emptyResponse": "No information found",
 		"error_server": "An error occurred on the server"
-		
 	},
 	"ticket": {
 		"succesfull": "OK",
@@ -27,5 +26,7 @@
 	"auth": {
 		"ok_login": "auth.ok_login"
 	},
-	"ok": "ok"
+	"ok": "ok",
+	"Update successful": "Update successful",
+	"Deletion successful": "Deletion successful"
 }
