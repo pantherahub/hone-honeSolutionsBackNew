@@ -90,4 +90,26 @@ export interface INegotiationTabPlansColmedica {
   idTypeService: number;
 }
 
+export interface IUploadFileColemdica {
+  id_NegotiationTabColmedica: number;
+  codigoCups: string,
+  codigoIPS: string,
+  codigoISS: string,
+  idTypeFareReferenceA: string,
+  Iss2001uvrUvrOTarifa: string,
+  fareGamaAltaA: string,
+  fareGamaHumanaA: string,
+  fareGamaMediaA: string,
+  fareGamaMenorA: string,
+  farePreferencialA: string,
+  idTypeFareReferenceH: string,
+  fareGamaAltaH: string,
+  fareGamaHumanaH: string,
+  fareGamaMediaH: string,
+  fareGamaMenorH: string,
+  farePreferencialH: string,
+  incrementTypeReferenceA: string,
+  incrementTypeReferenceH: string
+}
+
 
