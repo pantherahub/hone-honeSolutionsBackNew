@@ -2,6 +2,7 @@ import { RequestHandler} from "express";
 import * as repository from "../repository/colmedica";
 import { parseMessageI18n } from "../utils/parse-messga-i18";
 import { IResponse, IResponseCreate } from "../interface/ticket.interface";
+import { IUploadFileColemdica } from "../interface/colmedica";
 
 export const saveNegotiationTabColmedica: RequestHandler = async (req, res) => {
     try {
@@ -141,5 +142,16 @@ export const getTypeIncrementColmedica: RequestHandler = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: parseMessageI18n('error_server', req) });
+    }
+};
+
+export const loadFileNegotiationTabColmedica: RequestHandler = async (req, res) => {
+    try {
+        const fileData: IUploadFileColemdica | any = req.body;
+        const { code, message, data }: IResponse<IResponseCreate> = await repository.postLoadFileNegotiationColmedica(fileData);
+        return res.status(code).json({ message: parseMessageI18n(message, req), data });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: parseMessageI18n('error_server', req) });
     }
 };

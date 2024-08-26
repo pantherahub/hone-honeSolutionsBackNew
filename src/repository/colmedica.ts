@@ -1,4 +1,5 @@
 import { connectToSqlServer } from "../DB/config"
+import * as xlsx from 'xlsx';
 import { IresponseRepositoryService } from "../interface/general";
 import {
   INegotiationTabColmedica,
@@ -12,7 +13,8 @@ import {
   ITypeRendomColmedica,
   INegotiationTabRendomColmedica,
   ITypeIncrementColmedica,
-  INegotiationTabTypeIncrementColmedica
+  INegotiationTabTypeIncrementColmedica,
+  IUploadFileColemdica
 } from "../interface/colmedica";
 
 export const saveNegotiationTabColmedica = async (
@@ -577,4 +579,187 @@ export const getPlansColmedica = async (): Promise<IresponseRepositoryService> =
   }
 };
 
+export const postLoadFileNegotiationColmedica = async (formDataArray: IUploadFileColemdica[]): Promise<IresponseRepositoryService> => {
+  try {
+    const db = await connectToSqlServer();
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+
+    const insertedRecords = [];
+
+    for (const formData of formDataArray) {
+      const {
+        id_NegotiationTabColmedica,codigoCups, codigoIPS, codigoISS, idTypeFareReferenceA, Iss2001uvrUvrOTarifa, fareGamaAltaA,
+        fareGamaHumanaA, fareGamaMediaA, fareGamaMenorA, farePreferencialA, idTypeFareReferenceH,
+        fareGamaAltaH, fareGamaHumanaH, fareGamaMediaH, fareGamaMenorH, farePreferencialH, incrementTypeReferenceA, incrementTypeReferenceH
+      } = formData;
+
+      const queryMedicalAct = `
+        SELECT idMedicalAct, idSpeciality
+        FROM TB_MedicalAct
+        WHERE code = @codigoCups
+      `;
+      const requestMedicalAct = db.request();
+      requestMedicalAct.input('codigoCups', codigoCups);
+      const resultMedicalAct = await requestMedicalAct.query(queryMedicalAct);
+
+      if (!resultMedicalAct.recordset || resultMedicalAct.recordset.length === 0) {
+        console.error(`No se encontró el código CUPS: ${codigoCups}`);
+        continue; 
+      }
+
+      let idMedicalAct: number | null = null;
+      let idSpeciality: number | null = null;
+
+      for (const record of resultMedicalAct.recordset) {
+        const querySpecialityClient = `
+          SELECT idSpeciality
+          FROM TB_SpecialityClientHoneSolutions
+          WHERE idSpeciality = @idSpeciality
+        `;
+        const requestSpecialityClient = db.request();
+        requestSpecialityClient.input('idSpeciality', record.idSpeciality);
+        const resultSpecialityClient = await requestSpecialityClient.query(querySpecialityClient);
+
+        if (resultSpecialityClient.recordset && resultSpecialityClient.recordset.length > 0) {
+          idMedicalAct = record.idMedicalAct;
+          idSpeciality = resultSpecialityClient.recordset[0].idSpeciality;
+          break;
+        }
+      }
+
+      if (idSpeciality === null || idMedicalAct === null) {
+        console.error(`No se encontró un idSpeciality válido para el código CUPS: ${codigoCups}`);
+        continue; 
+      }
+
+      let fareNameA = idTypeFareReferenceA.toString();
+      let incrementValueA = incrementTypeReferenceA?.toString();
+
+      if (fareNameA.includes('+')) {
+        const [name, increment] = fareNameA.split('+');
+        fareNameA = name.trim();
+        incrementValueA = increment.trim();
+      }
+
+      const queryFareTypeA = `
+        SELECT idTypeFare
+        FROM TB_TypeFares
+        WHERE typeFare = @fareNameA
+      `;
+      const requestFareTypeA = db.request();
+      requestFareTypeA.input('fareNameA', fareNameA);
+      const resultFareTypeA = await requestFareTypeA.query(queryFareTypeA);
+
+      if (!resultFareTypeA.recordset || resultFareTypeA.recordset.length === 0) {
+        console.error(`No se encontró el idTypeFare para el nombre de tarifa: ${fareNameA}`);
+        continue;
+      }
+
+      const idTypeFareA = resultFareTypeA.recordset[0].idTypeFare;
+
+      let fareNameH = idTypeFareReferenceH?.toString();
+      let incrementValueH = incrementTypeReferenceH?.toString();
+
+      if (fareNameH && fareNameH.includes('+')) {
+        const [name, increment] = fareNameH.split('+');
+        fareNameH = name.trim();
+        incrementValueH = increment.trim();
+      }
+
+      let idTypeFareH: number | null = null;
+      if (fareNameH) {
+        const queryFareTypeH = `
+          SELECT idTypeFare
+          FROM TB_TypeFares
+          WHERE typeFare = @fareNameH
+        `;
+        const requestFareTypeH = db.request();
+        requestFareTypeH.input('fareNameH', fareNameH);
+        const resultFareTypeH = await requestFareTypeH.query(queryFareTypeH);
+
+        if (resultFareTypeH.recordset && resultFareTypeH.recordset.length > 0) {
+          idTypeFareH = resultFareTypeH.recordset[0].idTypeFare;
+        } else {
+          console.error(`No se encontró el idTypeFare para el nombre de tarifa: ${fareNameH}`);
+          continue;
+        }
+      }
+
+      const queryInsert = `
+        INSERT INTO [dbo].[TB_NegotiationTabCupsColmedica]
+        (
+          id_NegotiationTabColmedica, codigoCups, codigoIPS, codigoISS, contratado, idTypeFareReferenceA, Iss2001uvrUvrOTarifa, fareGamaAltaA,
+          fareGamaHumanaA, fareGamaMediaA, fareGamaMenorA, farePreferencialA, idTypeFareReferenceH,
+          fareGamaAltaH, fareGamaHumanaH, fareGamaMediaH, fareGamaMenorH, farePreferencialH,
+          idMedicalAct, idSpeciality, incrementTypeReferenceA, incrementTypeReferenceH
+        )
+        OUTPUT inserted.*
+        VALUES
+        (
+          @id_NegotiationTabColmedica,@codigoCups, @codigoIPS, @codigoISS, @contratado, @idTypeFareReferenceA, @Iss2001uvrUvrOTarifa, @fareGamaAltaA,
+          @fareGamaHumanaA, @fareGamaMediaA, @fareGamaMenorA, @farePreferencialA, @idTypeFareReferenceH,
+          @fareGamaAltaH, @fareGamaHumanaH, @fareGamaMediaH, @fareGamaMenorH, @farePreferencialH,
+          @idMedicalAct, @idSpeciality, @incrementValueA, @incrementValueH
+        );
+      `;
+
+      const requestInsert = db.request();
+      requestInsert.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+      requestInsert.input('codigoCups', codigoCups);
+      requestInsert.input('codigoIPS', codigoIPS);
+      requestInsert.input('codigoISS', codigoISS);
+      requestInsert.input('contratado', 1);
+      requestInsert.input('idTypeFareReferenceA', idTypeFareA);
+      requestInsert.input('Iss2001uvrUvrOTarifa', Iss2001uvrUvrOTarifa);
+      requestInsert.input('fareGamaAltaA', fareGamaAltaA);
+      requestInsert.input('fareGamaHumanaA', fareGamaHumanaA);
+      requestInsert.input('fareGamaMediaA', fareGamaMediaA);
+      requestInsert.input('fareGamaMenorA', fareGamaMenorA);
+      requestInsert.input('farePreferencialA', farePreferencialA);
+      requestInsert.input('idTypeFareReferenceH', idTypeFareH);
+      requestInsert.input('fareGamaAltaH', fareGamaAltaH);
+      requestInsert.input('fareGamaHumanaH', fareGamaHumanaH);
+      requestInsert.input('fareGamaMediaH', fareGamaMediaH);
+      requestInsert.input('fareGamaMenorH', fareGamaMenorH);
+      requestInsert.input('farePreferencialH', farePreferencialH);
+      requestInsert.input('idMedicalAct', idMedicalAct);
+      requestInsert.input('idSpeciality', idSpeciality);
+      requestInsert.input('incrementValueA', incrementValueA);
+      requestInsert.input('incrementValueH', incrementValueH);
+
+      const resultInsert = await requestInsert.query(queryInsert);
+
+      if (!resultInsert.recordset || resultInsert.recordset.length === 0) {
+        console.error(`Failed to insert the record for codigoCups: ${codigoCups}`);
+        continue;
+      }
+
+      insertedRecords.push(resultInsert.recordset[0]);
+    }
+
+    if (insertedRecords.length === 0) {
+      return {
+        code: 400,
+        message: "No se pudo insertar ningún registro.",
+      };
+    }
+
+    return {
+      code: 200,
+      message: "ok",
+      data: insertedRecords,
+    };
+  } catch (err: any) {
+    console.error("Error in postLoadFileNegotiationColmedica", err);
+    return {
+      code: 400,
+      message: {
+        translationKey: "global.error_in_repository",
+        translationParams: { name: "postLoadFileNegotiationColmedica" },
+      },
+    };
+  }
+};
 

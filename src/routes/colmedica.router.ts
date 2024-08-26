@@ -13,7 +13,8 @@ import {
     getTypeRendomColmedica,
     saveNegotiationTabRendomColmedica,
     getTypeIncrementColmedica,
-    saveNegotiationTabTypeIncrementColmedica
+    saveNegotiationTabTypeIncrementColmedica,
+    loadFileNegotiationTabColmedica
 } from "../controllers/colmedica.controller";
 import { query } from "express-validator";
 import { Router } from "express";
@@ -116,5 +117,9 @@ routes.get(
     getTypeIncrementColmedica
 )
 
+routes.post(
+    '/load-negotiation-file',
+    loadFileNegotiationTabColmedica
+)
 
 export default routes;
