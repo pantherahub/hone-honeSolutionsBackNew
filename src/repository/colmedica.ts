@@ -18,7 +18,15 @@ import {
   INegotiationTabServiceColmedica,
   ISaveNegotiationTabFareBaseColmedica,
   IUpdateNegotiationTabServiceColmedica,
-  ILogicNegotiationTabCupsColmedica
+  ILogicNegotiationTabCupsColmedica,
+  IGroupNegotiationColmedica,
+  ISpecialityNegotiationColmedica,
+  ITypeFareNegotiationColmedica,
+  INegotiationColmedica,
+  ICodeIpsNegotiationColmedica,
+  ICodeCupsNegotiationColmedica,
+  ICodeIsssNegotiationColmedica,
+  ITypeFareReferenceNegotiationColmedica
 } from "../interface/colmedica";
 
 
@@ -2031,6 +2039,356 @@ export const deleteNegotiationTabServiceColmedica = async (idNegotiationTabServi
       message: {
         translationKey: "global.error_in_repository",
         translationParams: { name: "deleteNegotiationTabServiceColmedica" },
+      },
+    };
+  }
+};
+
+export const getGroupByIdNegotiationTabColmedica = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
+  try {
+    const db = await connectToSqlServer();
+
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+
+    const queryGroup = `
+      SELECT DISTINCT cts.idClasificationTypeService, cts.clasificationTypeService 
+      FROM TB_NegotiationTabCupsColmedica AS ntc
+      INNER JOIN TB_Speciality AS s ON s.idSpeciality = ntc.idSpeciality
+      INNER JOIN TB_ClasificationTypeServiceSpeciality AS tc ON tc.idSpeciality = s.idSpeciality
+      INNER JOIN TB_ClasificationTypeService AS cts ON cts.idClasificationTypeService = tc.idClasificationTypeService
+      WHERE ntc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica
+    `;
+
+    const request = db.request();
+    request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+
+    const result = await request.query(queryGroup);
+
+    const group: IGroupNegotiationColmedica[] = result.recordset;
+
+    return {
+      code: 200,
+      message: "ok",
+      data: group,
+    };
+  } catch (err: any) {
+    console.error("Error in getgrouperByIdNegotiationTabColmedica", err);
+    return {
+      code: 400,
+      message: {
+        translationKey: "global.error_in_repository",
+        translationParams: { name: "getgrouperByIdNegotiationTabColmedica" },
+      },
+    };
+  }
+};
+
+export const getSpecialityByIdNegotiationTabColmedica = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
+  try {
+    const db = await connectToSqlServer();
+
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+
+    const querySpeciality = `
+      SELECT DISTINCT s.idSpeciality, s.speciality FROM TB_NegotiationTabCupsColmedica AS ntc
+      INNER JOIN TB_Speciality AS s ON s.idSpeciality = ntc.idSpeciality
+      INNER JOIN TB_ClasificationTypeServiceSpeciality AS tc ON tc.idSpeciality = s.idSpeciality
+      INNER JOIN TB_ClasificationTypeService AS cts ON cts.idClasificationTypeService = tc.idClasificationTypeService
+      INNER JOIN TB_SpecialityClientHoneSolutions AS schs ON schs.idSpeciality = s.idSpeciality
+      WHERE ntc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica AND schs.idClientHoneSolutions = 9
+    `;
+
+    const request = db.request();
+    request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+
+    const result = await request.query(querySpeciality);
+
+    const speciality: ISpecialityNegotiationColmedica[] = result.recordset;
+
+    return {
+      code: 200,
+      message: "ok",
+      data: speciality,
+    };
+  } catch (err: any) {
+    console.error("Error in getSpecialityByIdNegotiationTabColmedica", err);
+    return {
+      code: 400,
+      message: {
+        translationKey: "global.error_in_repository",
+        translationParams: { name: "getSpecialityByIdNegotiationTabColmedica" },
+      },
+    };
+  }
+};
+
+export const getTypeFareByIdNegotiationTabColmedica = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
+  try {
+    const db = await connectToSqlServer();
+
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+
+    const queryTypeFare = `
+      SELECT DISTINCT tf.idTypeFare,tf.typeFare FROM TB_NegotiationTabCupsColmedica AS ntc
+      INNER JOIN TB_TypeFares AS tf ON tf.idTypeFare = ntc.idTypeFareReferenceA
+      WHERE ntc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica
+    `;
+
+    const request = db.request();
+    request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+
+    const result = await request.query(queryTypeFare);
+
+    const typeFare: ITypeFareNegotiationColmedica[] = result.recordset;
+
+    return {
+      code: 200,
+      message: "ok",
+      data: typeFare,
+    };
+  } catch (err: any) {
+    console.error("Error in getTypeFareByIdNegotiationTabColmedica", err);
+    return {
+      code: 400,
+      message: {
+        translationKey: "global.error_in_repository",
+        translationParams: { name: "getTypeFareByIdNegotiationTabColmedica" },
+      },
+    };
+  }
+};
+
+export const getByIdNegotiationTabColmedica = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
+  try {
+    const db = await connectToSqlServer();
+
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+
+    const queryNegotiation = `
+      SELECT DISTINCT ntc.idNegotiationTabCupsColmedica,
+      ntc.id_NegotiationTabColmedica,
+      ntc.idSpeciality,
+      tbs.speciality,
+      tbcs.idClasificationTypeService,
+      tbcs.clasificationTypeService,
+      ntc.idMedicalAct,
+      tbm.medicalAct,
+      ntc.idTypeIncrement,
+      tbti.TypeIncrement,
+      ntc.codigoCups,
+      ntc.codigoIPS,
+      ntc.codigoISS,
+      ntc.contratado,
+      ntc.Iss2001uvrUvrOTarifa,
+      ntc.idTypeFareReferenceA,
+      tf.typeFare AS typeFareA,
+      fareGamaAltaA,
+      fareGamaHumanaA,
+      fareGamaMediaA,
+      fareGamaMenorA,
+      farePreferencialA,
+      idTypeFareReferenceH,
+      tf.typeFare AS typeFareH,
+      fareGamaAltaH,
+      fareGamaHumanaH,
+      fareGamaMediaH,
+      fareGamaMenorH,
+      incrementTypeReferenceA,
+      incrementTypeReferenceH,
+      typeFare,
+      codeFare
+      FROM TB_NegotiationTabCupsColmedica AS ntc
+      INNER JOIN TB_TypeFares AS tf ON tf.idTypeFare = ntc.idTypeFareReferenceA
+      INNER JOIN TB_Speciality AS tbs ON tbs.idSpeciality = ntc.idSpeciality
+      INNER JOIN TB_MedicalAct AS tbm ON tbm.idMedicalAct = ntc.idMedicalAct
+      INNER JOIN TB_TypeIncrement AS tbti ON tbti.idTypeIncrement = ntc.idTypeIncrement
+      INNER JOIN TB_ClasificationTypeServiceSpeciality AS tbctss ON tbctss.idSpeciality = ntc.idSpeciality
+      INNER JOIN TB_ClasificationTypeService AS tbcs ON tbcs.idClasificationTypeService = tbctss.idClasificationTypeService
+      WHERE ntc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica
+    `;
+
+    const request = db.request();
+    request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+
+    const result = await request.query(queryNegotiation);
+
+    const negotiation: INegotiationColmedica[] = result.recordset;
+
+    return {
+      code: 200,
+      message: "ok",
+      data: negotiation,
+    };
+  } catch (err: any) {
+    console.error("Error in getByIdNegotiationTabColmedica", err);
+    return {
+      code: 400,
+      message: {
+        translationKey: "global.error_in_repository",
+        translationParams: { name: "getByIdNegotiationTabColmedica" },
+      },
+    };
+  }
+};
+
+export const getCodeIpsByIdNegotiationTabColmedica = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
+  try {
+    const db = await connectToSqlServer();
+
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+
+    const queryCodeIps = `
+      SELECT DISTINCT codigoIPS FROM TB_NegotiationTabCupsColmedica AS ntc
+      INNER JOIN TB_TypeFares AS tf ON tf.idTypeFare = ntc.idTypeFareReferenceA
+      WHERE ntc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica
+    `;
+
+    const request = db.request();
+    request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+
+    const result = await request.query(queryCodeIps);
+
+    const codeIps: ICodeIpsNegotiationColmedica[] = result.recordset;
+
+    return {
+      code: 200,
+      message: "ok",
+      data: codeIps,
+    };
+  } catch (err: any) {
+    console.error("Error in getCodeIpsByIdNegotiationTabColmedica", err);
+    return {
+      code: 400,
+      message: {
+        translationKey: "global.error_in_repository",
+        translationParams: { name: "getCodeIpsByIdNegotiationTabColmedica" },
+      },
+    };
+  }
+};
+
+export const getCodeCupsByIdNegotiationTabColmedica = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
+  try {
+    const db = await connectToSqlServer();
+
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+
+    const queryCodeCups = `
+      SELECT DISTINCT codigoCups FROM TB_NegotiationTabCupsColmedica AS ntc
+      INNER JOIN TB_TypeFares AS tf ON tf.idTypeFare = ntc.idTypeFareReferenceA
+      WHERE ntc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica
+    `;
+
+    const request = db.request();
+    request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+
+    const result = await request.query(queryCodeCups);
+
+    const codeCups: ICodeCupsNegotiationColmedica[] = result.recordset;
+
+    return {
+      code: 200,
+      message: "ok",
+      data: codeCups,
+    };
+  } catch (err: any) {
+    console.error("Error in getCodeCupsByIdNegotiationTabColmedica", err);
+    return {
+      code: 400,
+      message: {
+        translationKey: "global.error_in_repository",
+        translationParams: { name: "getCodeCupsByIdNegotiationTabColmedica" },
+      },
+    };
+  }
+};
+
+export const getCodeIssByIdNegotiationTabColmedica = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
+  try {
+    const db = await connectToSqlServer();
+
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+
+    const queryCodeIss = `
+      SELECT DISTINCT codigoISS FROM TB_NegotiationTabCupsColmedica AS ntc
+      INNER JOIN TB_TypeFares AS tf ON tf.idTypeFare = ntc.idTypeFareReferenceA
+      WHERE ntc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica
+    `;
+
+    const request = db.request();
+    request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+
+    const result = await request.query(queryCodeIss);
+
+    const codeIss: ICodeIsssNegotiationColmedica[] = result.recordset;
+
+    return {
+      code: 200,
+      message: "ok",
+      data: codeIss,
+    };
+  } catch (err: any) {
+    console.error("Error in getCodeIssByIdNegotiationTabColmedica", err);
+    return {
+      code: 400,
+      message: {
+        translationKey: "global.error_in_repository",
+        translationParams: { name: "getCodeIssByIdNegotiationTabColmedica" },
+      },
+    };
+  }
+};
+
+export const getTypeReferenceByIdNegotiationTabColmedica = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
+  try {
+    const db = await connectToSqlServer();
+
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+
+    const queryFareReference = `
+      SELECT DISTINCT tf.idTypeFare , typeFare + ' ' + ISNULL(incrementTypeReferenceA,0) AS fareReference FROM TB_NegotiationTabCupsColmedica AS ntc
+      INNER JOIN TB_TypeFares AS tf ON tf.idTypeFare = ntc.idTypeFareReferenceA
+      WHERE ntc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica
+      SELECT DISTINCT tf.idTypeFare , typeFare + ' ' + ISNULL(incrementTypeReferenceH,0) AS fareReference FROM TB_NegotiationTabCupsColmedica AS ntc
+      INNER JOIN TB_TypeFares AS tf ON tf.idTypeFare = ntc.idTypeFareReferenceA
+      WHERE ntc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica
+    `;
+
+    const request = db.request();
+    request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+
+    const result = await request.query(queryFareReference);
+
+    const fareReferences: ITypeFareReferenceNegotiationColmedica[] = result.recordset;
+
+    return {
+      code: 200,
+      message: "ok",
+      data: fareReferences,
+    };
+  } catch (err: any) {
+    console.error("Error in getTypeReferenceByIdNegotiationTabColmedica", err);
+    return {
+      code: 400,
+      message: {
+        translationKey: "global.error_in_repository",
+        translationParams: { name: "getTypeReferenceByIdNegotiationTabColmedica" },
       },
     };
   }

@@ -170,4 +170,70 @@ export interface IUploadFileColemdica {
   incrementTypeReferenceH: string
 }
 
+export interface IGroupNegotiationColmedica {
+  idClasificationTypeService: number;
+  clasificationTypeService: string;
+}
+
+export interface ISpecialityNegotiationColmedica {
+  idSpeciality: number;
+  speciality: string;
+}
+
+export interface ITypeFareNegotiationColmedica {
+  idTypeFare: number;
+  typeFare: string;
+}
+
+
+export interface INegotiationColmedica {
+  idNegotiationTabCupsColmedica: number;
+  id_NegotiationTabColmedica: string;
+  idSpeciality: number;
+  speciality: string;
+  idClasificationTypeService: number;
+  clasificationTypeService: string;
+  idMedicalAct: number;
+  medicalAct: string;
+  idTypeIncrement: number;
+  TypeIncrement: string;
+  codigoCups: string;
+  codigoIPS: string;
+  codigoISS: string;
+  contratado: number;
+  Iss2001uvrUvrOTarifa: number;
+  idTypeFareReferenceA: number;
+  typeFare: string;
+  fareGamaAltaA: number;
+  fareGamaHumanaA: number;
+  fareGamaMediaA: number;
+  fareGamaMenorA: number;
+  farePreferencialA: number;
+  idTypeFareReferenceH: number;
+  fareGamaAltaH: number;
+  fareGamaHumanaH: number;
+  fareGamaMediaH: number;
+  fareGamaMenorH: number;
+  farePreferencialH: number;
+  incrementTypeReferenceA: string;
+  incrementTypeReferenceH: string;
+  codeFare: string;
+}
+
+export interface ICodeIpsNegotiationColmedica {
+  codigoIPS: number;
+}
+
+export interface ICodeCupsNegotiationColmedica {
+  codigoCups: number;
+}
+
+export interface ICodeIsssNegotiationColmedica {
+  codigoISS: number;
+}
+
+export interface ITypeFareReferenceNegotiationColmedica {
+  idTypeFare: number;
+  fareReference: string;
+}
 

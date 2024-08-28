@@ -466,3 +466,95 @@ export const deleteNegotiationTabServiceColmedicaController: RequestHandler = as
       });
     }
   };
+
+  export const getGroupByIdNegotiationTabColmedica: RequestHandler = async (req, res) => {
+    try {
+        const id_NegotiationTabColmedica = req.query.id_NegotiationTabColmedica;
+        const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.getGroupByIdNegotiationTabColmedica(id_NegotiationTabColmedica);
+        res.status(code).json({message: parseMessageI18n(message, req),  ...resto});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: parseMessageI18n('error_server', req) });
+    }
+};
+
+export const getSpecialityByIdNegotiationTabColmedica: RequestHandler = async (req, res) => {
+    try {
+        const id_NegotiationTabColmedica = req.query.id_NegotiationTabColmedica;
+        const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.getSpecialityByIdNegotiationTabColmedica(id_NegotiationTabColmedica);
+        res.status(code).json({message: parseMessageI18n(message, req),  ...resto});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: parseMessageI18n('error_server', req) });
+    }
+};
+
+export const getTypeFareByIdNegotiationTabColmedica: RequestHandler = async (req, res) => {
+    try {
+        const id_NegotiationTabColmedica = req.query.id_NegotiationTabColmedica;
+        const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.getTypeFareByIdNegotiationTabColmedica(id_NegotiationTabColmedica);
+        res.status(code).json({message: parseMessageI18n(message, req),  ...resto});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: parseMessageI18n('error_server', req) });
+    }
+};
+
+export const getByIdNegotiationTabColmedica: RequestHandler = async (req, res) => {
+    try {
+        const id_NegotiationTabColmedica = req.query.id_NegotiationTabColmedica;
+        const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.getByIdNegotiationTabColmedica(id_NegotiationTabColmedica);
+        res.status(code).json({message: parseMessageI18n(message, req),  ...resto});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: parseMessageI18n('error_server', req) });
+    }
+};
+
+
+export const getCodeIpsByIdNegotiationTabColmedica: RequestHandler = async (req, res) => {
+    try {
+        const id_NegotiationTabColmedica = req.query.id_NegotiationTabColmedica;
+        const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.getCodeIpsByIdNegotiationTabColmedica(id_NegotiationTabColmedica);
+        res.status(code).json({message: parseMessageI18n(message, req),  ...resto});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: parseMessageI18n('error_server', req) });
+    }
+};
+
+export const getCodeCupsByIdNegotiationTabColmedica: RequestHandler = async (req, res) => {
+    try {
+        const id_NegotiationTabColmedica = req.query.id_NegotiationTabColmedica;
+        const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.getCodeCupsByIdNegotiationTabColmedica(id_NegotiationTabColmedica);
+        res.status(code).json({message: parseMessageI18n(message, req),  ...resto});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: parseMessageI18n('error_server', req) });
+    }
+};
+
+export const getCodeIssByIdNegotiationTabColmedica: RequestHandler = async (req, res) => {
+    try {
+        const id_NegotiationTabColmedica = req.query.id_NegotiationTabColmedica;
+        const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.getCodeIssByIdNegotiationTabColmedica(id_NegotiationTabColmedica);
+        res.status(code).json({message: parseMessageI18n(message, req),  ...resto});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: parseMessageI18n('error_server', req) });
+    }
+};
+
+
+
+
+export const getTypeReferenceByIdNegotiationTabColmedica: RequestHandler = async (req, res) => {
+    try {
+        const id_NegotiationTabColmedica = req.query.id_NegotiationTabColmedica;
+        const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.getTypeReferenceByIdNegotiationTabColmedica(id_NegotiationTabColmedica);
+        res.status(code).json({message: parseMessageI18n(message, req),  ...resto});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: parseMessageI18n('error_server', req) });
+    }
+};
