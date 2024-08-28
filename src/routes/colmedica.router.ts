@@ -31,7 +31,15 @@ import {
     updateNegotiationTabRendomColmedica,
     updateNegotiationTabFareBaseColmedica,
     updateNegotiationTabTypeIncrementColmedica,
-    deleteNegotiationTabServiceColmedicaController
+    deleteNegotiationTabServiceColmedicaController,
+    getGroupByIdNegotiationTabColmedica,
+    getSpecialityByIdNegotiationTabColmedica,
+    getTypeFareByIdNegotiationTabColmedica,
+    getByIdNegotiationTabColmedica,
+    getCodeIpsByIdNegotiationTabColmedica,
+    getCodeCupsByIdNegotiationTabColmedica,
+    getCodeIssByIdNegotiationTabColmedica,
+    getTypeReferenceByIdNegotiationTabColmedica
 } from "../controllers/colmedica.controller";
 import { query } from "express-validator";
 import { Router } from "express";
@@ -246,4 +254,75 @@ routes.delete(
      deleteNegotiationTabServiceColmedicaController
 );
 
+routes.get(
+    "/groupByIdNegotiationTabColmedica",
+    [
+        query("id_NegotiationTabColmedica", "global.int_type_field").optional().isInt(),
+        validateEnpoint
+    ],
+    getGroupByIdNegotiationTabColmedica
+);
+
+routes.get(
+    "/specialityByIdNegotiationTabColmedica",
+    [
+        query("id_NegotiationTabColmedica", "global.int_type_field").optional().isInt(),
+        validateEnpoint
+    ],
+    getSpecialityByIdNegotiationTabColmedica
+);
+
+routes.get(
+    "/typeFareByIdNegotiationTabColmedica",
+    [
+        query("id_NegotiationTabColmedica", "global.int_type_field").optional().isInt(),
+        validateEnpoint
+    ],
+    getTypeFareByIdNegotiationTabColmedica
+);
+
+routes.get(
+    "/infoByIdNegotiationTabColmedica",
+    [
+        query("id_NegotiationTabColmedica", "global.int_type_field").optional().isInt(),
+        validateEnpoint
+    ],
+    getByIdNegotiationTabColmedica
+);
+
+routes.get(
+    "/codeIpsByIdNegotiationTabColmedica",
+    [
+        query("id_NegotiationTabColmedica", "global.int_type_field").optional().isInt(),
+        validateEnpoint
+    ],
+    getCodeIpsByIdNegotiationTabColmedica
+);
+
+routes.get(
+    "/codeCupsByIdNegotiationTabColmedica",
+    [
+        query("id_NegotiationTabColmedica", "global.int_type_field").optional().isInt(),
+        validateEnpoint
+    ],
+    getCodeCupsByIdNegotiationTabColmedica
+);
+
+routes.get(
+    "/codeIssByIdNegotiationTabColmedica",
+    [
+        query("id_NegotiationTabColmedica", "global.int_type_field").optional().isInt(),
+        validateEnpoint
+    ],
+    getCodeIssByIdNegotiationTabColmedica
+);
+
+routes.get(
+    "/typeReferenceByIdNegotiationTabColmedica",
+    [
+        query("id_NegotiationTabColmedica", "global.int_type_field").optional().isInt(),
+        validateEnpoint
+    ],
+    getTypeReferenceByIdNegotiationTabColmedica
+);
 export default routes;
