@@ -237,3 +237,13 @@ export interface ITypeFareReferenceNegotiationColmedica {
   fareReference: string;
 }
 
+export interface IInfoByIdNegotiationTabColmedica {
+  id_NegotiationTabColmedica: string | any | undefined,
+  idSpeciality?: string,
+  idClasificationTypeService?: string,
+  codigoCups?: string,
+  codigoIPS?: string,
+  codigoISS?: string,
+  idTypeFare?: string
+}
+
