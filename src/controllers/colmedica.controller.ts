@@ -502,14 +502,23 @@ export const getTypeFareByIdNegotiationTabColmedica: RequestHandler = async (req
 
 export const getByIdNegotiationTabColmedica: RequestHandler = async (req, res) => {
     try {
-        const id_NegotiationTabColmedica = req.query.id_NegotiationTabColmedica;
-        const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.getByIdNegotiationTabColmedica(id_NegotiationTabColmedica);
-        res.status(code).json({message: parseMessageI18n(message, req),  ...resto});
+      const filters = {
+        id_NegotiationTabColmedica: req.query.id_NegotiationTabColmedica as string,
+        idSpeciality: req.query.idSpeciality as string,
+        idClasificationTypeService: req.query.idClasificationTypeService as string,
+        codigoCups: req.query.codigoCups as string,
+        codigoIPS: req.query.codigoIPS as string,
+        codigoISS: req.query.codigoISS as string,
+        idTypeFare: req.query.idTypeFare as string
+      };
+  
+      const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.getByIdNegotiationTabColmedica(filters);
+      res.status(code).json({ message: parseMessageI18n(message, req), ...resto });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: parseMessageI18n('error_server', req) });
+      console.error(err);
+      res.status(500).json({ message: parseMessageI18n('error_server', req) });
     }
-};
+  };
 
 
 export const getCodeIpsByIdNegotiationTabColmedica: RequestHandler = async (req, res) => {

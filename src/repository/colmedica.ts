@@ -26,7 +26,8 @@ import {
   ICodeIpsNegotiationColmedica,
   ICodeCupsNegotiationColmedica,
   ICodeIsssNegotiationColmedica,
-  ITypeFareReferenceNegotiationColmedica
+  ITypeFareReferenceNegotiationColmedica,
+  IInfoByIdNegotiationTabColmedica
 } from "../interface/colmedica";
 
 
@@ -1829,13 +1830,47 @@ export const postLoadFileNegotiationColmedica = async (formDataArray: IUploadFil
     }
 
     const insertedRecords = [];
+    const repeatedCodigoCups = new Set<string>();
+    const missingCodigoCups = new Set<string>();
+    const allCodigoCups = new Set<string>();
+    const codigoCupsCount = new Map<string, number>();
+
+    // Consulta inicial para obtener todos los codigoCups existentes para el idClientHoneSolutions = 9
+    const queryExistingCodigoCups = `
+      SELECT tbm.code AS codigoCups
+      FROM TB_MedicalAct AS tbm
+      LEFT JOIN TB_SpecialityClientHoneSolutions AS tbsc ON tbsc.idSpeciality = tbm.idSpeciality
+      WHERE tbsc.idClientHoneSolutions = 9
+    `;
+    const resultExistingCodigoCups = await db.request().query(queryExistingCodigoCups);
+    if (resultExistingCodigoCups.recordset) {
+      resultExistingCodigoCups.recordset.forEach(record => {
+        allCodigoCups.add(record.codigoCups);
+      });
+    }
 
     for (const formData of formDataArray) {
       const {
-        id_NegotiationTabColmedica,codigoCups, codigoIPS, codigoISS, idTypeFareReferenceA, Iss2001uvrUvrOTarifa, fareGamaAltaA,
+        id_NegotiationTabColmedica, codigoCups, codigoIPS, codigoISS, idTypeFareReferenceA, Iss2001uvrUvrOTarifa, fareGamaAltaA,
         fareGamaHumanaA, fareGamaMediaA, fareGamaMenorA, farePreferencialA, idTypeFareReferenceH,
         fareGamaAltaH, fareGamaHumanaH, fareGamaMediaH, fareGamaMenorH, farePreferencialH, incrementTypeReferenceA, incrementTypeReferenceH
       } = formData;
+
+      // Verificación de código CUPS duplicado
+      if (codigoCupsCount.has(codigoCups)) {
+        codigoCupsCount.set(codigoCups, codigoCupsCount.get(codigoCups)! + 1);
+        repeatedCodigoCups.add(codigoCups);
+        continue;
+      } else {
+        codigoCupsCount.set(codigoCups, 1);
+      }
+
+      // Verificación de código CUPS existente
+      if (!allCodigoCups.has(codigoCups)) {
+        missingCodigoCups.add(codigoCups);
+        console.error(`No se encontró el código CUPS: ${codigoCups}`);
+        continue;
+      }
 
       const queryMedicalAct = `
         SELECT idMedicalAct, idSpeciality
@@ -1972,29 +2007,19 @@ export const postLoadFileNegotiationColmedica = async (formDataArray: IUploadFil
       requestInsert.input('incrementValueH', incrementValueH);
 
       const resultInsert = await requestInsert.query(queryInsert);
-
-      if (!resultInsert.recordset || resultInsert.recordset.length === 0) {
-        console.error(`Failed to insert the record for codigoCups: ${codigoCups}`);
-        continue;
-      }
-
       insertedRecords.push(resultInsert.recordset[0]);
-    }
-
-    if (insertedRecords.length === 0) {
-      return {
-        code: 400,
-        message: "No se pudo insertar ningún registro.",
-      };
     }
 
     return {
       code: 200,
       message: "ok",
-      data: insertedRecords,
+      data: {
+        insertedRecords,
+        repeatedCodigoCups: Array.from(repeatedCodigoCups),
+        missingCodigoCups: Array.from(missingCodigoCups)
+      },
     };
-  } catch (err: any) {
-    console.error("Error in postLoadFileNegotiationColmedica", err);
+  } catch (error: any) {
     return {
       code: 400,
       message: {
@@ -2164,7 +2189,7 @@ export const getTypeFareByIdNegotiationTabColmedica = async (id_NegotiationTabCo
   }
 };
 
-export const getByIdNegotiationTabColmedica = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
+export const getByIdNegotiationTabColmedica = async (filters: IInfoByIdNegotiationTabColmedica): Promise<IresponseRepositoryService> => {
   try {
     const db = await connectToSqlServer();
 
@@ -2172,7 +2197,7 @@ export const getByIdNegotiationTabColmedica = async (id_NegotiationTabColmedica:
       throw new Error("Database connection failed");
     }
 
-    const queryNegotiation = `
+    let queryNegotiation = `
       SELECT DISTINCT ntc.idNegotiationTabCupsColmedica,
       ntc.id_NegotiationTabColmedica,
       ntc.idSpeciality,
@@ -2203,6 +2228,7 @@ export const getByIdNegotiationTabColmedica = async (id_NegotiationTabColmedica:
       fareGamaMenorH,
       incrementTypeReferenceA,
       incrementTypeReferenceH,
+      idTypeFare,
       typeFare,
       codeFare
       FROM TB_NegotiationTabCupsColmedica AS ntc
@@ -2215,11 +2241,48 @@ export const getByIdNegotiationTabColmedica = async (id_NegotiationTabColmedica:
       WHERE ntc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica
     `;
 
+    if (filters.idSpeciality) {
+      queryNegotiation += ` AND ntc.idSpeciality = @idSpeciality`;
+    }
+    if (filters.idClasificationTypeService) {
+      queryNegotiation += ` AND tbcs.idClasificationTypeService = @idClasificationTypeService`;
+    }
+    if (filters.codigoCups) {
+      queryNegotiation += ` AND ntc.codigoCups = @codigoCups`;
+    }
+    if (filters.codigoIPS) {
+      queryNegotiation += ` AND ntc.codigoIPS = @codigoIPS`;
+    }
+    if (filters.codigoISS) {
+      queryNegotiation += ` AND ntc.codigoISS = @codigoISS`;
+    }
+    if (filters.idTypeFare) {
+      queryNegotiation += ` AND idTypeFare = @idTypeFare`;
+    }
+
     const request = db.request();
-    request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+    request.input('id_NegotiationTabColmedica', filters.id_NegotiationTabColmedica);
+
+    if (filters.idSpeciality) {
+      request.input('idSpeciality', filters.idSpeciality);
+    }
+    if (filters.idClasificationTypeService) {
+      request.input('idClasificationTypeService', filters.idClasificationTypeService);
+    }
+    if (filters.codigoCups) {
+      request.input('codigoCups', filters.codigoCups);
+    }
+    if (filters.codigoIPS) {
+      request.input('codigoIPS', filters.codigoIPS);
+    }
+    if (filters.codigoISS) {
+      request.input('codigoISS', filters.codigoISS);
+    }
+    if (filters.idTypeFare) {
+      request.input('idTypeFare', filters.idTypeFare);
+    }
 
     const result = await request.query(queryNegotiation);
-
     const negotiation: INegotiationColmedica[] = result.recordset;
 
     return {

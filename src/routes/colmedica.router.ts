@@ -284,11 +284,17 @@ routes.get(
 routes.get(
     "/infoByIdNegotiationTabColmedica",
     [
-        query("id_NegotiationTabColmedica", "global.int_type_field").optional().isInt(),
-        validateEnpoint
+      query("id_NegotiationTabColmedica", "global.int_type_field").notEmpty().isInt(),
+      query("idSpeciality").optional().isString(),
+      query("idClasificationTypeService").optional().isString(),
+      query("codigoCups").optional().isString(),
+      query("codigoIPS").optional().isString(),
+      query("codigoISS").optional().isString(),
+      query("idTypeFare").optional().isString(),
+      validateEnpoint
     ],
     getByIdNegotiationTabColmedica
-);
+  );
 
 routes.get(
     "/codeIpsByIdNegotiationTabColmedica",
