@@ -244,6 +244,17 @@ export interface IInfoByIdNegotiationTabColmedica {
   codigoCups?: string,
   codigoIPS?: string,
   codigoISS?: string,
-  idTypeFare?: string
+  idTypeFareReferenceA?: string,
+  idTypeFareReferenceH?: string
 }
 
+export interface IUpdateNegotiationTabColmedica {
+  idNegotiationTabColmedica: number,
+  idTypeFareReferenceA: number | null,
+  idTypeFareReferenceH: number | null,
+  incrementTypeReferenceA: number | null,
+  incrementTypeReferenceH: number | null,
+  idTypeIncrement: number,
+  newValueA?: number,
+  newValueH?: number
+}

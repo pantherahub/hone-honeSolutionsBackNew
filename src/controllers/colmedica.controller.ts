@@ -2,7 +2,7 @@ import { RequestHandler} from "express";
 import * as repository from "../repository/colmedica";
 import { parseMessageI18n } from "../utils/parse-messga-i18";
 import { IResponse, IResponseCreate } from "../interface/ticket.interface";
-import { IUploadFileColemdica } from "../interface/colmedica";
+import { IUpdateNegotiationTabColmedica, IUploadFileColemdica } from "../interface/colmedica";
 
 export const saveNegotiationTabColmedica: RequestHandler = async (req, res) => {
     try {
@@ -509,7 +509,8 @@ export const getByIdNegotiationTabColmedica: RequestHandler = async (req, res) =
         codigoCups: req.query.codigoCups as string,
         codigoIPS: req.query.codigoIPS as string,
         codigoISS: req.query.codigoISS as string,
-        idTypeFare: req.query.idTypeFare as string
+        idTypeFareReferenceA: req.query.idTypeFareReferenceA as string,
+        idTypeFareReferenceH: req.query.idTypeFareReferenceH as string
       };
   
       const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.getByIdNegotiationTabColmedica(filters);
@@ -565,5 +566,16 @@ export const getTypeReferenceByIdNegotiationTabColmedica: RequestHandler = async
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: parseMessageI18n('error_server', req) });
+    }
+};
+
+export const updateNegotiationTabCupsColmedicaController: RequestHandler = async (req, res) => {
+    try {
+        const data = req.body as IUpdateNegotiationTabColmedica;
+        const { code, message, data: resultData } = await repository.updateNegotiationTabCupsColmedicaController(data);
+        return res.status(code).json({ message: parseMessageI18n(message, req), data: resultData });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: parseMessageI18n('error_server', req) });
     }
 };
