@@ -39,9 +39,10 @@ import {
     getCodeIpsByIdNegotiationTabColmedica,
     getCodeCupsByIdNegotiationTabColmedica,
     getCodeIssByIdNegotiationTabColmedica,
-    getTypeReferenceByIdNegotiationTabColmedica
+    getTypeReferenceByIdNegotiationTabColmedica,
+    updateNegotiationTabCupsColmedicaController
 } from "../controllers/colmedica.controller";
-import { query } from "express-validator";
+import { body, query } from "express-validator";
 import { Router } from "express";
 import { validateEnpoint } from "../middlewares/validatorEnpoint";
 
@@ -290,7 +291,8 @@ routes.get(
       query("codigoCups").optional().isString(),
       query("codigoIPS").optional().isString(),
       query("codigoISS").optional().isString(),
-      query("idTypeFare").optional().isString(),
+      query("idTypeFareReferenceA").optional().isString(),
+      query("idTypeFareReferenceH").optional().isString(),
       validateEnpoint
     ],
     getByIdNegotiationTabColmedica
@@ -331,4 +333,20 @@ routes.get(
     ],
     getTypeReferenceByIdNegotiationTabColmedica
 );
+
+routes.put(
+    "/updateNegotiationTabCupsColmedica",
+    [
+      body("idNegotiationTabColmedica", "global.int_type_field").notEmpty().isInt(),
+      body("idTypeFareReferenceA", "global.int_type_field").optional().isInt(),
+      body("idTypeFareReferenceH", "global.int_type_field").optional().isInt(),
+      body("incrementTypeReferenceA", "global.float_type_field").optional().isFloat(),
+      body("incrementTypeReferenceH", "global.float_type_field").optional().isFloat(),
+      body("idTypeIncrement", "global.int_type_field").notEmpty().isInt(),
+      body("newValueA", "global.float_type_field").optional().isFloat(),
+      body("newValueH", "global.float_type_field").optional().isFloat(),
+      validateEnpoint 
+    ],
+    updateNegotiationTabCupsColmedicaController
+  );
 export default routes;

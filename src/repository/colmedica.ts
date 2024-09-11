@@ -27,7 +27,8 @@ import {
   ICodeCupsNegotiationColmedica,
   ICodeIsssNegotiationColmedica,
   ITypeFareReferenceNegotiationColmedica,
-  IInfoByIdNegotiationTabColmedica
+  IInfoByIdNegotiationTabColmedica,
+  IUpdateNegotiationTabColmedica
 } from "../interface/colmedica";
 
 
@@ -1893,7 +1894,7 @@ export const postLoadFileNegotiationColmedica = async (formDataArray: IUploadFil
         const querySpecialityClient = `
           SELECT idSpeciality
           FROM TB_SpecialityClientHoneSolutions
-          WHERE idSpeciality = @idSpeciality
+          WHERE idSpeciality = @idSpeciality AND idClientHoneSolutions = 9
         `;
         const requestSpecialityClient = db.request();
         requestSpecialityClient.input('idSpeciality', record.idSpeciality);
@@ -1911,8 +1912,9 @@ export const postLoadFileNegotiationColmedica = async (formDataArray: IUploadFil
         continue; 
       }
 
-      let fareNameA = idTypeFareReferenceA.toString();
-      let incrementValueA = incrementTypeReferenceA?.toString();
+      // Manejo de los campos opcionales con "??" para proporcionar valores predeterminados
+      let fareNameA = idTypeFareReferenceA?.toString() ?? '';
+      let incrementValueA = incrementTypeReferenceA?.toString() ?? null;
 
       if (fareNameA.includes('+')) {
         const [name, increment] = fareNameA.split('+');
@@ -1920,26 +1922,29 @@ export const postLoadFileNegotiationColmedica = async (formDataArray: IUploadFil
         incrementValueA = increment.trim();
       }
 
-      const queryFareTypeA = `
-        SELECT idTypeFare
-        FROM TB_TypeFares
-        WHERE typeFare = @fareNameA
-      `;
-      const requestFareTypeA = db.request();
-      requestFareTypeA.input('fareNameA', fareNameA);
-      const resultFareTypeA = await requestFareTypeA.query(queryFareTypeA);
+      // Solo si hay un valor en fareNameA, se realiza la consulta
+      let idTypeFareA = null;
+      if (fareNameA) {
+        const queryFareTypeA = `
+          SELECT idTypeFare
+          FROM TB_TypeFares
+          WHERE typeFare = @fareNameA
+        `;
+        const requestFareTypeA = db.request();
+        requestFareTypeA.input('fareNameA', fareNameA);
+        const resultFareTypeA = await requestFareTypeA.query(queryFareTypeA);
 
-      if (!resultFareTypeA.recordset || resultFareTypeA.recordset.length === 0) {
-        console.error(`No se encontró el idTypeFare para el nombre de tarifa: ${fareNameA}`);
-        continue;
+        if (resultFareTypeA.recordset.length === 0) {
+          console.error(`No se encontró el idTypeFare para el nombre de tarifa: ${fareNameA}`);
+          continue;
+        }
+        idTypeFareA = resultFareTypeA.recordset[0].idTypeFare;
       }
 
-      const idTypeFareA = resultFareTypeA.recordset[0].idTypeFare;
+      let fareNameH = idTypeFareReferenceH?.toString() ?? '';
+      let incrementValueH = incrementTypeReferenceH?.toString() ?? null;
 
-      let fareNameH = idTypeFareReferenceH?.toString();
-      let incrementValueH = incrementTypeReferenceH?.toString();
-
-      if (fareNameH && fareNameH.includes('+')) {
+      if (fareNameH.includes('+')) {
         const [name, increment] = fareNameH.split('+');
         fareNameH = name.trim();
         incrementValueH = increment.trim();
@@ -1964,13 +1969,14 @@ export const postLoadFileNegotiationColmedica = async (formDataArray: IUploadFil
         }
       }
 
+      // Inserción de datos en la tabla, verificando cada campo opcional
       const queryInsert = `
         INSERT INTO [dbo].[TB_NegotiationTabCupsColmedica]
         (
           id_NegotiationTabColmedica, codigoCups, codigoIPS, codigoISS, contratado, idTypeFareReferenceA, Iss2001uvrUvrOTarifa, fareGamaAltaA,
           fareGamaHumanaA, fareGamaMediaA, fareGamaMenorA, farePreferencialA, idTypeFareReferenceH,
           fareGamaAltaH, fareGamaHumanaH, fareGamaMediaH, fareGamaMenorH, farePreferencialH,
-          idMedicalAct, idSpeciality, incrementTypeReferenceA, incrementTypeReferenceH
+          idMedicalAct, idSpeciality, incrementTypeReferenceA, incrementTypeReferenceH, idTypeIncrement
         )
         OUTPUT inserted.*
         VALUES
@@ -1978,7 +1984,7 @@ export const postLoadFileNegotiationColmedica = async (formDataArray: IUploadFil
           @id_NegotiationTabColmedica,@codigoCups, @codigoIPS, @codigoISS, @contratado, @idTypeFareReferenceA, @Iss2001uvrUvrOTarifa, @fareGamaAltaA,
           @fareGamaHumanaA, @fareGamaMediaA, @fareGamaMenorA, @farePreferencialA, @idTypeFareReferenceH,
           @fareGamaAltaH, @fareGamaHumanaH, @fareGamaMediaH, @fareGamaMenorH, @farePreferencialH,
-          @idMedicalAct, @idSpeciality, @incrementValueA, @incrementValueH
+          @idMedicalAct, @idSpeciality, @incrementValueA, @incrementValueH, @idTypeIncrement
         );
       `;
 
@@ -1990,24 +1996,28 @@ export const postLoadFileNegotiationColmedica = async (formDataArray: IUploadFil
       requestInsert.input('contratado', 1);
       requestInsert.input('idTypeFareReferenceA', idTypeFareA);
       requestInsert.input('Iss2001uvrUvrOTarifa', Iss2001uvrUvrOTarifa);
-      requestInsert.input('fareGamaAltaA', fareGamaAltaA);
-      requestInsert.input('fareGamaHumanaA', fareGamaHumanaA);
-      requestInsert.input('fareGamaMediaA', fareGamaMediaA);
-      requestInsert.input('fareGamaMenorA', fareGamaMenorA);
-      requestInsert.input('farePreferencialA', farePreferencialA);
+      requestInsert.input('fareGamaAltaA', fareGamaAltaA ?? null);
+      requestInsert.input('fareGamaHumanaA', fareGamaHumanaA ?? null);
+      requestInsert.input('fareGamaMediaA', fareGamaMediaA ?? null);
+      requestInsert.input('fareGamaMenorA', fareGamaMenorA ?? null);
+      requestInsert.input('farePreferencialA', farePreferencialA ?? null);
       requestInsert.input('idTypeFareReferenceH', idTypeFareH);
-      requestInsert.input('fareGamaAltaH', fareGamaAltaH);
-      requestInsert.input('fareGamaHumanaH', fareGamaHumanaH);
-      requestInsert.input('fareGamaMediaH', fareGamaMediaH);
-      requestInsert.input('fareGamaMenorH', fareGamaMenorH);
-      requestInsert.input('farePreferencialH', farePreferencialH);
+      requestInsert.input('fareGamaAltaH', fareGamaAltaH ?? null);
+      requestInsert.input('fareGamaHumanaH', fareGamaHumanaH ?? null);
+      requestInsert.input('fareGamaMediaH', fareGamaMediaH ?? null);
+      requestInsert.input('fareGamaMenorH', fareGamaMenorH ?? null);
+      requestInsert.input('farePreferencialH', farePreferencialH ?? null);
       requestInsert.input('idMedicalAct', idMedicalAct);
       requestInsert.input('idSpeciality', idSpeciality);
       requestInsert.input('incrementValueA', incrementValueA);
       requestInsert.input('incrementValueH', incrementValueH);
+      requestInsert.input('idTypeIncrement', 3); 
 
       const resultInsert = await requestInsert.query(queryInsert);
-      insertedRecords.push(resultInsert.recordset[0]);
+
+      if (resultInsert.recordset.length > 0) {
+        insertedRecords.push(resultInsert.recordset[0]);
+      }
     }
 
     return {
@@ -2198,66 +2208,61 @@ export const getByIdNegotiationTabColmedica = async (filters: IInfoByIdNegotiati
     }
 
     let queryNegotiation = `
-      SELECT DISTINCT ntc.idNegotiationTabCupsColmedica,
-      ntc.id_NegotiationTabColmedica,
-      ntc.idSpeciality,
-      tbs.speciality,
-      tbcs.idClasificationTypeService,
-      tbcs.clasificationTypeService,
-      ntc.idMedicalAct,
-      tbm.medicalAct,
-      ntc.idTypeIncrement,
-      tbti.TypeIncrement,
-      ntc.codigoCups,
-      ntc.codigoIPS,
-      ntc.codigoISS,
-      ntc.contratado,
-      ntc.Iss2001uvrUvrOTarifa,
-      ntc.idTypeFareReferenceA,
-      tf.typeFare AS typeFareA,
-      fareGamaAltaA,
-      fareGamaHumanaA,
-      fareGamaMediaA,
-      fareGamaMenorA,
-      farePreferencialA,
-      idTypeFareReferenceH,
-      tf.typeFare AS typeFareH,
-      fareGamaAltaH,
-      fareGamaHumanaH,
-      fareGamaMediaH,
-      fareGamaMenorH,
-      incrementTypeReferenceA,
-      incrementTypeReferenceH,
-      idTypeFare,
-      typeFare,
-      codeFare
-      FROM TB_NegotiationTabCupsColmedica AS ntc
-      INNER JOIN TB_TypeFares AS tf ON tf.idTypeFare = ntc.idTypeFareReferenceA
-      INNER JOIN TB_Speciality AS tbs ON tbs.idSpeciality = ntc.idSpeciality
-      INNER JOIN TB_MedicalAct AS tbm ON tbm.idMedicalAct = ntc.idMedicalAct
-      INNER JOIN TB_TypeIncrement AS tbti ON tbti.idTypeIncrement = ntc.idTypeIncrement
-      INNER JOIN TB_ClasificationTypeServiceSpeciality AS tbctss ON tbctss.idSpeciality = ntc.idSpeciality
-      INNER JOIN TB_ClasificationTypeService AS tbcs ON tbcs.idClasificationTypeService = tbctss.idClasificationTypeService
-      WHERE ntc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica
+        SELECT DISTINCT tbntc.idNegotiationTabCupsColmedica,
+          tbntc.id_NegotiationTabColmedica,
+          tbcts.idClasificationTypeService,
+          tbcc.clasificationTypeService,
+          tbs.idSpeciality,
+          tbs.speciality,
+          tbntc.codigoCups,
+          tbntc.codigoIPS,
+          tbntc.codigoISS,
+          tbm.idMedicalAct,
+          tbm.medicalAct,
+          tfA.idTypeFare AS idTypeFareReferenceA,
+          tfA.typeFare AS typeFareReferenceA,
+          tbntc.fareGamaAltaA,
+          tbntc.fareGamaHumanaA,
+          tbntc.fareGamaMediaA,
+          tbntc.fareGamaMenorA,
+          tbntc.farePreferencialA,
+          tfH.idTypeFare AS idTypeFareReferenceH,
+          tfH.typeFare AS typeFareReferenceH,
+          tbntc.fareGamaAltaH,
+          tbntc.fareGamaHumanaH,
+          tbntc.fareGamaMediaH,
+          tbntc.fareGamaMenorH,
+          tbntc.farePreferencialH
+      FROM TB_NegotiationTabCupsColmedica AS tbntc
+      LEFT JOIN TB_Speciality AS tbs ON tbs.idSpeciality = tbntc.idSpeciality
+      LEFT JOIN TB_ClasificationTypeServiceSpeciality AS tbcts ON tbcts.idSpeciality = tbs.idSpeciality
+      LEFT JOIN TB_ClasificationTypeService AS tbcc ON tbcc.idClasificationTypeService = tbcts.idClasificationTypeService 
+      LEFT JOIN TB_MedicalAct AS tbm ON tbm.idMedicalAct = tbntc.idMedicalAct
+      LEFT JOIN TB_TypeFares AS tfA ON tfA.idTypeFare = tbntc.idTypeFareReferenceA
+      LEFT JOIN TB_TypeFares AS tfH ON tfH.idTypeFare = tbntc.idTypeFareReferenceH
+      WHERE tbntc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica AND (tfA.idTypeFare IS NOT NULL OR tfH.idTypeFare IS NOT NULL)
     `;
 
     if (filters.idSpeciality) {
-      queryNegotiation += ` AND ntc.idSpeciality = @idSpeciality`;
+      queryNegotiation += ` AND tbntc.idSpeciality = @idSpeciality`;
     }
     if (filters.idClasificationTypeService) {
-      queryNegotiation += ` AND tbcs.idClasificationTypeService = @idClasificationTypeService`;
+      queryNegotiation += ` AND tbcts.idClasificationTypeService = @idClasificationTypeService`;
     }
     if (filters.codigoCups) {
-      queryNegotiation += ` AND ntc.codigoCups = @codigoCups`;
+      queryNegotiation += ` AND tbntc.codigoCups = @codigoCups`;
     }
     if (filters.codigoIPS) {
-      queryNegotiation += ` AND ntc.codigoIPS = @codigoIPS`;
+      queryNegotiation += ` AND tbntc.codigoIPS = @codigoIPS`;
     }
     if (filters.codigoISS) {
-      queryNegotiation += ` AND ntc.codigoISS = @codigoISS`;
+      queryNegotiation += ` AND tbntc.codigoISS = @codigoISS`;
     }
-    if (filters.idTypeFare) {
-      queryNegotiation += ` AND idTypeFare = @idTypeFare`;
+    if (filters.idTypeFareReferenceA) {
+      queryNegotiation += ` AND tfA.idTypeFare = @idTypeFareReferenceA`;
+    }
+    if (filters.idTypeFareReferenceH) {
+      queryNegotiation += ` AND tfH.idTypeFare = @idTypeFareReferenceH`;
     }
 
     const request = db.request();
@@ -2278,8 +2283,11 @@ export const getByIdNegotiationTabColmedica = async (filters: IInfoByIdNegotiati
     if (filters.codigoISS) {
       request.input('codigoISS', filters.codigoISS);
     }
-    if (filters.idTypeFare) {
-      request.input('idTypeFare', filters.idTypeFare);
+    if (filters.idTypeFareReferenceA) {
+      request.input('idTypeFareReferenceA', filters.idTypeFareReferenceA);
+    }
+    if (filters.idTypeFareReferenceH) {
+      request.input('idTypeFareReferenceH', filters.idTypeFareReferenceH);
     }
 
     const result = await request.query(queryNegotiation);
@@ -2425,12 +2433,26 @@ export const getTypeReferenceByIdNegotiationTabColmedica = async (id_Negotiation
     }
 
     const queryFareReference = `
-      SELECT DISTINCT tf.idTypeFare , typeFare + ' ' + ISNULL(incrementTypeReferenceA,0) AS fareReference FROM TB_NegotiationTabCupsColmedica AS ntc
-      INNER JOIN TB_TypeFares AS tf ON tf.idTypeFare = ntc.idTypeFareReferenceA
-      WHERE ntc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica
-      SELECT DISTINCT tf.idTypeFare , typeFare + ' ' + ISNULL(incrementTypeReferenceH,0) AS fareReference FROM TB_NegotiationTabCupsColmedica AS ntc
-      INNER JOIN TB_TypeFares AS tf ON tf.idTypeFare = ntc.idTypeFareReferenceA
-      WHERE ntc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica
+          WITH FareReferences AS (
+              SELECT 
+                  tf.idTypeFare, 
+                  typeFare + ' ' + ISNULL(CAST(incrementTypeReferenceA AS VARCHAR), '0') AS fareReference,
+                  ROW_NUMBER() OVER (PARTITION BY tf.idTypeFare ORDER BY ntc.idNegotiationTabCupsColmedica) AS rn
+              FROM TB_NegotiationTabCupsColmedica AS ntc
+              INNER JOIN TB_TypeFares AS tf ON tf.idTypeFare = ntc.idTypeFareReferenceA
+              WHERE ntc.id_NegotiationTabColmedica =  @id_NegotiationTabColmedica
+              UNION
+              SELECT 
+                  tf.idTypeFare, 
+                  typeFare + ' ' + ISNULL(CAST(incrementTypeReferenceH AS VARCHAR), '0') AS fareReference,
+                  ROW_NUMBER() OVER (PARTITION BY tf.idTypeFare ORDER BY ntc.idNegotiationTabCupsColmedica) AS rn
+              FROM TB_NegotiationTabCupsColmedica AS ntc
+              INNER JOIN TB_TypeFares AS tf ON tf.idTypeFare = ntc.idTypeFareReferenceH
+              WHERE ntc.id_NegotiationTabColmedica =  @id_NegotiationTabColmedica
+          )
+          SELECT idTypeFare, fareReference
+          FROM FareReferences
+          WHERE rn = 1;
     `;
 
     const request = db.request();
@@ -2452,6 +2474,79 @@ export const getTypeReferenceByIdNegotiationTabColmedica = async (id_Negotiation
       message: {
         translationKey: "global.error_in_repository",
         translationParams: { name: "getTypeReferenceByIdNegotiationTabColmedica" },
+      },
+    };
+  }
+};
+
+export const updateNegotiationTabCupsColmedicaController = async (data: IUpdateNegotiationTabColmedica): Promise<IresponseRepositoryService> => {
+  try {
+    const {idNegotiationTabColmedica,idTypeFareReferenceA,idTypeFareReferenceH,incrementTypeReferenceA,incrementTypeReferenceH,
+      idTypeIncrement, newValueA, newValueH } = data; 
+    const db = await connectToSqlServer();
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+
+    let newIncrementValueA: number | null = null;
+    let newIncrementValueH: number | null = null;
+
+    if (newValueA !== undefined && incrementTypeReferenceA !== null) {
+      if (idTypeIncrement === 1) {
+        newIncrementValueA = (newValueA + incrementTypeReferenceA) / 100;
+      } else if (idTypeIncrement === 2) {
+        newIncrementValueA = ((1 + newValueA * 100) * (1 + incrementTypeReferenceA * 100) - 1) / 100;
+      }
+    } else {
+      newIncrementValueA = incrementTypeReferenceA;
+    }
+
+    if (newValueH !== undefined && incrementTypeReferenceH !== null) {
+      if (idTypeIncrement === 1) {
+        newIncrementValueH = (newValueH + incrementTypeReferenceH) / 100;
+      } else if (idTypeIncrement === 2) {
+        newIncrementValueH = ((1 + newValueH * 100) * (1 + incrementTypeReferenceH * 100) - 1) / 100;
+      }
+    } else {
+      newIncrementValueH = incrementTypeReferenceH; 
+    }
+
+    if ((newValueA !== undefined && newIncrementValueA === null) || (newValueH !== undefined && newIncrementValueH === null)) {
+      throw new Error("Error en el cálculo de los incrementos.");
+    }
+
+    const queryUpdate = `
+      UPDATE [dbo].[TB_NegotiationTabCupsColmedica]
+      SET 
+        idTypeFareReferenceA = COALESCE(@idTypeFareReferenceA, idTypeFareReferenceA),
+        idTypeFareReferenceH = COALESCE(@idTypeFareReferenceH, idTypeFareReferenceH),
+        incrementTypeReferenceA = COALESCE(@newIncrementValueA, incrementTypeReferenceA),
+        incrementTypeReferenceH = COALESCE(@newIncrementValueH, incrementTypeReferenceH),
+        idTypeIncrement = @idTypeIncrement
+      WHERE id_NegotiationTabColmedica = @idNegotiationTabColmedica;
+    `;
+
+    const requestUpdate = db.request();
+    requestUpdate.input('idTypeFareReferenceA', idTypeFareReferenceA ?? null);
+    requestUpdate.input('idTypeFareReferenceH', idTypeFareReferenceH ?? null);
+    requestUpdate.input('newIncrementValueA', newIncrementValueA);
+    requestUpdate.input('newIncrementValueH', newIncrementValueH);
+    requestUpdate.input('idTypeIncrement', idTypeIncrement);
+    requestUpdate.input('idNegotiationTabColmedica', idNegotiationTabColmedica);
+
+    const resultUpdate = await requestUpdate.query(queryUpdate);
+
+    return {
+      code: 200,
+      message: "Campos actualizados correctamente",
+      data: resultUpdate.rowsAffected[0],
+    };
+  } catch (error: any) {
+    return {
+      code: 400,
+      message: {
+        translationKey: "global.error_in_repository",
+        translationParams: { name: "updateFareReference" },
       },
     };
   }
