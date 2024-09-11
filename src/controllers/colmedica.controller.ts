@@ -579,3 +579,25 @@ export const updateNegotiationTabCupsColmedicaController: RequestHandler = async
         return res.status(500).json({ message: parseMessageI18n('error_server', req) });
     }
 };
+
+export const getTypeFareByIdNegotiationTabColmedicaAmbulatorio: RequestHandler = async (req, res) => {
+    try {
+        const id_NegotiationTabColmedica = req.query.id_NegotiationTabColmedica;
+        const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.getTypeFareByIdNegotiationTabColmedicaAmbulatorio(id_NegotiationTabColmedica);
+        res.status(code).json({message: parseMessageI18n(message, req),  ...resto});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: parseMessageI18n('error_server', req) });
+    }
+};
+
+export const getTypeFareByIdNegotiationTabColmedicaHospitalario: RequestHandler = async (req, res) => {
+    try {
+        const id_NegotiationTabColmedica = req.query.id_NegotiationTabColmedica;
+        const { code, message, ...resto }: IResponse<IResponseCreate> = await repository.getTypeFareByIdNegotiationTabColmedicaHospitalario(id_NegotiationTabColmedica);
+        res.status(code).json({message: parseMessageI18n(message, req),  ...resto});
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: parseMessageI18n('error_server', req) });
+    }
+};

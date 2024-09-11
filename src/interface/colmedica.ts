@@ -258,3 +258,13 @@ export interface IUpdateNegotiationTabColmedica {
   newValueA?: number,
   newValueH?: number
 }
+
+export interface ITypeFareNegotiationColmedicaA {
+  idTypeFareReferenceA: number;
+  typeFare: string;
+}
+
+export interface ITypeFareNegotiationColmedicaH {
+  idTypeFareReferenceH: number;
+  typeFare: string;
+}

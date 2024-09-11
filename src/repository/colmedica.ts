@@ -28,7 +28,9 @@ import {
   ICodeIsssNegotiationColmedica,
   ITypeFareReferenceNegotiationColmedica,
   IInfoByIdNegotiationTabColmedica,
-  IUpdateNegotiationTabColmedica
+  IUpdateNegotiationTabColmedica,
+  ITypeFareNegotiationColmedicaA,
+  ITypeFareNegotiationColmedicaH
 } from "../interface/colmedica";
 
 
@@ -947,7 +949,7 @@ export const getReferenceRateColmedica = async (): Promise<IresponseRepositorySe
     }
 
     const queryProviders = `
-    	SELECT idTypeFare,typeFare  FROM TB_TypeFares
+    	SELECT idTypeFare,typeFare  FROM TB_TypeFares WHERE idTypeFare IN (1,6,16,18,5,15)
 	 --select ntf.idTypeFare,typeFare from TB_NegotiationTabFareBaseColmedica as ntf
    --inner join TB_TypeFares as tf on tf.idTypeFare = ntf.idTypeFare
    --where idNegotiationTabColmedica =
@@ -2011,7 +2013,7 @@ export const postLoadFileNegotiationColmedica = async (formDataArray: IUploadFil
       requestInsert.input('idSpeciality', idSpeciality);
       requestInsert.input('incrementValueA', incrementValueA);
       requestInsert.input('incrementValueH', incrementValueH);
-      requestInsert.input('idTypeIncrement', 3); 
+      requestInsert.input('idTypeIncrement', 0); 
 
       const resultInsert = await requestInsert.query(queryInsert);
 
@@ -2547,6 +2549,82 @@ export const updateNegotiationTabCupsColmedicaController = async (data: IUpdateN
       message: {
         translationKey: "global.error_in_repository",
         translationParams: { name: "updateFareReference" },
+      },
+    };
+  }
+};
+
+export const getTypeFareByIdNegotiationTabColmedicaAmbulatorio = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
+  try {
+    const db = await connectToSqlServer();
+
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+
+    const queryCodeCups = `
+      SELECT DISTINCT tbntc.idTypeFareReferenceA, tbtf.typeFare FROM TB_NegotiationTabCupsColmedica AS tbntc
+      LEFT JOIN TB_TypeFares AS tbtf ON tbtf.idTypeFare = tbntc.idTypeFareReferenceA  
+      WHERE idTypeFareReferenceA IS NOT NULL AND id_NegotiationTabColmedica =  @id_NegotiationTabColmedica
+    `;
+
+    const request = db.request();
+    request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+
+    const result = await request.query(queryCodeCups);
+
+    const codeCups: ITypeFareNegotiationColmedicaA[] = result.recordset;
+
+    return {
+      code: 200,
+      message: "ok",
+      data: codeCups,
+    };
+  } catch (err: any) {
+    console.error("Error in getTypeFareByIdNegotiationTabColmedicaAmbulatorio", err);
+    return {
+      code: 400,
+      message: {
+        translationKey: "global.error_in_repository",
+        translationParams: { name: "getTypeFareByIdNegotiationTabColmedicaAmbulatorio" },
+      },
+    };
+  }
+};
+
+export const getTypeFareByIdNegotiationTabColmedicaHospitalario = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
+  try {
+    const db = await connectToSqlServer();
+
+    if (!db) {
+      throw new Error("Database connection failed");
+    }
+
+    const queryCodeCups = `
+      SELECT DISTINCT tbntc.idTypeFareReferenceH, tbtf.typeFare FROM TB_NegotiationTabCupsColmedica AS tbntc
+      LEFT JOIN TB_TypeFares AS tbtf ON tbtf.idTypeFare = tbntc.idTypeFareReferenceH  
+      WHERE idTypeFareReferenceH IS NOT NULL AND id_NegotiationTabColmedica =  @id_NegotiationTabColmedica
+    `;
+
+    const request = db.request();
+    request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+
+    const result = await request.query(queryCodeCups);
+
+    const codeCups: ITypeFareNegotiationColmedicaH[] = result.recordset;
+
+    return {
+      code: 200,
+      message: "ok",
+      data: codeCups,
+    };
+  } catch (err: any) {
+    console.error("Error in getTypeFareByIdNegotiationTabColmedicaHospitalario", err);
+    return {
+      code: 400,
+      message: {
+        translationKey: "global.error_in_repository",
+        translationParams: { name: "getTypeFareByIdNegotiationTabColmedicaHospitalario" },
       },
     };
   }

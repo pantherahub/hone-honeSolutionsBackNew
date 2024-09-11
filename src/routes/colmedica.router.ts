@@ -40,7 +40,9 @@ import {
     getCodeCupsByIdNegotiationTabColmedica,
     getCodeIssByIdNegotiationTabColmedica,
     getTypeReferenceByIdNegotiationTabColmedica,
-    updateNegotiationTabCupsColmedicaController
+    updateNegotiationTabCupsColmedicaController,
+    getTypeFareByIdNegotiationTabColmedicaAmbulatorio,
+    getTypeFareByIdNegotiationTabColmedicaHospitalario
 } from "../controllers/colmedica.controller";
 import { body, query } from "express-validator";
 import { Router } from "express";
@@ -349,4 +351,22 @@ routes.put(
     ],
     updateNegotiationTabCupsColmedicaController
   );
+
+routes.get(
+    "/getTypeFareByIdNegotiationTabColmedicaAmbulatorio",
+    [
+        query("id_NegotiationTabColmedica", "global.int_type_field").optional().isInt(),
+        validateEnpoint
+    ],
+    getTypeFareByIdNegotiationTabColmedicaAmbulatorio
+);
+
+routes.get(
+    "/getTypeFareByIdNegotiationTabColmedicaHospitalario",
+    [
+        query("id_NegotiationTabColmedica", "global.int_type_field").optional().isInt(),
+        validateEnpoint
+    ],
+    getTypeFareByIdNegotiationTabColmedicaHospitalario
+);
 export default routes;
