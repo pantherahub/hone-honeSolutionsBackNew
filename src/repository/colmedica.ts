@@ -2490,30 +2490,39 @@ export const updateNegotiationTabCupsColmedicaController = async (data: IUpdateN
       throw new Error("Database connection failed");
     }
 
+    const idNegotiationTabColmedicaNum = Number(idNegotiationTabColmedica);
+    const idTypeFareReferenceANum = idTypeFareReferenceA !== null ? Number(idTypeFareReferenceA) : null;
+    const idTypeFareReferenceHNum = idTypeFareReferenceH !== null ? Number(idTypeFareReferenceH) : null;
+    const incrementTypeReferenceANum = incrementTypeReferenceA !== null ? Number(incrementTypeReferenceA) : null;
+    const incrementTypeReferenceHNum = incrementTypeReferenceH !== null ? Number(incrementTypeReferenceH) : null;
+    const idTypeIncrementNum = Number(idTypeIncrement);
+    const newValueANum = newValueA !== undefined ? Number(newValueA) : undefined;
+    const newValueHNum = newValueH !== undefined ? Number(newValueH) : undefined;
+
     let newIncrementValueA: number | null = null;
     let newIncrementValueH: number | null = null;
 
-    if (newValueA !== undefined && incrementTypeReferenceA !== null) {
-      if (idTypeIncrement === 1) {
-        newIncrementValueA = (newValueA + incrementTypeReferenceA) / 100;
-      } else if (idTypeIncrement === 2) {
-        newIncrementValueA = ((1 + newValueA * 100) * (1 + incrementTypeReferenceA * 100) - 1) / 100;
+    if (newValueANum !== undefined && incrementTypeReferenceANum !== null) {
+      if (idTypeIncrementNum === 1) {
+        newIncrementValueA = (newValueANum + incrementTypeReferenceANum) / 100;
+      } else if (idTypeIncrementNum === 2) {
+        newIncrementValueA = ((1 + newValueANum * 100) * (1 + incrementTypeReferenceANum * 100) - 1) / 100;
       }
     } else {
-      newIncrementValueA = incrementTypeReferenceA;
+      newIncrementValueA = incrementTypeReferenceANum;
     }
 
-    if (newValueH !== undefined && incrementTypeReferenceH !== null) {
-      if (idTypeIncrement === 1) {
-        newIncrementValueH = (newValueH + incrementTypeReferenceH) / 100;
-      } else if (idTypeIncrement === 2) {
-        newIncrementValueH = ((1 + newValueH * 100) * (1 + incrementTypeReferenceH * 100) - 1) / 100;
+    if (newValueHNum !== undefined && incrementTypeReferenceHNum !== null) {
+      if (idTypeIncrementNum === 1) {
+        newIncrementValueH = (newValueHNum + incrementTypeReferenceHNum) / 100;
+      } else if (idTypeIncrementNum === 2) {
+        newIncrementValueH = ((1 + newValueHNum * 100) * (1 + incrementTypeReferenceHNum * 100) - 1) / 100;
       }
     } else {
-      newIncrementValueH = incrementTypeReferenceH; 
+      newIncrementValueH = incrementTypeReferenceHNum; 
     }
 
-    if ((newValueA !== undefined && newIncrementValueA === null) || (newValueH !== undefined && newIncrementValueH === null)) {
+    if ((newValueANum !== undefined && newIncrementValueA === null) || (newValueHNum !== undefined && newIncrementValueH === null)) {
       throw new Error("Error en el cálculo de los incrementos.");
     }
 
@@ -2529,12 +2538,12 @@ export const updateNegotiationTabCupsColmedicaController = async (data: IUpdateN
     `;
 
     const requestUpdate = db.request();
-    requestUpdate.input('idTypeFareReferenceA', idTypeFareReferenceA ?? null);
-    requestUpdate.input('idTypeFareReferenceH', idTypeFareReferenceH ?? null);
+    requestUpdate.input('idTypeFareReferenceA', idTypeFareReferenceANum ?? null);
+    requestUpdate.input('idTypeFareReferenceH', idTypeFareReferenceHNum ?? null);
     requestUpdate.input('newIncrementValueA', newIncrementValueA);
     requestUpdate.input('newIncrementValueH', newIncrementValueH);
-    requestUpdate.input('idTypeIncrement', idTypeIncrement);
-    requestUpdate.input('idNegotiationTabColmedica', idNegotiationTabColmedica);
+    requestUpdate.input('idTypeIncrement', idTypeIncrementNum);
+    requestUpdate.input('idNegotiationTabColmedica', idNegotiationTabColmedicaNum);
 
     const resultUpdate = await requestUpdate.query(queryUpdate);
 
