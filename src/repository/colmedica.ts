@@ -109,7 +109,7 @@ export const saveLogicNegotiationTabCupsColmedica = async (
       ,ntb.fareHumanOperation AS PrecioGamaHumanaH
       ,ntb.fareGamaMediaOperation AS PrecioGamaMediaH
       ,ntb.fareGamaMenorOperation AS PrecioGamaMenorH
-      ,ntb.farePreferenciaOperation AS PrecioGamaPreferencialH
+      ,ntb.farePreferenciaOperation AS PrecioGamaPreferencialH, 0,0
       from TB_NegotiationTabServiceColmedica as ntb
       inner join TB_Speciality as ts on ntb.idSpeciality = ts.idSpeciality
       inner join TB_MedicalAct as ma on ma.idSpeciality = ts.idSpeciality
@@ -132,7 +132,7 @@ export const saveLogicNegotiationTabCupsColmedica = async (
       ,CAST(REPLACE((fs.fare + (ntb.fareHumanOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaHumanaH
       ,CAST(REPLACE((fs.fare + (ntb.fareGamaMediaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMediaH
       ,CAST(REPLACE((fs.fare + (ntb.fareGamaMenorOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMenorH
-      ,CAST(REPLACE((fs.fare + (ntb.farePreferenciaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaPreferencialH
+      ,CAST(REPLACE((fs.fare + (ntb.farePreferenciaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaPreferencialH, 0,0
       from TB_NegotiationTabServiceColmedica as ntb
       left join TB_Speciality as ts on ntb.idSpeciality = ts.idSpeciality
       left join TB_MedicalAct as ma on ma.idSpeciality = ts.idSpeciality
@@ -158,7 +158,7 @@ export const saveLogicNegotiationTabCupsColmedica = async (
     ,CAST(REPLACE((fs.fare + (ntb.fareHumanOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaHumanaH
     ,CAST(REPLACE((fs.fare + (ntb.fareGamaMediaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMediaH
     ,CAST(REPLACE((fs.fare + (ntb.fareGamaMenorOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaMenorH
-    ,CAST(REPLACE((fs.fare + (ntb.farePreferenciaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaPreferencialH
+    ,CAST(REPLACE((fs.fare + (ntb.farePreferenciaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaPreferencialH, 0,0
     from TB_NegotiationTabServiceColmedica as ntb
     inner join TB_Speciality as ts on ntb.idSpeciality = ts.idSpeciality
     inner join TB_MedicalAct as ma on ma.idSpeciality = ts.idSpeciality
