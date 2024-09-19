@@ -2321,9 +2321,8 @@ export const getCodeIpsByIdNegotiationTabColmedica = async (id_NegotiationTabCol
     }
 
     const queryCodeIps = `
-      SELECT DISTINCT codigoIPS FROM TB_NegotiationTabCupsColmedica AS ntc
-      INNER JOIN TB_TypeFares AS tf ON tf.idTypeFare = ntc.idTypeFareReferenceA
-      WHERE ntc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica
+      SELECT DISTINCT codigoIPS FROM TB_NegotiationTabCupsColmedica 
+      WHERE id_NegotiationTabColmedica = @id_NegotiationTabColmedica
     `;
 
     const request = db.request();
@@ -2359,9 +2358,8 @@ export const getCodeCupsByIdNegotiationTabColmedica = async (id_NegotiationTabCo
     }
 
     const queryCodeCups = `
-      SELECT DISTINCT codigoCups FROM TB_NegotiationTabCupsColmedica AS ntc
-      INNER JOIN TB_TypeFares AS tf ON tf.idTypeFare = ntc.idTypeFareReferenceA
-      WHERE ntc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica
+      SELECT DISTINCT codigoCups FROM TB_NegotiationTabCupsColmedica 
+      WHERE id_NegotiationTabColmedica= @id_NegotiationTabColmedica
     `;
 
     const request = db.request();
@@ -2397,9 +2395,8 @@ export const getCodeIssByIdNegotiationTabColmedica = async (id_NegotiationTabCol
     }
 
     const queryCodeIss = `
-      SELECT DISTINCT codigoISS FROM TB_NegotiationTabCupsColmedica AS ntc
-      INNER JOIN TB_TypeFares AS tf ON tf.idTypeFare = ntc.idTypeFareReferenceA
-      WHERE ntc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica
+      SELECT DISTINCT codigoISS FROM TB_NegotiationTabCupsColmedica 
+      WHERE id_NegotiationTabColmedica = @id_NegotiationTabColmedica
     `;
 
     const request = db.request();
