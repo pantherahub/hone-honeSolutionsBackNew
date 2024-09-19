@@ -2481,16 +2481,16 @@ export const getTypeReferenceByIdNegotiationTabColmedica = async (id_Negotiation
   }
 };
 
+
 export const updateNegotiationTabCupsColmedicaController = async (data: IUpdateNegotiationTabColmedica): Promise<IresponseRepositoryService> => {
   try {
-    const {idNegotiationTabColmedica,idTypeFareReferenceA,idTypeFareReferenceH,incrementTypeReferenceA,incrementTypeReferenceH,
+    const { idNegotiationTabColmedica, idTypeFareReferenceA, idTypeFareReferenceH, incrementTypeReferenceA, incrementTypeReferenceH,
       idTypeIncrement, newValueA, newValueH } = data; 
     const db = await connectToSqlServer();
     if (!db) {
       throw new Error("Database connection failed");
     }
 
-    const idNegotiationTabColmedicaNum = Number(idNegotiationTabColmedica);
     const idTypeFareReferenceANum = idTypeFareReferenceA !== null ? Number(idTypeFareReferenceA) : null;
     const idTypeFareReferenceHNum = idTypeFareReferenceH !== null ? Number(idTypeFareReferenceH) : null;
     const incrementTypeReferenceANum = incrementTypeReferenceA !== null ? Number(incrementTypeReferenceA) : null;
@@ -2526,6 +2526,12 @@ export const updateNegotiationTabCupsColmedicaController = async (data: IUpdateN
       throw new Error("Error en el cálculo de los incrementos.");
     }
 
+    if (!Array.isArray(idNegotiationTabColmedica)) {
+      throw new Error("idNegotiationTabColmedica debe ser un array de números");
+    }
+
+    const idNegotiationTabColmedicaArray = idNegotiationTabColmedica.join(',');
+
     const queryUpdate = `
       UPDATE [dbo].[TB_NegotiationTabCupsColmedica]
       SET 
@@ -2534,7 +2540,7 @@ export const updateNegotiationTabCupsColmedicaController = async (data: IUpdateN
         incrementTypeReferenceA = COALESCE(@newIncrementValueA, incrementTypeReferenceA),
         incrementTypeReferenceH = COALESCE(@newIncrementValueH, incrementTypeReferenceH),
         idTypeIncrement = @idTypeIncrement
-      WHERE id_NegotiationTabColmedica = @idNegotiationTabColmedica;
+      WHERE idNegotiationTabCupsColmedica IN (${idNegotiationTabColmedicaArray}) ; 
     `;
 
     const requestUpdate = db.request();
@@ -2543,7 +2549,6 @@ export const updateNegotiationTabCupsColmedicaController = async (data: IUpdateN
     requestUpdate.input('newIncrementValueA', newIncrementValueA);
     requestUpdate.input('newIncrementValueH', newIncrementValueH);
     requestUpdate.input('idTypeIncrement', idTypeIncrementNum);
-    requestUpdate.input('idNegotiationTabColmedica', idNegotiationTabColmedicaNum);
 
     const resultUpdate = await requestUpdate.query(queryUpdate);
 
@@ -2559,8 +2564,8 @@ export const updateNegotiationTabCupsColmedicaController = async (data: IUpdateN
         translationKey: "global.error_in_repository",
         translationParams: { name: "updateFareReference" },
       },
-    };
-  }
+    };
+  }
 };
 
 export const getTypeFareByIdNegotiationTabColmedicaAmbulatorio = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
@@ -2574,7 +2579,7 @@ export const getTypeFareByIdNegotiationTabColmedicaAmbulatorio = async (id_Negot
     const queryCodeCups = `
       SELECT DISTINCT tbntc.idTypeFareReferenceA, tbtf.typeFare FROM TB_NegotiationTabCupsColmedica AS tbntc
       LEFT JOIN TB_TypeFares AS tbtf ON tbtf.idTypeFare = tbntc.idTypeFareReferenceA  
-      WHERE idTypeFareReferenceA IS NOT NULL AND id_NegotiationTabColmedica =  @id_NegotiationTabColmedica
+      WHERE tbntc.idTypeFareReferenceA IS NOT NULL AND tbtf.typeFare IS NOT NULL AND id_NegotiationTabColmedica =  @id_NegotiationTabColmedica
     `;
 
     const request = db.request();
@@ -2612,7 +2617,7 @@ export const getTypeFareByIdNegotiationTabColmedicaHospitalario = async (id_Nego
     const queryCodeCups = `
       SELECT DISTINCT tbntc.idTypeFareReferenceH, tbtf.typeFare FROM TB_NegotiationTabCupsColmedica AS tbntc
       LEFT JOIN TB_TypeFares AS tbtf ON tbtf.idTypeFare = tbntc.idTypeFareReferenceH  
-      WHERE idTypeFareReferenceH IS NOT NULL AND id_NegotiationTabColmedica =  @id_NegotiationTabColmedica
+      WHERE tbntc.idTypeFareReferenceH IS NOT NULL AND tbtf.typeFare IS NOT NULL AND id_NegotiationTabColmedica =  @id_NegotiationTabColmedica
     `;
 
     const request = db.request();
