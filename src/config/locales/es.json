@@ -23,5 +23,6 @@
 		"successful": "ticket.successful"
 	},
 	"ok": "ok",
-	"Campos actualizados correctamente": "Campos actualizados correctamente"
+	"Campos actualizados correctamente": "Campos actualizados correctamente",
+	"Update successful": "Update successful"
 }

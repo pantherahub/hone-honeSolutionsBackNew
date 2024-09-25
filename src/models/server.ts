@@ -52,7 +52,8 @@ class Server {
     // Directorio publico
     this.app.use(express.static("public"));
     // resposes json
-    this.app.use(express.json());
+    this.app.use(express.json({ limit: '50mb' }));
+    this.app.use(express.urlencoded({ limit: '50mb', extended: true }));
     // responses
     this.app.use(morgan("dev"));
     // subir archivos
@@ -61,6 +62,7 @@ class Server {
         useTempFiles: true,
         tempFileDir: "/tmp/",
         createParentPath: true,
+        limits: { fileSize: 50 * 1024 * 1024}
       })
     );
     // translator handler 
