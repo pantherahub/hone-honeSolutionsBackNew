@@ -1,0 +1,17 @@
+services:
+    honeSolutionsBackNew:
+        image: node:18.19.1
+        container_name: 'honeSolutionsBackNew'
+        ports:
+            - '9001:8080'
+        volumes:
+            - '.:/app'
+        networks:
+            - local_net
+        working_dir: /app
+        command: npm run dev
+networks:
+    local_net:
+        name: local_net
+        driver: bridge
+        external: true
