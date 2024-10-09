@@ -1,15 +1,16 @@
 services:
-    honeSolutionsBackNew:
-        image: node:18.19.1
-        container_name: 'honeSolutionsBackNew'
+    hone_solutions_back_new:
+        build: .
+        user: 'root'
+        container_name: 'hone_solutions_back_new'
         ports:
-            - '9001:8080'
+          - "7001:8080"
         volumes:
-            - '.:/app'
+          - .:/app
         networks:
             - local_net
-        working_dir: /app
-        command: npm run dev
+        stdin_open: true
+        tty: true
 networks:
     local_net:
         name: local_net

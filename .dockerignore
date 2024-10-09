@@ -1,0 +1,10 @@
+.git
+.firebase
+.editorconfig
+.gitignore
+/node_modules
+*.zip
+*.md
+.vs
+.vscode
+
