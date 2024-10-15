@@ -5,11 +5,12 @@ import * as sql from 'mssql';
 
 const configSQL: sql.config = {
   user: config.user_server_sql,
-  password: "13A132b17#",
+  password: config.db_password_sql,
   database: config.name_database_sql,
   server:config.server_name_sql,
   options: {
-    encrypt: true,
+    encrypt: false,
+    // trustServerCertificate: true,
   },
 };
 
@@ -25,7 +26,7 @@ async function connectToSqlServer() {
   }
 }
 
-const connectionSequelizeSql = new Sequelize(config.name_database_sql, config.user_server_sql,"13A132b17#", {
+const connectionSequelizeSql = new Sequelize(config.name_database_sql, config.user_server_sql, config.db_password_sql, {
   host: config.server_name_sql,
   dialect: 'mssql',
   define: {
@@ -35,7 +36,5 @@ const connectionSequelizeSql = new Sequelize(config.name_database_sql, config.us
     options: configSQL.options,
   },
 })
-
-
 
 export { connectToSqlServer, connectionSequelizeSql };
