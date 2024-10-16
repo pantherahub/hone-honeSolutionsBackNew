@@ -3,13 +3,15 @@ import "colors";
 import config from "../config/config";
 import * as sql from 'mssql';
 
+const isProduction = process.env.APP_ENV === 'production';
+
 const configSQL: sql.config = {
   user: config.user_server_sql,
   password: config.db_password_sql,
   database: config.name_database_sql,
   server:config.server_name_sql,
   options: {
-    encrypt: false,
+    encrypt: isProduction,
     // trustServerCertificate: true,
   },
 };
