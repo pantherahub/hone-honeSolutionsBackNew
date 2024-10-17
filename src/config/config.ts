@@ -1,7 +1,8 @@
 import dotEnv from "dotenv";
+
 // utilizar variables de entorno
 dotEnv.config();
-
+const port: number = parseInt(process.env.DB_PORT || '1433');
 export default {
     port: process.env.PORT  || "8080",
     email_host: "https://api.masiv.masivian.com/email/v1/delivery",
@@ -11,6 +12,8 @@ export default {
     user_server_sql: process.env.USER_SERVER_SQL || "",
 	name_database_sql: process.env.NAME_DATABASE_SQL || "",
 	db_password_sql: process.env.DB_PASSWORD_SQL || "13A132b17#",
+	app_env: process.env.APP_ENV || "production",
+	db_port: port,
     db_table_name_ticket: "TB_tickets",
     db_table_name_email_notification: "TB_EmailNotificationByClient",
     db_table_name_type_request: "TB_Tipodesolicitud",
