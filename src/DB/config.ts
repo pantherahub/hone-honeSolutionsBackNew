@@ -26,6 +26,9 @@ if (isProduction) {
 
 
 
+
+
+
 // Instancia de conexión para SQL
 async function connectToSqlServer() {
   try {
@@ -34,7 +37,8 @@ async function connectToSqlServer() {
 
     return pool;
   } catch (err) {
-    console.error('Error al conectar a SQL Server:', err);
+	  console.error('Error al conectar a SQL Server:', err);
+	  console.log(configSQL);
   }
 }
 
