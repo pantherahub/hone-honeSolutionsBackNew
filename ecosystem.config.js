@@ -7,7 +7,7 @@ module.exports = {
 			interpreter_args: '-r ts-node/register', // Usar ts-node para ejecutar archivos .ts
 			watch: true, // Opcional, para reiniciar la app cuando los archivos cambien
 			ignore_watch: ['node_modules'],
-			no_autorestart: false,
+			autorestart: false,
 			env: {
 				NODE_ENV: 'development'
 			},
