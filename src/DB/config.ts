@@ -13,14 +13,14 @@ const configSQL: sql.config = {
   	port: config.db_port,
   	options: {
     	encrypt: false,
-    	trustServerCertificate: false,
+    	// trustServerCertificate: false,
   },
 };
 
 if (isProduction) {
 	configSQL.options = {
 		encrypt: true,
-    	trustServerCertificate: true,
+    	// trustServerCertificate: true,
 	}
 }
 
