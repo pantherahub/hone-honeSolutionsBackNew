@@ -1,8 +1,8 @@
 services:
-    hone_solutions_back_new:
+    hs_backend:
         image: node:18.19.1
         user: 'root'
-        container_name: 'hone_solutions_back_new'
+        container_name: 'hs_backend'
         ports:
           - "7001:8080"
         volumes:
@@ -12,7 +12,7 @@ services:
             - local_net
         stdin_open: true
         tty: true
-        command: npm run dev
+        command: npm run watch
 networks:
     local_net:
         name: local_net
