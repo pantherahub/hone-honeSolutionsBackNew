@@ -1,6 +1,6 @@
 /**
  * retorna el template basico de envio de correo para tickets
- * @param data : { 
+ * @param data : {
         idTickets: any,
         email: string,
         observaciones: string
@@ -8,9 +8,7 @@
  * @returns html template string
  */
 export const basicTemplate = (data: any) => {
-    
-    const template : string =
-    `
+	const template: string = `
             <!DOCTYPE html>
         <html lang='en' xmlns='http://www.w3.org/1999/xhtml' xmlns:o='urn:schemas-microsoft-com:office:office'>
 
@@ -35,7 +33,7 @@ export const basicTemplate = (data: any) => {
 
             <div role='article' aria-roledescription='email' lang='en' style='text-size-adjust:100%;-webkit-text-size-adjust:100%;
                         -ms-text-size-adjust:100%;
-                        background-image: url(https://honesolutionsstorage.blob.core.windows.net/email/emailtikets.jpg);
+                        background-image: url(https://honesolutions.blob.core.windows.net/email/emailtikets.jpg);
                         background-repeat: no-repeat; background-size: cover;
                     '>
                 <table role='presentation' style='width:100%;border:10px;border-spacing:50px; '>
@@ -48,7 +46,7 @@ export const basicTemplate = (data: any) => {
                                     <td style='padding:20px;background-color:#ffffff00;'>
 
                                         <div style='padding:0px 0px 0px 0px;text-align:center;'>
-                                            <img src='https://honesolutionsstorage.blob.core.windows.net/documents/photo5154410902588598764.jpg'
+                                            <img src='https://honesolutions.blob.core.windows.net/documents/photo5154410902588598764.jpg'
                                                 alt=''
                                                 style=' width: 160px; position: relative;  margin: 2rem 0; mix-blend-mode: darken;'>
                                         </div>
@@ -85,6 +83,6 @@ export const basicTemplate = (data: any) => {
 
         </html>
 
-    `
-    return template
-}
+    `;
+	return template;
+};

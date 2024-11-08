@@ -4,7 +4,7 @@ services:
         user: 'root'
         container_name: 'hs_backend'
         ports:
-          - "7001:8080"
+          - "7001:7001"
         volumes:
           - .:/app
         working_dir: /app

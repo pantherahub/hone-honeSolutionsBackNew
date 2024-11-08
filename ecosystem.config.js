@@ -1,10 +1,10 @@
 module.exports = {
 	apps: [
 		{
-			name: 'backend',
+			name: 'prestadores-back',
 			script: 'src/app.ts', // El archivo TypeScript principal
 			interpreter: 'node', // Ejecuta con Node.js
-			interpreter_args: '-r ts-node/register', // Usar ts-node para ejecutar archivos .ts
+			interpreter_args: '-r ts-node/register -r tsconfig-paths/register', // Usar ts-node para ejecutar archivos .ts
 			watch: true, // Opcional, para reiniciar la app cuando los archivos cambien
 			ignore_watch: ['node_modules'],
 			autorestart: false,
@@ -16,4 +16,4 @@ module.exports = {
 			}
 		}
 	]
-}
+};
