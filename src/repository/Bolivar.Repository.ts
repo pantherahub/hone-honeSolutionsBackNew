@@ -22,7 +22,7 @@ export const getDepartments = async () => {
                 LEFT JOIN TB_ClientHoneSolutions AS tch ON tch.idClientHoneSolutions = toc.idClientHoneSolutions
                 WHERE tch.idClientHoneSolutions = 5`);
 
-		if (data.recordset.length === 0) {
+		if (data?.recordset.length === 0) {
 			return {
 				code: 204,
 				message: { translationKey: 'bolivar.emptyResponse' }
@@ -65,7 +65,7 @@ export const getCities = async (data: dataCity): Promise<CitiesRepositoryService
 
 		const cities: any = await db?.request().query(orderQuery);
 
-		const queryCitiesEmpty = cities[0];
+		const queryCitiesEmpty = cities?.recordset;
 
 		if (queryCitiesEmpty && Object.keys(queryCitiesEmpty).length === 0) {
 			return {
@@ -103,7 +103,7 @@ export const getPlans = async (data: dataPlan): Promise<PlansRepositoryService> 
 			queryPlans += ` AND op.idCity = ${idCiudad}`;
 		}
 		const plans: any = await db?.request().query(queryPlans);
-		const queryPlansEmpty = plans[0];
+		const queryPlansEmpty = plans?.recordset;
 
 		if (queryPlansEmpty && Object.keys(queryPlansEmpty).length === 0) {
 			return {
@@ -348,7 +348,7 @@ export const getProvidersBolivar = async (
 		const count: any = await db?.request().query(basic_count);
 		const rows: any = await db?.request().query(basic_query);
 		const cant: any = count.recordset[0];
-		if (rows.recordset.length === 0) {
+		if (rows?.recordset.length === 0) {
 			return {
 				code: 204,
 				message: { translationKey: 'bolivar.emptyResponse' }

@@ -1,102 +1,102 @@
-import { connectToSqlServer } from "../DB/config"
+import { connectToSqlServer } from '../DB/config';
 import * as xlsx from 'xlsx';
-import { IresponseRepositoryService } from "../interface/general";
+import { IresponseRepositoryService } from '../interface/general';
 import {
-  INegotiationTabColmedica,
-  IProviderColmedica,
-  IOfficeProviderColmedica,
-  IProductColmedica,
-  IPlansColmedica,
-  INegotiationTabPlansColmedica,
-  IContactsProviderColmedica,
-  IOccupationColmedica,
-  ITypeRendomColmedica,
-  INegotiationTabRendomColmedica,
-  ITypeIncrementColmedica,
-  INegotiationTabTypeIncrementColmedica,
-  IUploadFileColemdica,
-  INegotiationTabServiceColmedica,
-  ISaveNegotiationTabFareBaseColmedica,
-  IUpdateNegotiationTabServiceColmedica,
-  ILogicNegotiationTabCupsColmedica,
-  IGroupNegotiationColmedica,
-  ISpecialityNegotiationColmedica,
-  ITypeFareNegotiationColmedica,
-  INegotiationColmedica,
-  ICodeIpsNegotiationColmedica,
-  ICodeCupsNegotiationColmedica,
-  ICodeIsssNegotiationColmedica,
-  ITypeFareReferenceNegotiationColmedica,
-  IInfoByIdNegotiationTabColmedica,
-  IUpdateNegotiationTabColmedica,
-  ITypeFareNegotiationColmedicaA,
-  ITypeFareNegotiationColmedicaH
-} from "../interface/colmedica";
-
+	INegotiationTabColmedica,
+	IProviderColmedica,
+	IOfficeProviderColmedica,
+	IProductColmedica,
+	IPlansColmedica,
+	INegotiationTabPlansColmedica,
+	IContactsProviderColmedica,
+	IOccupationColmedica,
+	ITypeRendomColmedica,
+	INegotiationTabRendomColmedica,
+	ITypeIncrementColmedica,
+	INegotiationTabTypeIncrementColmedica,
+	IUploadFileColemdica,
+	INegotiationTabServiceColmedica,
+	ISaveNegotiationTabFareBaseColmedica,
+	IUpdateNegotiationTabServiceColmedica,
+	ILogicNegotiationTabCupsColmedica,
+	IGroupNegotiationColmedica,
+	ISpecialityNegotiationColmedica,
+	ITypeFareNegotiationColmedica,
+	INegotiationColmedica,
+	ICodeIpsNegotiationColmedica,
+	ICodeCupsNegotiationColmedica,
+	ICodeIsssNegotiationColmedica,
+	ITypeFareReferenceNegotiationColmedica,
+	IInfoByIdNegotiationTabColmedica,
+	IUpdateNegotiationTabColmedica,
+	ITypeFareNegotiationColmedicaA,
+	ITypeFareNegotiationColmedicaH
+} from '../interface/colmedica';
 
 export const saveNegotiationTabColmedica = async (
-  negotiationTabColmedica: INegotiationTabColmedica
+	negotiationTabColmedica: INegotiationTabColmedica
 ): Promise<IresponseRepositoryService> => {
-  try {
-    const { idOfficeProvider, idProduct, dateBegin, idContactsProvider, dateEnd } = negotiationTabColmedica;
-    const db = await connectToSqlServer();
+	try {
+		const { idOfficeProvider, idProduct, dateBegin, idContactsProvider, dateEnd } =
+			negotiationTabColmedica;
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const queryPlans = `
+		const queryPlans = `
     INSERT INTO [dbo].[TB_NegotiationTabColmedica]
     ([idOfficeProvider], [dateBegin], [dateEnd], [idContactsProvider], [idProduct])
     OUTPUT inserted.*
     VALUES (@idOfficeProvider, @dateBegin, @dateEnd, @idContactsProvider, @idProduct);
   `;
 
-    const request = db.request();
-    request.input("idOfficeProvider", idOfficeProvider);
-    request.input("dateBegin", dateBegin);
-    request.input("dateEnd", dateEnd);
-    request.input("idContactsProvider", idContactsProvider);
-    request.input("idProduct", idProduct);
+		const request = db.request();
+		request.input('idOfficeProvider', idOfficeProvider);
+		request.input('dateBegin', dateBegin);
+		request.input('dateEnd', dateEnd);
+		request.input('idContactsProvider', idContactsProvider);
+		request.input('idProduct', idProduct);
 
-    const result = await request.query(queryPlans);
+		const result = await request.query(queryPlans);
 
-    if (!result.recordset || result.recordset.length === 0) {
-      throw new Error("Failed to insert and retrieve the record");
-    }
+		if (!result.recordset || result.recordset.length === 0) {
+			throw new Error('Failed to insert and retrieve the record');
+		}
 
-    const insertedRecord = result.recordset[0];
+		const insertedRecord = result.recordset[0];
 
-    return {
-      code: 200,
-      message: "ok",
-      data: insertedRecord,
-    };
-  } catch (err: any) {
-    console.error("Error in saveNegotiationTabColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "saveNegotiationTabColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: insertedRecord
+		};
+	} catch (err: any) {
+		console.error('Error in saveNegotiationTabColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'saveNegotiationTabColmedica' }
+			}
+		};
+	}
 };
 
 export const saveLogicNegotiationTabCupsColmedica = async (
-  negotiationTabColmedica: ILogicNegotiationTabCupsColmedica
+	negotiationTabColmedica: ILogicNegotiationTabCupsColmedica
 ): Promise<IresponseRepositoryService> => {
-  try {
-    const { id_NegotiationTabColmedica } = negotiationTabColmedica;
-    const db = await connectToSqlServer();
+	try {
+		const { id_NegotiationTabColmedica } = negotiationTabColmedica;
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const insertQuery = `
-      insert into [TB_NegotiationTabCupsColmedica] 
+		const insertQuery = `
+      insert into [TB_NegotiationTabCupsColmedica]
       select  @id_NegotiationTabColmedica,ts.idSpeciality,ma.idMedicalAct,'' as idTypeIncrement,ma.code,ma.code,ma.code,1,'',
       ntb.idTypeFareGamaAltaU,
       ntb.fareGamaAltaOperation AS PrecioGamaAltaA
@@ -118,8 +118,8 @@ export const saveLogicNegotiationTabCupsColmedica = async (
       where ntb.id_NegotiationTabColmedica = @id_NegotiationTabColmedica and idTypeFareGamaAltaU in (6,18)
     `;
 
-    const insertQuery2 = `
-      insert into [TB_NegotiationTabCupsColmedica] 
+		const insertQuery2 = `
+      insert into [TB_NegotiationTabCupsColmedica]
       select  @id_NegotiationTabColmedica,ts.idSpeciality,ma.idMedicalAct,ntti.idTypeIncrement,ma.code,ma.code,ma.code,1,
       ntb.idTypeFareGamaAltaU,
       CAST(REPLACE((fs.fare + (ntb.fareGamaAltaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaAltaA
@@ -143,9 +143,9 @@ export const saveLogicNegotiationTabCupsColmedica = async (
       where ntb.id_NegotiationTabColmedica = @id_NegotiationTabColmedica and ntti.idTypeIncrement = 1
     `;
 
-    const insertQuery3 = `
- 
-    insert into [TB_NegotiationTabCupsColmedica] 
+		const insertQuery3 = `
+
+    insert into [TB_NegotiationTabCupsColmedica]
     select @id_NegotiationTabColmedica,ts.idSpeciality,ma.idMedicalAct,ntti.idTypeIncrement,ma.code,ma.code,ma.code,1,
     ntb.idTypeFareGamaAltaU,
     CAST(REPLACE((fs.fare + (ntb.fareGamaAltaOperation/100)*fs.fare), ',', '') AS DECIMAL(10, 2)) AS PrecioGamaAltaA
@@ -169,46 +169,41 @@ export const saveLogicNegotiationTabCupsColmedica = async (
     where ntb.id_NegotiationTabColmedica = @id_NegotiationTabColmedica and ntti.idTypeIncrement = 2
   `;
 
-    const request = db.request();
-    request.input("id_NegotiationTabColmedica", id_NegotiationTabColmedica);
+		const request = db.request();
+		request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
 
+		await request.query(insertQuery);
+		await request.query(insertQuery2);
+		await request.query(insertQuery3);
 
-    await request.query(insertQuery);
-    await request.query(insertQuery2);
-    await request.query(insertQuery3);
-
-
-
-    return {
-      code: 200,
-      message: "ok",
-      data: "ok",
-    };
-  } catch (err: any) {
-    console.error("Error in saveLogicNegotiationTabCupsColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "saveLogicNegotiationTabCupsColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: 'ok'
+		};
+	} catch (err: any) {
+		console.error('Error in saveLogicNegotiationTabCupsColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'saveLogicNegotiationTabCupsColmedica' }
+			}
+		};
+	}
 };
 
-
 export const saveNegotiationTabServiceColmedicaColmedica = async (
-  negotiationTabColmedica: INegotiationTabServiceColmedica
+	negotiationTabColmedica: INegotiationTabServiceColmedica
 ): Promise<IresponseRepositoryService> => {
-  try {
+	try {
+		const db = await connectToSqlServer();
 
-    const db = await connectToSqlServer();
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
-
-    const queryPlans = `
+		const queryPlans = `
   INSERT INTO [dbo].[TB_NegotiationTabServiceColmedica]
            ([id_NegotiationTabColmedica]
            ,[idSpeciality]
@@ -220,7 +215,7 @@ export const saveNegotiationTabServiceColmedicaColmedica = async (
            ,[fareHumanOperation]
            ,[idTypeFareHumanD]
            ,[idTypeFareGamaMediaU]
-           ,[fareGamaMediaOperation] 
+           ,[fareGamaMediaOperation]
            ,[idTypeFareGamaMediaD]
            ,[idTypeFareGamaMenorU]
            ,[fareGamaMenorOperation]
@@ -250,64 +245,63 @@ export const saveNegotiationTabServiceColmedicaColmedica = async (
            @idTypeFarePreferenciaD)
   `;
 
-    const request = db.request();
-    request.input("id_NegotiationTabColmedica", negotiationTabColmedica.id_NegotiationTabColmedica);
-    request.input("idSpeciality", negotiationTabColmedica.idSpeciality);
-    request.input("idTypeService", negotiationTabColmedica.idTypeService);
-    request.input("idTypeFareGamaAltaU", negotiationTabColmedica.idTypeFareGamaAltaU);
-    request.input("fareGamaAltaOperation", negotiationTabColmedica.fareGamaAltaOperation);
-    request.input("idTypeFareGamaAltaD", negotiationTabColmedica.idTypeFareGamaAltaD);
-    request.input("idTypeFareHumanAltaU", negotiationTabColmedica.idTypeFareHumanAltaU);
-    request.input("fareHumanOperation", negotiationTabColmedica.fareHumanOperation);
-    request.input("idTypeFareHumanD", negotiationTabColmedica.idTypeFareHumanD);
-    request.input("idTypeFareGamaMediaU", negotiationTabColmedica.idTypeFareGamaMediaU);
-    request.input("fareGamaMediaOperation", negotiationTabColmedica.fareGamaMediaOperation);
-    request.input("idTypeFareGamaMediaD", negotiationTabColmedica.idTypeFareGamaMediaD);
-    request.input("idTypeFareGamaMenorU", negotiationTabColmedica.idTypeFareGamaMenorU);
-    request.input("fareGamaMenorOperation", negotiationTabColmedica.fareGamaMenorOperation);
-    request.input("idTypeFareGamaMenorD", negotiationTabColmedica.idTypeFareGamaMenorD);
-    request.input("idTypeFarePreferencialU", negotiationTabColmedica.idTypeFarePreferencialU);
-    request.input("farePreferenciaOperation", negotiationTabColmedica.farePreferenciaOperation);
-    request.input("idTypeFarePreferenciaD", negotiationTabColmedica.idTypeFarePreferenciaD);
+		const request = db.request();
+		request.input('id_NegotiationTabColmedica', negotiationTabColmedica.id_NegotiationTabColmedica);
+		request.input('idSpeciality', negotiationTabColmedica.idSpeciality);
+		request.input('idTypeService', negotiationTabColmedica.idTypeService);
+		request.input('idTypeFareGamaAltaU', negotiationTabColmedica.idTypeFareGamaAltaU);
+		request.input('fareGamaAltaOperation', negotiationTabColmedica.fareGamaAltaOperation);
+		request.input('idTypeFareGamaAltaD', negotiationTabColmedica.idTypeFareGamaAltaD);
+		request.input('idTypeFareHumanAltaU', negotiationTabColmedica.idTypeFareHumanAltaU);
+		request.input('fareHumanOperation', negotiationTabColmedica.fareHumanOperation);
+		request.input('idTypeFareHumanD', negotiationTabColmedica.idTypeFareHumanD);
+		request.input('idTypeFareGamaMediaU', negotiationTabColmedica.idTypeFareGamaMediaU);
+		request.input('fareGamaMediaOperation', negotiationTabColmedica.fareGamaMediaOperation);
+		request.input('idTypeFareGamaMediaD', negotiationTabColmedica.idTypeFareGamaMediaD);
+		request.input('idTypeFareGamaMenorU', negotiationTabColmedica.idTypeFareGamaMenorU);
+		request.input('fareGamaMenorOperation', negotiationTabColmedica.fareGamaMenorOperation);
+		request.input('idTypeFareGamaMenorD', negotiationTabColmedica.idTypeFareGamaMenorD);
+		request.input('idTypeFarePreferencialU', negotiationTabColmedica.idTypeFarePreferencialU);
+		request.input('farePreferenciaOperation', negotiationTabColmedica.farePreferenciaOperation);
+		request.input('idTypeFarePreferenciaD', negotiationTabColmedica.idTypeFarePreferenciaD);
 
-    const result = await request.query(queryPlans);
+		const result = await request.query(queryPlans);
 
-    if (!result.recordset || result.recordset.length === 0) {
-      throw new Error("Failed to insert and retrieve the record");
-    }
+		if (!result.recordset || result.recordset.length === 0) {
+			throw new Error('Failed to insert and retrieve the record');
+		}
 
-    const insertedRecord = result.recordset[0];
+		const insertedRecord = result.recordset[0];
 
-    return {
-      code: 200,
-      message: "ok",
-      data: insertedRecord,
-    };
-  } catch (err: any) {
-    console.error("Error in saveNegotiationTabColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "saveNegotiationTabColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: insertedRecord
+		};
+	} catch (err: any) {
+		console.error('Error in saveNegotiationTabColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'saveNegotiationTabColmedica' }
+			}
+		};
+	}
 };
 
-
 export const saveNegotiationTabFareBaseColmedica = async (
-  negotiationTabColmedica: ISaveNegotiationTabFareBaseColmedica
+	negotiationTabColmedica: ISaveNegotiationTabFareBaseColmedica
 ): Promise<IresponseRepositoryService> => {
-  try {
-    const { idNegotiationTabColmedica, idTypeFare } = negotiationTabColmedica;
-    const db = await connectToSqlServer();
+	try {
+		const { idNegotiationTabColmedica, idTypeFare } = negotiationTabColmedica;
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const queryPlans = `
+		const queryPlans = `
       INSERT INTO [dbo].[TB_NegotiationTabFareBaseColmedica]
         ([idNegotiationTabColmedica]
         ,[idTypeFare])
@@ -317,52 +311,51 @@ export const saveNegotiationTabFareBaseColmedica = async (
          @idTypeFare)
     `;
 
-    const insertedRecords = [];
+		const insertedRecords = [];
 
-    for (const fare of idTypeFare) {
-      const request = db.request();
-      request.input("idNegotiationTabColmedica", idNegotiationTabColmedica);
-      request.input("idTypeFare", fare);
+		for (const fare of idTypeFare) {
+			const request = db.request();
+			request.input('idNegotiationTabColmedica', idNegotiationTabColmedica);
+			request.input('idTypeFare', fare);
 
-      const result = await request.query(queryPlans);
+			const result = await request.query(queryPlans);
 
-      if (!result.recordset || result.recordset.length === 0) {
-        throw new Error("Failed to insert and retrieve the record");
-      }
+			if (!result.recordset || result.recordset.length === 0) {
+				throw new Error('Failed to insert and retrieve the record');
+			}
 
-      insertedRecords.push(result.recordset[0]);
-    }
+			insertedRecords.push(result.recordset[0]);
+		}
 
-    return {
-      code: 200,
-      message: "ok",
-      data: insertedRecords,
-    };
-  } catch (err: any) {
-    console.error("Error in saveNegotiationTabColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "saveNegotiationTabColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: insertedRecords
+		};
+	} catch (err: any) {
+		console.error('Error in saveNegotiationTabColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'saveNegotiationTabColmedica' }
+			}
+		};
+	}
 };
 
-
 export const saveNegotiationTabPlansColmedica = async (
-  negotiationTabColmedica: INegotiationTabPlansColmedica
+	negotiationTabColmedica: INegotiationTabPlansColmedica
 ): Promise<IresponseRepositoryService> => {
-  try {
-    const { idNegotiationTabColmedica, idPlan, idTypeService } = negotiationTabColmedica;
-    const db = await connectToSqlServer();
+	try {
+		const { idNegotiationTabColmedica, idPlan, idTypeService } = negotiationTabColmedica;
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const queryPlans = `
+		const queryPlans = `
       INSERT INTO [dbo].[TB_NegotiationTabPlansColmedica]
         ([idNegotiationTabColmedica]
         ,[idPlan]
@@ -374,57 +367,57 @@ export const saveNegotiationTabPlansColmedica = async (
         ,@idTypeService)
     `;
 
-    const insertedRecords = [];
+		const insertedRecords = [];
 
-    for (let i = 0; i < idTypeService.length; i++) {
-      const typeService = idTypeService[i];
-      const plansForService = idPlan[i];
+		for (let i = 0; i < idTypeService.length; i++) {
+			const typeService = idTypeService[i];
+			const plansForService = idPlan[i];
 
-      for (const plan of plansForService) {
-        const request = db.request();
-        request.input("idNegotiationTabColmedica", idNegotiationTabColmedica);
-        request.input("idPlan", plan);
-        request.input("idTypeService", typeService);
+			for (const plan of plansForService) {
+				const request = db.request();
+				request.input('idNegotiationTabColmedica', idNegotiationTabColmedica);
+				request.input('idPlan', plan);
+				request.input('idTypeService', typeService);
 
-        const result = await request.query(queryPlans);
+				const result = await request.query(queryPlans);
 
-        if (!result.recordset || result.recordset.length === 0) {
-          throw new Error("Failed to insert and retrieve the record");
-        }
+				if (!result.recordset || result.recordset.length === 0) {
+					throw new Error('Failed to insert and retrieve the record');
+				}
 
-        insertedRecords.push(result.recordset[0]);
-      }
-    }
+				insertedRecords.push(result.recordset[0]);
+			}
+		}
 
-    return {
-      code: 200,
-      message: "ok",
-      data: insertedRecords,
-    };
-  } catch (err: any) {
-    console.error("Error in saveNegotiationTabColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "saveNegotiationTabColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: insertedRecords
+		};
+	} catch (err: any) {
+		console.error('Error in saveNegotiationTabColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'saveNegotiationTabColmedica' }
+			}
+		};
+	}
 };
 
 export const saveNegotiationTabRendomColmedica = async (
-  negotiationTabColmedica: INegotiationTabRendomColmedica
+	negotiationTabColmedica: INegotiationTabRendomColmedica
 ): Promise<IresponseRepositoryService> => {
-  try {
-    const { id_NegotiationTabColmedica, idTypeRendom, idTypeService } = negotiationTabColmedica;
-    const db = await connectToSqlServer();
+	try {
+		const { id_NegotiationTabColmedica, idTypeRendom, idTypeService } = negotiationTabColmedica;
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const queryPlans = `
+		const queryPlans = `
       INSERT INTO [dbo].[TB_NegotiationTabRendomColmedica]
         ([id_NegotiationTabColmedica]
         ,[idTypeRendom]
@@ -436,57 +429,57 @@ export const saveNegotiationTabRendomColmedica = async (
         ,@idTypeService)
     `;
 
-    const insertedRecords = [];
+		const insertedRecords = [];
 
-    for (let i = 0; i < idTypeRendom.length; i++) {
-      const typeRendom = idTypeRendom[i];
-      const servicesForRendom = idTypeService[i];
+		for (let i = 0; i < idTypeRendom.length; i++) {
+			const typeRendom = idTypeRendom[i];
+			const servicesForRendom = idTypeService[i];
 
-      for (const service of servicesForRendom) {
-        const request = db.request();
-        request.input("id_NegotiationTabColmedica", id_NegotiationTabColmedica);
-        request.input("idTypeRendom", typeRendom);
-        request.input("idTypeService", service);
+			for (const service of servicesForRendom) {
+				const request = db.request();
+				request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+				request.input('idTypeRendom', typeRendom);
+				request.input('idTypeService', service);
 
-        const result = await request.query(queryPlans);
+				const result = await request.query(queryPlans);
 
-        if (!result.recordset || result.recordset.length === 0) {
-          throw new Error("Failed to insert and retrieve the record");
-        }
+				if (!result.recordset || result.recordset.length === 0) {
+					throw new Error('Failed to insert and retrieve the record');
+				}
 
-        insertedRecords.push(result.recordset[0]);
-      }
-    }
+				insertedRecords.push(result.recordset[0]);
+			}
+		}
 
-    return {
-      code: 200,
-      message: "ok",
-      data: insertedRecords,
-    };
-  } catch (err: any) {
-    console.error("Error in saveNegotiationTabColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "saveNegotiationTabColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: insertedRecords
+		};
+	} catch (err: any) {
+		console.error('Error in saveNegotiationTabColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'saveNegotiationTabColmedica' }
+			}
+		};
+	}
 };
 
 export const saveNegotiationTabTypeIncrementColmedica = async (
-  negotiationTabColmedica: INegotiationTabTypeIncrementColmedica
+	negotiationTabColmedica: INegotiationTabTypeIncrementColmedica
 ): Promise<IresponseRepositoryService> => {
-  try {
-    const { id_NegotiationTabColmedica, idTypeIncrement, valueIncrement } = negotiationTabColmedica;
-    const db = await connectToSqlServer();
+	try {
+		const { id_NegotiationTabColmedica, idTypeIncrement, valueIncrement } = negotiationTabColmedica;
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const queryIncrements = `
+		const queryIncrements = `
       INSERT INTO [dbo].[TB_NegotiationTabTypeIncrement]
         ([id_NegotiationTabColmedica]
         ,[idTypeIncrement]
@@ -498,78 +491,83 @@ export const saveNegotiationTabTypeIncrementColmedica = async (
         ,@valueIncrement)
     `;
 
-    const insertedRecords = [];
+		const insertedRecords = [];
 
-    for (let i = 0; i < idTypeIncrement.length; i++) {
-      const typeIncrement = idTypeIncrement[i];
-      const incrementValue = valueIncrement[i];
+		for (let i = 0; i < idTypeIncrement.length; i++) {
+			const typeIncrement = idTypeIncrement[i];
+			const incrementValue = valueIncrement[i];
 
-      const request = db.request();
-      request.input("id_NegotiationTabColmedica", id_NegotiationTabColmedica);
-      request.input("idTypeIncrement", typeIncrement);
-      request.input("valueIncrement", incrementValue);
+			const request = db.request();
+			request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+			request.input('idTypeIncrement', typeIncrement);
+			request.input('valueIncrement', incrementValue);
 
-      const result = await request.query(queryIncrements);
+			const result = await request.query(queryIncrements);
 
-      if (!result.recordset || result.recordset.length === 0) {
-        throw new Error("Failed to insert and retrieve the record");
-      }
+			if (!result.recordset || result.recordset.length === 0) {
+				throw new Error('Failed to insert and retrieve the record');
+			}
 
-      insertedRecords.push(result.recordset[0]);
-    }
+			insertedRecords.push(result.recordset[0]);
+		}
 
-    return {
-      code: 200,
-      message: "ok",
-      data: insertedRecords,
-    };
-  } catch (err: any) {
-    console.error("Error in saveNegotiationTabTypeIncrementColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "saveNegotiationTabTypeIncrementColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: insertedRecords
+		};
+	} catch (err: any) {
+		console.error('Error in saveNegotiationTabTypeIncrementColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'saveNegotiationTabTypeIncrementColmedica' }
+			}
+		};
+	}
 };
 
 export const updateNegotiationTabServiceColmedica = async (
-  negotiationTabColmedica: Partial<IUpdateNegotiationTabServiceColmedica>
+	negotiationTabColmedica: Partial<IUpdateNegotiationTabServiceColmedica>
 ): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+	try {
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    if (!negotiationTabColmedica.id_NegotiationTabColmedica || !negotiationTabColmedica.idSpeciality) {
-      throw new Error("id_NegotiationTabColmedica and idSpeciality are required for update");
-    }
+		if (
+			!negotiationTabColmedica.id_NegotiationTabColmedica ||
+			!negotiationTabColmedica.idSpeciality
+		) {
+			throw new Error('id_NegotiationTabColmedica and idSpeciality are required for update');
+		}
 
-    console.log("Received fields for update:", negotiationTabColmedica);
+		console.log('Received fields for update:', negotiationTabColmedica);
 
-    let queryUpdate = `
+		let queryUpdate = `
       UPDATE [dbo].[TB_NegotiationTabServiceColmedica]
       SET `;
-    const updates: string[] = [];
-    const params: { [key: string]: any } = {};
+		const updates: string[] = [];
+		const params: { [key: string]: any } = {};
 
-    // Construye dinámicamente los campos a actualizar
-    for (const key in negotiationTabColmedica) {
-      if (key !== "id_NegotiationTabColmedica" && key !== "idSpeciality") {
-        updates.push(`[${key}] = @${key}`);
-        params[key] = (negotiationTabColmedica as any)[key];
-      }
-    }
+		// Construye dinámicamente los campos a actualizar
+		for (const key in negotiationTabColmedica) {
+			if (key !== 'id_NegotiationTabColmedica' && key !== 'idSpeciality') {
+				updates.push(`[${key}] = @${key}`);
+				params[key] = (negotiationTabColmedica as any)[key];
+			}
+		}
 
-    if (updates.length === 0) {
-      throw new Error("No fields to update");
-    }
+		if (updates.length === 0) {
+			throw new Error('No fields to update');
+		}
 
-    queryUpdate += updates.join(", ") + `
+		queryUpdate +=
+			updates.join(', ') +
+			`
       WHERE [id_NegotiationTabColmedica] = @id_NegotiationTabColmedica
       AND [idSpeciality] = @idSpeciality
       SELECT * FROM [dbo].[TB_NegotiationTabServiceColmedica]
@@ -577,416 +575,415 @@ export const updateNegotiationTabServiceColmedica = async (
       AND [idSpeciality] = @idSpeciality
     `;
 
-    const request = db.request();
-    request.input("id_NegotiationTabColmedica", negotiationTabColmedica.id_NegotiationTabColmedica);
-    request.input("idSpeciality", negotiationTabColmedica.idSpeciality);
+		const request = db.request();
+		request.input('id_NegotiationTabColmedica', negotiationTabColmedica.id_NegotiationTabColmedica);
+		request.input('idSpeciality', negotiationTabColmedica.idSpeciality);
 
-    // Añade los parámetros dinámicamente
-    for (const param in params) {
-      request.input(param, params[param]);
-    }
+		// Añade los parámetros dinámicamente
+		for (const param in params) {
+			request.input(param, params[param]);
+		}
 
-    const result = await request.query(queryUpdate);
+		const result = await request.query(queryUpdate);
 
-    if (!result.recordset || result.recordset.length === 0) {
-      throw new Error("Failed to update and retrieve the record");
-    }
+		if (!result.recordset || result.recordset.length === 0) {
+			throw new Error('Failed to update and retrieve the record');
+		}
 
-    const updatedRecord = result.recordset[0];
+		const updatedRecord = result.recordset[0];
 
-    return {
-      code: 200,
-      message: "ok",
-      data: updatedRecord,
-    };
-  } catch (err: any) {
-    console.error("Error in updateNegotiationTabServiceColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "updateNegotiationTabServiceColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: updatedRecord
+		};
+	} catch (err: any) {
+		console.error('Error in updateNegotiationTabServiceColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'updateNegotiationTabServiceColmedica' }
+			}
+		};
+	}
 };
 
-
 export const updateNegotiationTabColmedica = async (
-  id: number,
-  negotiationTabColmedica: Partial<INegotiationTabColmedica>
+	id: number,
+	negotiationTabColmedica: Partial<INegotiationTabColmedica>
 ): Promise<IresponseRepositoryService> => {
-  try {
-    const { idOfficeProvider, idProduct, dateBegin, idContactsProvider, dateEnd } = negotiationTabColmedica;
-    const db = await connectToSqlServer();
+	try {
+		const { idOfficeProvider, idProduct, dateBegin, idContactsProvider, dateEnd } =
+			negotiationTabColmedica;
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    // Verificar si hay algún campo para actualizar
-    if (!idOfficeProvider && !idProduct && !dateBegin && !idContactsProvider && !dateEnd) {
-      return {
-        code: 400,
-        message: "No fields to update",
-        data: null,
-      };
-    }
+		// Verificar si hay algún campo para actualizar
+		if (!idOfficeProvider && !idProduct && !dateBegin && !idContactsProvider && !dateEnd) {
+			return {
+				code: 400,
+				message: 'No fields to update',
+				data: null
+			};
+		}
 
-    const request = db.request();
-    request.input("id_NegotiationTabColmedica", id);
+		const request = db.request();
+		request.input('id_NegotiationTabColmedica', id);
 
-    // Construir la consulta dinámica de actualización
-    let updateQuery = `
+		// Construir la consulta dinámica de actualización
+		let updateQuery = `
       UPDATE [dbo].[TB_NegotiationTabColmedica]
       SET `;
 
-    if (idOfficeProvider !== undefined) {
-      updateQuery += "idOfficeProvider = @idOfficeProvider, ";
-      request.input("idOfficeProvider", idOfficeProvider);
-    }
+		if (idOfficeProvider !== undefined) {
+			updateQuery += 'idOfficeProvider = @idOfficeProvider, ';
+			request.input('idOfficeProvider', idOfficeProvider);
+		}
 
-    if (idProduct !== undefined) {
-      updateQuery += "idProduct = @idProduct, ";
-      request.input("idProduct", idProduct);
-    }
+		if (idProduct !== undefined) {
+			updateQuery += 'idProduct = @idProduct, ';
+			request.input('idProduct', idProduct);
+		}
 
-    if (dateBegin !== undefined) {
-      updateQuery += "dateBegin = @dateBegin, ";
-      request.input("dateBegin", dateBegin);
-    }
+		if (dateBegin !== undefined) {
+			updateQuery += 'dateBegin = @dateBegin, ';
+			request.input('dateBegin', dateBegin);
+		}
 
-    if (dateEnd !== undefined) {
-      updateQuery += "dateEnd = @dateEnd, ";
-      request.input("dateEnd", dateEnd);
-    }
+		if (dateEnd !== undefined) {
+			updateQuery += 'dateEnd = @dateEnd, ';
+			request.input('dateEnd', dateEnd);
+		}
 
-    if (idContactsProvider !== undefined) {
-      updateQuery += "idContactsProvider = @idContactsProvider, ";
-      request.input("idContactsProvider", idContactsProvider);
-    }
+		if (idContactsProvider !== undefined) {
+			updateQuery += 'idContactsProvider = @idContactsProvider, ';
+			request.input('idContactsProvider', idContactsProvider);
+		}
 
-    // Eliminar la última coma y agregar la condición WHERE
-    updateQuery = updateQuery.slice(0, -2); // Remover la coma final
-    updateQuery += " WHERE id_NegotiationTabColmedica = @id_NegotiationTabColmedica";
+		// Eliminar la última coma y agregar la condición WHERE
+		updateQuery = updateQuery.slice(0, -2); // Remover la coma final
+		updateQuery += ' WHERE id_NegotiationTabColmedica = @id_NegotiationTabColmedica';
 
-    // Ejecutar la consulta de actualización
-    const result = await request.query(updateQuery);
+		// Ejecutar la consulta de actualización
+		const result = await request.query(updateQuery);
 
-    if (result.rowsAffected[0] === 0) {
-      return {
-        code: 404,
-        message: "No record found to update",
-        data: null,
-      };
-    }
-    return {
-      code: 200,
-      message: "Update successful",
-      data: negotiationTabColmedica,
-    };
-  } catch (err: any) {
-    console.error("Error in updateNegotiationTabColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "updateNegotiationTabColmedica" },
-      },
-    };
-  }
+		if (result.rowsAffected[0] === 0) {
+			return {
+				code: 404,
+				message: 'No record found to update',
+				data: null
+			};
+		}
+		return {
+			code: 200,
+			message: 'Update successful',
+			data: negotiationTabColmedica
+		};
+	} catch (err: any) {
+		console.error('Error in updateNegotiationTabColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'updateNegotiationTabColmedica' }
+			}
+		};
+	}
 };
 
+export const getProvidersColmedica = async (
+	idProvider: string | any | undefined
+): Promise<IresponseRepositoryService> => {
+	try {
+		const db = await connectToSqlServer();
 
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-export const getProvidersColmedica = async (idProvider: string | any | undefined): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+		const queryProviders = `
+		select distinct p.idProvider,p.razonSocial + ' ' + identificacion as razonSocial from TB_Provider as p
+		inner join TB_OfficeProvider as op on op.idProvider = p.idProvider
+		inner join TB_OfficeProviderClientHoneSolution as opch on opch.idOfficeProvider = op.idOfficeProvider
+		where opch.idClientHoneSolutions = 9 AND @idProvider IS NULL OR op.idProvider = @idProvider;
+    	`;
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		const request = db.request();
+		request.input('idProvider', idProvider || null);
 
-    const queryProviders = `
-    select distinct p.idProvider,p.razonSocial + ' ' + identificacion as razonSocial from TB_Provider as p
-    inner join TB_OfficeProvider as op on op.idProvider = p.idProvider
-    inner join TB_OfficeProviderClientHoneSolution as opch on opch.idOfficeProvider = op.idOfficeProvider
-    where idClientHoneSolutions = 9 AND @idProvider IS NULL OR op.idProvider = @idProvider;
-    `;
+		const result = await request.query(queryProviders);
 
-    const request = db.request();
-    request.input('idProvider', idProvider || null);
+		const providers: IProviderColmedica[] = result.recordset;
 
-    const result = await request.query(queryProviders);
-
-    const providers: IProviderColmedica[] = result.recordset;
-
-    return {
-      code: 200,
-      message: "ok",
-      data: providers,
-    };
-  } catch (err: any) {
-    console.error("Error in getProvidersColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getProvidersColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: providers
+		};
+	} catch (err: any) {
+		console.error('Error in getProvidersColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getProvidersColmedica' }
+			}
+		};
+	}
 };
 
+export const getInfoOfficeProvider = async (
+	idProvider: string | any | undefined
+): Promise<IresponseRepositoryService> => {
+	try {
+		const db = await connectToSqlServer();
 
-export const getInfoOfficeProvider = async (idProvider: string | any | undefined): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
-
-    const queryProviders = `
+		const queryProviders = `
     select distinct op.idOfficeProvider,op.OfficeProviderName as clientColmedica from TB_Provider as p
     inner join TB_OfficeProvider as op on op.idProvider = p.idProvider
     inner join TB_OfficeProviderClientHoneSolution as opch on opch.idOfficeProvider = op.idOfficeProvider
     where idClientHoneSolutions = 9 and p.idProvider = @idProvider;
     `;
 
-    const request = db.request();
-    request.input('idProvider', idProvider || null);
+		const request = db.request();
+		request.input('idProvider', idProvider || null);
 
-    const result = await request.query(queryProviders);
+		const result = await request.query(queryProviders);
 
-    const providers: IProviderColmedica[] = result.recordset;
+		const providers: IProviderColmedica[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: providers,
-    };
-  } catch (err: any) {
-    console.error("Error in getInfoOfficeProvider", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getInfoOfficeProvider" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: providers
+		};
+	} catch (err: any) {
+		console.error('Error in getInfoOfficeProvider', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getInfoOfficeProvider' }
+			}
+		};
+	}
 };
 
+export const getOfficeProvidersColmedica = async (
+	idOfficeProvider: string | any | undefined
+): Promise<IresponseRepositoryService> => {
+	try {
+		const db = await connectToSqlServer();
 
-export const getOfficeProvidersColmedica = async (idOfficeProvider: string | any | undefined): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
-
-    const queryProviders = `
+		const queryProviders = `
      select distinct idOfficeProvider,o.razonSocial,op.OfficeProviderName,td.typeDocument,o.identificacion,d.departament,c.city,
      op.address  from TB_OfficeProvider as op
      inner join TB_Provider as o on o.idProvider = op.idProvider
      inner join TB_typeDocument as td on td.idTypeDocument = o.idTypeDocument
-     inner join TB_Department as d on op.idDepartament = d.idDepartament 
+     inner join TB_Department as d on op.idDepartament = d.idDepartament
      inner join TB_City as c on c.idCity = op.idCity
      inner join TB_ContactsProvider as cp on cp.idProvider = o.idProvider
      where op.idOfficeProvider =  ISNULL(@idOfficeProvider,op.idOfficeProvider)
     `;
 
-    const inputIdOfficeProvider = idOfficeProvider !== undefined ? idOfficeProvider : null;
+		const inputIdOfficeProvider = idOfficeProvider !== undefined ? idOfficeProvider : null;
 
-    const request = db.request();
-    request.input('idOfficeProvider', inputIdOfficeProvider);
+		const request = db.request();
+		request.input('idOfficeProvider', inputIdOfficeProvider);
 
-    const result = await request.query(queryProviders);
+		const result = await request.query(queryProviders);
 
-    const providers: IOfficeProviderColmedica[] = result.recordset;
+		const providers: IOfficeProviderColmedica[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: providers,
-    };
-  } catch (err: any) {
-    console.error("Error in getOfficeProvidersColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getOfficeProvidersColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: providers
+		};
+	} catch (err: any) {
+		console.error('Error in getOfficeProvidersColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getOfficeProvidersColmedica' }
+			}
+		};
+	}
 };
 
+export const getContactsProviderColmedica = async (
+	idProvider: string | any | undefined
+): Promise<IresponseRepositoryService> => {
+	try {
+		const db = await connectToSqlServer();
 
-export const getContactsProviderColmedica = async (idProvider: string | any | undefined): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
-
-    const queryProviders = `
+		const queryProviders = `
       SELECT co.idContactsProvider, co.name, co.SurName, oc.idOccupation, oc.occupation, co.phone, co.email, co.idProvider
       FROM TB_ContactsProvider AS co
       LEFT JOIN TB_Occupation AS oc ON oc.idOccupation = co.idOccupation
       WHERE (@idProvider IS NULL OR co.idProvider = @idProvider)
     `;
 
-    const inputIdOfficeProvider = idProvider !== undefined ? idProvider : null;
+		const inputIdOfficeProvider = idProvider !== undefined ? idProvider : null;
 
-    const request = db.request();
-    request.input('idProvider', inputIdOfficeProvider);
+		const request = db.request();
+		request.input('idProvider', inputIdOfficeProvider);
 
-    const result = await request.query(queryProviders);
+		const result = await request.query(queryProviders);
 
-    const providers: IContactsProviderColmedica[] = result.recordset;
+		const providers: IContactsProviderColmedica[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: providers,
-    };
-  } catch (err: any) {
-    console.error("Error in getContactsProviderColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getContactsProviderColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: providers
+		};
+	} catch (err: any) {
+		console.error('Error in getContactsProviderColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getContactsProviderColmedica' }
+			}
+		};
+	}
 };
 
-
 export const getProductColmedica = async (): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+	try {
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const queryProviders = `
+		const queryProviders = `
       select * from TB_Product
     `;
 
-    const request = db.request();
+		const request = db.request();
 
-    const result = await request.query(queryProviders);
+		const result = await request.query(queryProviders);
 
-    const providers: IProductColmedica[] = result.recordset;
+		const providers: IProductColmedica[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: providers,
-    };
-  } catch (err: any) {
-    console.error("Error in getProductColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getProductColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: providers
+		};
+	} catch (err: any) {
+		console.error('Error in getProductColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getProductColmedica' }
+			}
+		};
+	}
 };
 
-
-
 export const getTypeServiceColmedica = async (): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+	try {
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const queryProviders = `
+		const queryProviders = `
     SELECT * FROM TB_TypeService WHERE idTypeService != 3
     `;
 
-    const request = db.request();
+		const request = db.request();
 
-    const result = await request.query(queryProviders);
+		const result = await request.query(queryProviders);
 
-    const providers: IProductColmedica[] = result.recordset;
+		const providers: IProductColmedica[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: providers,
-    };
-  } catch (err: any) {
-    console.error("Error in getProductColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getProductColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: providers
+		};
+	} catch (err: any) {
+		console.error('Error in getProductColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getProductColmedica' }
+			}
+		};
+	}
 };
 
-
 export const getReferenceRateColmedica = async (): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+	try {
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const queryProviders = `
+		const queryProviders = `
     	SELECT idTypeFare,typeFare  FROM TB_TypeFares WHERE idTypeFare IN (1,6,16,18,5,15)
 	 --select ntf.idTypeFare,typeFare from TB_NegotiationTabFareBaseColmedica as ntf
    --inner join TB_TypeFares as tf on tf.idTypeFare = ntf.idTypeFare
    --where idNegotiationTabColmedica =
     `;
 
-    const request = db.request();
+		const request = db.request();
 
-    const result = await request.query(queryProviders);
+		const result = await request.query(queryProviders);
 
-    const providers: IProductColmedica[] = result.recordset;
+		const providers: IProductColmedica[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: providers,
-    };
-  } catch (err: any) {
-    console.error("Error in getProductColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getProductColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: providers
+		};
+	} catch (err: any) {
+		console.error('Error in getProductColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getProductColmedica' }
+			}
+		};
+	}
 };
 
 export const getNegotiationTabColmedica = async (): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+	try {
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const queryProviders = `
+		const queryProviders = `
     SELECT
 	  ne.id_NegotiationTabColmedica,
 	  ne.idOfficeProvider,
@@ -997,57 +994,56 @@ export const getNegotiationTabColmedica = async (): Promise<IresponseRepositoryS
 	  pr.idProduct,
     ne.dateBegin,
     ne.dateEnd,
-    CASE 
+    CASE
         WHEN ne.dateEnd < GETDATE() THEN 'vencida'
         ELSE 'vigente'
     END AS Estado
-    FROM 
+    FROM
         TB_NegotiationTabColmedica AS ne
-    LEFT JOIN 
+    LEFT JOIN
         TB_OfficeProvider AS offi ON offi.idOfficeProvider = ne.idOfficeProvider
-    LEFT JOIN 
+    LEFT JOIN
         TB_Product AS pr ON pr.idProduct = ne.idProduct
-    LEFT JOIN 
+    LEFT JOIN
         TB_ContactsProvider AS cp ON cp.idProvider = offi.idProvider
     ORDER BY ne.idProduct DESC
     `;
 
-    const request = db.request();
+		const request = db.request();
 
-    const result = await request.query(queryProviders);
+		const result = await request.query(queryProviders);
 
-    const providers: IProductColmedica[] = result.recordset;
+		const providers: IProductColmedica[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: providers,
-    };
-  } catch (err: any) {
-    console.error("Error in getProductColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getProductColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: providers
+		};
+	} catch (err: any) {
+		console.error('Error in getProductColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getProductColmedica' }
+			}
+		};
+	}
 };
 
-
 export const getNegotiationDetails = async (id: number): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+	try {
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const request = db.request();
+		const request = db.request();
 
-    // Consulta 1: Obtener la información principal de la negociación
-    const queryNegotiation = `
+		// Consulta 1: Obtener la información principal de la negociación
+		const queryNegotiation = `
       SELECT
       ne.id_NegotiationTabColmedica,
       ne.idOfficeProvider,
@@ -1058,462 +1054,464 @@ export const getNegotiationDetails = async (id: number): Promise<IresponseReposi
       pr.idProduct,
       ne.dateBegin,
       ne.dateEnd,
-      CASE 
+      CASE
         WHEN ne.dateEnd < GETDATE() THEN 'vencida'
         ELSE 'vigente'
       END AS Estado
-      FROM 
+      FROM
           TB_NegotiationTabColmedica AS ne
-      LEFT JOIN 
+      LEFT JOIN
           TB_OfficeProvider AS offi ON offi.idOfficeProvider = ne.idOfficeProvider
-      LEFT JOIN 
+      LEFT JOIN
           TB_Product AS pr ON pr.idProduct = ne.idProduct
-      LEFT JOIN 
+      LEFT JOIN
           TB_ContactsProvider AS cp ON cp.idProvider = offi.idProvider
-      WHERE 
+      WHERE
         ne.id_NegotiationTabColmedica = @id`;
 
-    // Consulta 2: Obtener los planes
-    const queryPlans = `
+		// Consulta 2: Obtener los planes
+		const queryPlans = `
     SELECT idNegotiationTabPlansColmedica,	idNegotiationTabColmedica,nt.idPlan,idTypeService,pl.[plan] AS namePlan
     FROM TB_NegotiationTabPlansColmedica AS nt
     LEFT JOIN TB_Plans AS pl ON pl.idPlan = nt.idPlan
     WHERE idNegotiationTabColmedica = @id`;
 
-    // Consulta 3: Obtener las tarifas base
-    const queryFareBase = `
-    SELECT * 
-    FROM TB_NegotiationTabFareBaseColmedica 
+		// Consulta 3: Obtener las tarifas base
+		const queryFareBase = `
+    SELECT *
+    FROM TB_NegotiationTabFareBaseColmedica
     WHERE idNegotiationTabColmedica = @id`;
 
-    // Consulta 4: Obtener los rendimientos
-    const queryRendom = `
-    SELECT * 
-    FROM TB_NegotiationTabRendomColmedica 
+		// Consulta 4: Obtener los rendimientos
+		const queryRendom = `
+    SELECT *
+    FROM TB_NegotiationTabRendomColmedica
     WHERE id_NegotiationTabColmedica = @id`;
 
-    // Consulta 5: Obtener el tipo de incremento
-    const queryTypeIncrement = `
-    SELECT * 
-    FROM TB_NegotiationTabTypeIncrement 
+		// Consulta 5: Obtener el tipo de incremento
+		const queryTypeIncrement = `
+    SELECT *
+    FROM TB_NegotiationTabTypeIncrement
     WHERE id_NegotiationTabColmedica = @id`;
 
-    // Ejecutar las consultas
-    request.input('id', id);
+		// Ejecutar las consultas
+		request.input('id', id);
 
-    const [negotiationResult, plansResult, fareBaseResult, rendomResult, typeIncrementResult] = await Promise.all([
-      request.query(queryNegotiation),
-      request.query(queryPlans),
-      request.query(queryFareBase),
-      request.query(queryRendom),
-      request.query(queryTypeIncrement)
-    ]);
+		const [negotiationResult, plansResult, fareBaseResult, rendomResult, typeIncrementResult] =
+			await Promise.all([
+				request.query(queryNegotiation),
+				request.query(queryPlans),
+				request.query(queryFareBase),
+				request.query(queryRendom),
+				request.query(queryTypeIncrement)
+			]);
 
-    const negotiationData = negotiationResult.recordset[0];
-    const plansData = plansResult.recordset;
-    const fareBaseData = fareBaseResult.recordset;
-    const rendomData = rendomResult.recordset;
-    const typeIncrementData = typeIncrementResult.recordset;
+		const negotiationData = negotiationResult.recordset[0];
+		const plansData = plansResult.recordset;
+		const fareBaseData = fareBaseResult.recordset;
+		const rendomData = rendomResult.recordset;
+		const typeIncrementData = typeIncrementResult.recordset;
 
-    const response = {
-      negotiation: negotiationData,
-      plans: plansData,
-      fareBase: fareBaseData,
-      rendom: rendomData,
-      typeIncrement: typeIncrementData,
-    };
+		const response = {
+			negotiation: negotiationData,
+			plans: plansData,
+			fareBase: fareBaseData,
+			rendom: rendomData,
+			typeIncrement: typeIncrementData
+		};
 
-    return {
-      code: 200,
-      message: "ok",
-      data: response,
-    };
-  } catch (err: any) {
-    console.error("Error in getNegotiationDetails", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getNegotiationDetails" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: response
+		};
+	} catch (err: any) {
+		console.error('Error in getNegotiationDetails', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getNegotiationDetails' }
+			}
+		};
+	}
 };
 
 export const updateNegotiationTabPlansColmedica = async (
-  idNegotiationTabColmedica: number,
-  updates: {
-    idPlan: number[][];
-    idTypeService: number[];
-  }
+	idNegotiationTabColmedica: number,
+	updates: {
+		idPlan: number[][];
+		idTypeService: number[];
+	}
 ): Promise<IresponseRepositoryService> => {
-  try {
-    const { idPlan, idTypeService } = updates;
-    const db = await connectToSqlServer();
+	try {
+		const { idPlan, idTypeService } = updates;
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    // Verificar si hay campos para actualizar
-    if (!idPlan || !idTypeService) {
-      return {
-        code: 400,
-        message: "No fields to update",
-        data: null,
-      };
-    }
+		// Verificar si hay campos para actualizar
+		if (!idPlan || !idTypeService) {
+			return {
+				code: 400,
+				message: 'No fields to update',
+				data: null
+			};
+		}
 
-    // Eliminar registros existentes para el idNegotiationTabColmedica
-    const queryDelete = `
+		// Eliminar registros existentes para el idNegotiationTabColmedica
+		const queryDelete = `
       DELETE FROM [dbo].[TB_NegotiationTabPlansColmedica]
       WHERE idNegotiationTabColmedica = @idNegotiationTabColmedica;
     `;
 
-    const deleteRequest = db.request();
-    deleteRequest.input("idNegotiationTabColmedica", idNegotiationTabColmedica);
+		const deleteRequest = db.request();
+		deleteRequest.input('idNegotiationTabColmedica', idNegotiationTabColmedica);
 
-    await deleteRequest.query(queryDelete);
+		await deleteRequest.query(queryDelete);
 
-    // Variables para construir la consulta de inserción
-    const insertedRecords = [];
-    const queryInsert = `
+		// Variables para construir la consulta de inserción
+		const insertedRecords = [];
+		const queryInsert = `
       INSERT INTO [dbo].[TB_NegotiationTabPlansColmedica]
         ([idNegotiationTabColmedica], [idPlan], [idTypeService])
       OUTPUT inserted.*
       VALUES (@idNegotiationTabColmedica, @idPlan, @idTypeService);
     `;
 
-    // Insertar nuevos registros
-    for (let i = 0; i < idTypeService.length; i++) {
-      const typeService = idTypeService[i];
-      const plansForService = idPlan[i] || [];
+		// Insertar nuevos registros
+		for (let i = 0; i < idTypeService.length; i++) {
+			const typeService = idTypeService[i];
+			const plansForService = idPlan[i] || [];
 
-      for (const plan of plansForService) {
-        const insertRequest = db.request(); // Crear una nueva solicitud para cada inserción
-        insertRequest.input("idNegotiationTabColmedica", idNegotiationTabColmedica);
-        insertRequest.input("idPlan", plan);
-        insertRequest.input("idTypeService", typeService);
+			for (const plan of plansForService) {
+				const insertRequest = db.request(); // Crear una nueva solicitud para cada inserción
+				insertRequest.input('idNegotiationTabColmedica', idNegotiationTabColmedica);
+				insertRequest.input('idPlan', plan);
+				insertRequest.input('idTypeService', typeService);
 
-        const result = await insertRequest.query(queryInsert);
+				const result = await insertRequest.query(queryInsert);
 
-        if (!result.recordset || result.recordset.length === 0) {
-          throw new Error("Failed to insert and retrieve the record");
-        }
+				if (!result.recordset || result.recordset.length === 0) {
+					throw new Error('Failed to insert and retrieve the record');
+				}
 
-        insertedRecords.push(result.recordset[0]);
-      }
-    }
+				insertedRecords.push(result.recordset[0]);
+			}
+		}
 
-    return {
-      code: 200,
-      message: "Update successful",
-      data: insertedRecords,
-    };
-  } catch (err: any) {
-    console.error("Error in updateNegotiationTabPlansColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "updateNegotiationTabPlansColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'Update successful',
+			data: insertedRecords
+		};
+	} catch (err: any) {
+		console.error('Error in updateNegotiationTabPlansColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'updateNegotiationTabPlansColmedica' }
+			}
+		};
+	}
 };
 
 export const updateNegotiationTabFareBaseColmedica = async (params: {
-  idNegotiationTabColmedica: number;
-  idTypeFare: number[];
+	idNegotiationTabColmedica: number;
+	idTypeFare: number[];
 }): Promise<IresponseRepositoryService> => {
-  try {
-    const { idNegotiationTabColmedica, idTypeFare } = params;
-    const db = await connectToSqlServer();
+	try {
+		const { idNegotiationTabColmedica, idTypeFare } = params;
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    // Eliminar registros existentes para el idNegotiationTabColmedica
-    const queryDelete = `
+		// Eliminar registros existentes para el idNegotiationTabColmedica
+		const queryDelete = `
       DELETE FROM [dbo].[TB_NegotiationTabFareBaseColmedica]
       WHERE idNegotiationTabColmedica = @idNegotiationTabColmedica;
     `;
 
-    const deleteRequest = db.request();
-    deleteRequest.input("idNegotiationTabColmedica", idNegotiationTabColmedica);
-    await deleteRequest.query(queryDelete);
+		const deleteRequest = db.request();
+		deleteRequest.input('idNegotiationTabColmedica', idNegotiationTabColmedica);
+		await deleteRequest.query(queryDelete);
 
-    // Insertar nuevos registros
-    const insertedRecords = [];
-    const queryInsert = `
+		// Insertar nuevos registros
+		const insertedRecords = [];
+		const queryInsert = `
       INSERT INTO [dbo].[TB_NegotiationTabFareBaseColmedica]
         ([idNegotiationTabColmedica], [idTypeFare])
       OUTPUT inserted.*
       VALUES (@idNegotiationTabColmedica, @idTypeFare);
     `;
 
-    for (const fare of idTypeFare) {
-      const insertRequest = db.request();
-      insertRequest.input("idNegotiationTabColmedica", idNegotiationTabColmedica);
-      insertRequest.input("idTypeFare", fare);
+		for (const fare of idTypeFare) {
+			const insertRequest = db.request();
+			insertRequest.input('idNegotiationTabColmedica', idNegotiationTabColmedica);
+			insertRequest.input('idTypeFare', fare);
 
-      const result = await insertRequest.query(queryInsert);
+			const result = await insertRequest.query(queryInsert);
 
-      if (!result.recordset || result.recordset.length === 0) {
-        throw new Error("Failed to insert and retrieve the record");
-      }
+			if (!result.recordset || result.recordset.length === 0) {
+				throw new Error('Failed to insert and retrieve the record');
+			}
 
-      insertedRecords.push(result.recordset[0]);
-    }
+			insertedRecords.push(result.recordset[0]);
+		}
 
-    return {
-      code: 200,
-      message: "Update successful",
-      data: insertedRecords,
-    };
-  } catch (err: any) {
-    console.error("Error in updateNegotiationTabFareBaseColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "updateNegotiationTabFareBaseColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'Update successful',
+			data: insertedRecords
+		};
+	} catch (err: any) {
+		console.error('Error in updateNegotiationTabFareBaseColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'updateNegotiationTabFareBaseColmedica' }
+			}
+		};
+	}
 };
 
 export const updateNegotiationTabRendomColmedica = async (
-  negotiationTabColmedica: INegotiationTabRendomColmedica
+	negotiationTabColmedica: INegotiationTabRendomColmedica
 ): Promise<IresponseRepositoryService> => {
-  try {
-    const { id_NegotiationTabColmedica, idTypeRendom, idTypeService } = negotiationTabColmedica;
-    const db = await connectToSqlServer();
+	try {
+		const { id_NegotiationTabColmedica, idTypeRendom, idTypeService } = negotiationTabColmedica;
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    // Eliminar registros existentes para el id_NegotiationTabColmedica
-    const queryDelete = `
+		// Eliminar registros existentes para el id_NegotiationTabColmedica
+		const queryDelete = `
       DELETE FROM [dbo].[TB_NegotiationTabRendomColmedica]
       WHERE id_NegotiationTabColmedica = @id_NegotiationTabColmedica;
     `;
 
-    const deleteRequest = db.request();
-    deleteRequest.input("id_NegotiationTabColmedica", id_NegotiationTabColmedica);
+		const deleteRequest = db.request();
+		deleteRequest.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
 
-    await deleteRequest.query(queryDelete);
+		await deleteRequest.query(queryDelete);
 
-    // Insertar nuevos registros
-    const insertedRecords = [];
-    const queryInsert = `
+		// Insertar nuevos registros
+		const insertedRecords = [];
+		const queryInsert = `
       INSERT INTO [dbo].[TB_NegotiationTabRendomColmedica]
         ([id_NegotiationTabColmedica], [idTypeRendom], [idTypeService])
       OUTPUT inserted.*
       VALUES (@id_NegotiationTabColmedica, @idTypeRendom, @idTypeService);
     `;
 
-    for (let i = 0; i < idTypeRendom.length; i++) {
-      const typeRendom = idTypeRendom[i];
-      const servicesForRendom = idTypeService[i];
+		for (let i = 0; i < idTypeRendom.length; i++) {
+			const typeRendom = idTypeRendom[i];
+			const servicesForRendom = idTypeService[i];
 
-      for (const service of servicesForRendom) {
-        const request = db.request(); // Crear un nuevo objeto de solicitud para cada inserción
-        request.input("id_NegotiationTabColmedica", id_NegotiationTabColmedica);
-        request.input("idTypeRendom", typeRendom);
-        request.input("idTypeService", service);
+			for (const service of servicesForRendom) {
+				const request = db.request(); // Crear un nuevo objeto de solicitud para cada inserción
+				request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+				request.input('idTypeRendom', typeRendom);
+				request.input('idTypeService', service);
 
-        const result = await request.query(queryInsert);
+				const result = await request.query(queryInsert);
 
-        if (!result.recordset || result.recordset.length === 0) {
-          throw new Error("Failed to insert and retrieve the record");
-        }
+				if (!result.recordset || result.recordset.length === 0) {
+					throw new Error('Failed to insert and retrieve the record');
+				}
 
-        insertedRecords.push(result.recordset[0]);
-      }
-    }
+				insertedRecords.push(result.recordset[0]);
+			}
+		}
 
-    return {
-      code: 200,
-      message: "Update successful",
-      data: insertedRecords,
-    };
-  } catch (err: any) {
-    console.error("Error in updateNegotiationTabRendomColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "updateNegotiationTabRendomColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'Update successful',
+			data: insertedRecords
+		};
+	} catch (err: any) {
+		console.error('Error in updateNegotiationTabRendomColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'updateNegotiationTabRendomColmedica' }
+			}
+		};
+	}
 };
 
-export const updateNegotiationTabTypeIncrementColmedica = async (
-  params: {
-    id_NegotiationTabColmedica: number;
-    idTypeIncrement: number[];
-    valueIncrement: number[];
-  }
-): Promise<IresponseRepositoryService> => {
-  try {
-    const { id_NegotiationTabColmedica, idTypeIncrement, valueIncrement } = params;
-    const db = await connectToSqlServer();
+export const updateNegotiationTabTypeIncrementColmedica = async (params: {
+	id_NegotiationTabColmedica: number;
+	idTypeIncrement: number[];
+	valueIncrement: number[];
+}): Promise<IresponseRepositoryService> => {
+	try {
+		const { id_NegotiationTabColmedica, idTypeIncrement, valueIncrement } = params;
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    // Eliminar registros existentes para el id_NegotiationTabColmedica
-    const queryDelete = `
+		// Eliminar registros existentes para el id_NegotiationTabColmedica
+		const queryDelete = `
       DELETE FROM [dbo].[TB_NegotiationTabTypeIncrement]
       WHERE id_NegotiationTabColmedica = @id_NegotiationTabColmedica;
     `;
 
-    const deleteRequest = db.request();
-    deleteRequest.input("id_NegotiationTabColmedica", id_NegotiationTabColmedica);
-    await deleteRequest.query(queryDelete);
+		const deleteRequest = db.request();
+		deleteRequest.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+		await deleteRequest.query(queryDelete);
 
-    // Insertar nuevos registros
-    const insertedRecords = [];
-    const queryInsert = `
+		// Insertar nuevos registros
+		const insertedRecords = [];
+		const queryInsert = `
       INSERT INTO [dbo].[TB_NegotiationTabTypeIncrement]
         ([id_NegotiationTabColmedica], [idTypeIncrement], [valueIncrement])
       OUTPUT inserted.*
       VALUES (@id_NegotiationTabColmedica, @idTypeIncrement, @valueIncrement);
     `;
 
-    for (let i = 0; i < idTypeIncrement.length; i++) {
-      const typeIncrement = idTypeIncrement[i];
-      const incrementValue = valueIncrement[i];
+		for (let i = 0; i < idTypeIncrement.length; i++) {
+			const typeIncrement = idTypeIncrement[i];
+			const incrementValue = valueIncrement[i];
 
-      const insertRequest = db.request(); // Crear un nuevo objeto de solicitud para cada inserción
-      insertRequest.input("id_NegotiationTabColmedica", id_NegotiationTabColmedica);
-      insertRequest.input("idTypeIncrement", typeIncrement);
-      insertRequest.input("valueIncrement", incrementValue);
+			const insertRequest = db.request(); // Crear un nuevo objeto de solicitud para cada inserción
+			insertRequest.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+			insertRequest.input('idTypeIncrement', typeIncrement);
+			insertRequest.input('valueIncrement', incrementValue);
 
-      const result = await insertRequest.query(queryInsert);
+			const result = await insertRequest.query(queryInsert);
 
-      if (!result.recordset || result.recordset.length === 0) {
-        throw new Error("Failed to insert and retrieve the record");
-      }
+			if (!result.recordset || result.recordset.length === 0) {
+				throw new Error('Failed to insert and retrieve the record');
+			}
 
-      insertedRecords.push(result.recordset[0]);
-    }
+			insertedRecords.push(result.recordset[0]);
+		}
 
-    return {
-      code: 200,
-      message: "Update successful",
-      data: insertedRecords,
-    };
-  } catch (err: any) {
-    console.error("Error in updateNegotiationTabTypeIncrementColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "updateNegotiationTabTypeIncrementColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'Update successful',
+			data: insertedRecords
+		};
+	} catch (err: any) {
+		console.error('Error in updateNegotiationTabTypeIncrementColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'updateNegotiationTabTypeIncrementColmedica' }
+			}
+		};
+	}
 };
 
-export const getOccupationColmedica = async (idOccupation: string | any | undefined): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+export const getOccupationColmedica = async (
+	idOccupation: string | any | undefined
+): Promise<IresponseRepositoryService> => {
+	try {
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const queryProviders = `
+		const queryProviders = `
       SELECT * FROM TB_Occupation WHERE (@idOccupation IS NULL OR idOccupation = @idOccupation)
     `;
 
-    const inputIdOccupation = idOccupation !== undefined ? idOccupation : null;
+		const inputIdOccupation = idOccupation !== undefined ? idOccupation : null;
 
-    const request = db.request();
-    request.input('idOccupation', inputIdOccupation);
+		const request = db.request();
+		request.input('idOccupation', inputIdOccupation);
 
-    const result = await request.query(queryProviders);
+		const result = await request.query(queryProviders);
 
-    const providers: IOccupationColmedica[] = result.recordset;
+		const providers: IOccupationColmedica[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: providers,
-    };
-  } catch (err: any) {
-    console.error("Error in getContactsProviderColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getContactsProviderColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: providers
+		};
+	} catch (err: any) {
+		console.error('Error in getContactsProviderColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getContactsProviderColmedica' }
+			}
+		};
+	}
 };
 
+export const getServicesColmedica = async (
+	idClasificationTypeService: string | any | undefined
+): Promise<IresponseRepositoryService> => {
+	try {
+		const db = await connectToSqlServer();
 
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-export const getServicesColmedica = async (idClasificationTypeService: string | any | undefined): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
-
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
-
-    const queryProviders = `
+		const queryProviders = `
   	  select s.idSpeciality,s.speciality,* from TB_ClasificationTypeServiceSpeciality as ct
       inner join TB_Speciality as s on s.idSpeciality = ct.idSpeciality
       inner join TB_SpecialityClientHoneSolutions as sch on sch.idSpeciality = s.idSpeciality
       where ct.idClasificationTypeService = @idClasificationTypeService and sch.idClientHoneSolutions = 9
     `;
 
-    const inputIdClasificationTypeService = idClasificationTypeService !== undefined ? idClasificationTypeService : null;
+		const inputIdClasificationTypeService =
+			idClasificationTypeService !== undefined ? idClasificationTypeService : null;
 
-    const request = db.request();
-    request.input('idClasificationTypeService', inputIdClasificationTypeService);
+		const request = db.request();
+		request.input('idClasificationTypeService', inputIdClasificationTypeService);
 
-    const result = await request.query(queryProviders);
+		const result = await request.query(queryProviders);
 
-    const providers: IOccupationColmedica[] = result.recordset;
+		const providers: IOccupationColmedica[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: providers,
-    };
-  } catch (err: any) {
-    console.error("Error in getContactsProviderColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getContactsProviderColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: providers
+		};
+	} catch (err: any) {
+		console.error('Error in getContactsProviderColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getContactsProviderColmedica' }
+			}
+		};
+	}
 };
 
+export const getInfoLogicColmedica = async (
+	id_NegotiationTabColmedica: string | any | undefined
+): Promise<IresponseRepositoryService> => {
+	try {
+		const db = await connectToSqlServer();
 
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-export const getInfoLogicColmedica = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
-
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
-
-    const queryProviders = `
-      select ct.clasificationTypeService as 'AGRUPADOR', s.speciality as 'SUBAGRUPADOR', ntcc.codigoCups, ntcc.codigoIPS, ntcc.codigoISS, ma.medicalAct as 'DESCRIPCION CUPS', 
+		const queryProviders = `
+      select ct.clasificationTypeService as 'AGRUPADOR', s.speciality as 'SUBAGRUPADOR', ntcc.codigoCups, ntcc.codigoIPS, ntcc.codigoISS, ma.medicalAct as 'DESCRIPCION CUPS',
       contratado, Iss2001uvrUvrOTarifa, ti.TypeIncrement, ntti.valueIncrement, tf.typeFare as 'typeFare1', fareGamaAltaA, fareGamaHumanaA, fareGamaMediaA, fareGamaMenorA, farePreferencialA,
       tfd.typeFare as 'typeFare2', fareGamaAltaA as 'fareGamaAltaA2', fareGamaHumanaA as 'fareGamaHumanaA2', fareGamaMediaA as 'fareGamaMediaA2', fareGamaMenorA as 'fareGamaMenorA2', farePreferencialA as 'farePreferencialA2'
       from TB_NegotiationTabCupsColmedica as ntcc
@@ -1528,71 +1526,73 @@ export const getInfoLogicColmedica = async (id_NegotiationTabColmedica: string |
       where ntcc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica
     `;
 
-    const inputIdNegotiationTabColmedica = id_NegotiationTabColmedica !== undefined ? id_NegotiationTabColmedica : null;
+		const inputIdNegotiationTabColmedica =
+			id_NegotiationTabColmedica !== undefined ? id_NegotiationTabColmedica : null;
 
-    const request = db.request();
-    request.input('id_NegotiationTabColmedica', inputIdNegotiationTabColmedica);
+		const request = db.request();
+		request.input('id_NegotiationTabColmedica', inputIdNegotiationTabColmedica);
 
-    const result = await request.query(queryProviders);
+		const result = await request.query(queryProviders);
 
-    const providers = result.recordset.map(record => ({
-      AGRUPADOR: record.AGRUPADOR,
-      SUBAGRUPADOR: record.SUBAGRUPADOR,
-      codigoCups: record.codigoCups,
-      codigoIPS: record.codigoIPS,
-      codigoISS: record.codigoISS,
-      'DESCRIPCION CUPS': record['DESCRIPCION CUPS'],
-      contratado: record.contratado,
-      Iss2001uvrUvrOTarifa: record.Iss2001uvrUvrOTarifa,
-      TypeIncrement: record.TypeIncrement,
-      valueIncrement: record.valueIncrement,
-      typeFare1: record.typeFare1,
-      fareGamaAltaA: record.fareGamaAltaA,
-      fareGamaHumanaA: record.fareGamaHumanaA,
-      fareGamaMediaA: record.fareGamaMediaA,
-      fareGamaMenorA: record.fareGamaMenorA,
-      farePreferencialA: record.farePreferencialA,
-      typeFare2: record.typeFare2,
-      fareGamaAltaA2: record.fareGamaAltaA2,
-      fareGamaHumanaA2: record.fareGamaHumanaA2,
-      fareGamaMediaA2: record.fareGamaMediaA2,
-      fareGamaMenorA2: record.fareGamaMenorA2,
-      farePreferencialA2: record.farePreferencialA2,
-    }));
+		const providers = result.recordset.map(record => ({
+			AGRUPADOR: record.AGRUPADOR,
+			SUBAGRUPADOR: record.SUBAGRUPADOR,
+			codigoCups: record.codigoCups,
+			codigoIPS: record.codigoIPS,
+			codigoISS: record.codigoISS,
+			'DESCRIPCION CUPS': record['DESCRIPCION CUPS'],
+			contratado: record.contratado,
+			Iss2001uvrUvrOTarifa: record.Iss2001uvrUvrOTarifa,
+			TypeIncrement: record.TypeIncrement,
+			valueIncrement: record.valueIncrement,
+			typeFare1: record.typeFare1,
+			fareGamaAltaA: record.fareGamaAltaA,
+			fareGamaHumanaA: record.fareGamaHumanaA,
+			fareGamaMediaA: record.fareGamaMediaA,
+			fareGamaMenorA: record.fareGamaMenorA,
+			farePreferencialA: record.farePreferencialA,
+			typeFare2: record.typeFare2,
+			fareGamaAltaA2: record.fareGamaAltaA2,
+			fareGamaHumanaA2: record.fareGamaHumanaA2,
+			fareGamaMediaA2: record.fareGamaMediaA2,
+			fareGamaMenorA2: record.fareGamaMenorA2,
+			farePreferencialA2: record.farePreferencialA2
+		}));
 
-    return {
-      code: 200,
-      message: "ok",
-      data: providers,
-    };
-  } catch (err: any) {
-    console.error("Error in getContactsProviderColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getContactsProviderColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: providers
+		};
+	} catch (err: any) {
+		console.error('Error in getContactsProviderColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getContactsProviderColmedica' }
+			}
+		};
+	}
 };
 
+export const getInfoLogicTableColmedica = async (
+	id_NegotiationTabColmedica: string | any | undefined
+): Promise<IresponseRepositoryService> => {
+	try {
+		const db = await connectToSqlServer();
 
-export const getInfoLogicTableColmedica = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
-
-    const queryProviders = `
+		const queryProviders = `
     select ntb.idNegotiationTabServiceColmedica,clasificationTypeService,ts.speciality,tsd.typeService,
     tfga.typeFare + ' +' + CAST(ntb.fareGamaAltaOperation AS VARCHAR(20)) + '% ' + isnull(tfgad.typeFare,'') as 'TARIFA GAMA ALTA',
-    tfh.typeFare + ' +' + CAST(ntb.fareHumanOperation AS VARCHAR(20)) + '% ' + isnull(tfhd.typeFare,'') as 'TARIFA HUMANA (PLUS Y TRADICIONAL)', 
+    tfh.typeFare + ' +' + CAST(ntb.fareHumanOperation AS VARCHAR(20)) + '% ' + isnull(tfhd.typeFare,'') as 'TARIFA HUMANA (PLUS Y TRADICIONAL)',
     tfm.typeFare + ' +' + CAST(ntb.fareGamaMediaOperation AS VARCHAR(20)) + '% ' + isnull(tfhd.typeFare,'') as 'TARIFA GAMA MEDIA',
     tfme.typeFare + ' +' + CAST(ntb.fareGamaMenorOperation AS VARCHAR(20)) + '% ' + isnull(tfmed.typeFare,'') as 'TARIFA GAMA MENOR',
-    tfp.typeFare + ' +' + CAST(ntb.farePreferenciaOperation AS VARCHAR(20)) + '% ' + isnull(tfpd.typeFare,'') as 'TARIFA PREFERENCIAL' 
+    tfp.typeFare + ' +' + CAST(ntb.farePreferenciaOperation AS VARCHAR(20)) + '% ' + isnull(tfpd.typeFare,'') as 'TARIFA PREFERENCIAL'
     from TB_NegotiationTabServiceColmedica as ntb
     left join TB_Speciality as ts on ntb.idSpeciality = ts.idSpeciality
     left join TB_ClasificationTypeServiceSpeciality as cts on cts.idSpeciality = ts.idSpeciality
@@ -1611,368 +1611,380 @@ export const getInfoLogicTableColmedica = async (id_NegotiationTabColmedica: str
     where id_NegotiationTabColmedica = @id_NegotiationTabColmedica
     `;
 
-    const inputIdNegotiationTabColmedica = id_NegotiationTabColmedica !== undefined ? id_NegotiationTabColmedica : null;
+		const inputIdNegotiationTabColmedica =
+			id_NegotiationTabColmedica !== undefined ? id_NegotiationTabColmedica : null;
 
-    const request = db.request();
-    request.input('id_NegotiationTabColmedica', inputIdNegotiationTabColmedica);
+		const request = db.request();
+		request.input('id_NegotiationTabColmedica', inputIdNegotiationTabColmedica);
 
-    const result = await request.query(queryProviders);
+		const result = await request.query(queryProviders);
 
-    const providers: IOccupationColmedica[] = result.recordset;
+		const providers: IOccupationColmedica[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: providers,
-    };
-  } catch (err: any) {
-    console.error("Error in getContactsProviderColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getContactsProviderColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: providers
+		};
+	} catch (err: any) {
+		console.error('Error in getContactsProviderColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getContactsProviderColmedica' }
+			}
+		};
+	}
 };
 
 export const getTypeFaresColmedica = async (): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+	try {
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const queryProviders = `
+		const queryProviders = `
     SELECT * FROM TB_TypeFares WHERE idTypeFare in (15,5,1,6,18)
     `;
 
-    const request = db.request();
+		const request = db.request();
 
-    const result = await request.query(queryProviders);
+		const result = await request.query(queryProviders);
 
-    const providers: IPlansColmedica[] = result.recordset;
+		const providers: IPlansColmedica[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: providers,
-    };
-  } catch (err: any) {
-    console.error("Error in getPlansColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getPlansColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: providers
+		};
+	} catch (err: any) {
+		console.error('Error in getPlansColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getPlansColmedica' }
+			}
+		};
+	}
 };
 
-
-
 export const getTypeRendomColmedica = async (): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+	try {
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const queryProviders = `
+		const queryProviders = `
       SELECT * FROM TB_typeRendom
     `;
 
-    const request = db.request();
+		const request = db.request();
 
-    const result = await request.query(queryProviders);
+		const result = await request.query(queryProviders);
 
-    const providers: ITypeRendomColmedica[] = result.recordset;
+		const providers: ITypeRendomColmedica[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: providers,
-    };
-  } catch (err: any) {
-    console.error("Error in getPlansColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getPlansColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: providers
+		};
+	} catch (err: any) {
+		console.error('Error in getPlansColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getPlansColmedica' }
+			}
+		};
+	}
 };
 
-
 export const getTypeIncrementColmedica = async (): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+	try {
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const queryProviders = `
+		const queryProviders = `
      SELECT  *  FROM TB_TypeIncrement
     `;
 
-    const request = db.request();
+		const request = db.request();
 
-    const result = await request.query(queryProviders);
+		const result = await request.query(queryProviders);
 
-    const providers: ITypeIncrementColmedica[] = result.recordset;
+		const providers: ITypeIncrementColmedica[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: providers,
-    };
-  } catch (err: any) {
-    console.error("Error in getTypeIncrementColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getTypeIncrementColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: providers
+		};
+	} catch (err: any) {
+		console.error('Error in getTypeIncrementColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getTypeIncrementColmedica' }
+			}
+		};
+	}
 };
 
+export const getClasificationTypeServiceColmedica =
+	async (): Promise<IresponseRepositoryService> => {
+		try {
+			const db = await connectToSqlServer();
 
+			if (!db) {
+				throw new Error('Database connection failed');
+			}
 
-export const getClasificationTypeServiceColmedica = async (): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
-
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
-
-    const queryProviders = `
+			const queryProviders = `
       select cts.idClasificationTypeService,clasificationTypeService from TB_ClasificationTypeService as cts
       inner join TB_ClasificationTypeServiceClientHoneSolutions as ctsch on cts.idClasificationTypeService = ctsch.idClasificationTypeService
       where ctsch.idClientHoneSolutions = 9
     `;
 
-    const request = db.request();
+			const request = db.request();
 
-    const result = await request.query(queryProviders);
+			const result = await request.query(queryProviders);
 
-    const providers: ITypeIncrementColmedica[] = result.recordset;
+			const providers: ITypeIncrementColmedica[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: providers,
-    };
-  } catch (err: any) {
-    console.error("Error in getTypeIncrementColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getTypeIncrementColmedica" },
-      },
-    };
-  }
-};
-
-
-
+			return {
+				code: 200,
+				message: 'ok',
+				data: providers
+			};
+		} catch (err: any) {
+			console.error('Error in getTypeIncrementColmedica', err);
+			return {
+				code: 400,
+				message: {
+					translationKey: 'global.error_in_repository',
+					translationParams: { name: 'getTypeIncrementColmedica' }
+				}
+			};
+		}
+	};
 
 export const getPlansColmedica = async (): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+	try {
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const queryProviders = `
+		const queryProviders = `
     select p.idPlan,pr.PlansRange + ' ' + p.[plan] AS namePlan from TB_Plans as p
     inner join TB_PlansRangePlan as prp on prp.idPlan = p.idPlan
     inner join TB_PlansRange as pr on pr.idPlansRange = prp.idPlansRange
     where p.idClientHoneSolutions = 9
     `;
 
-    const request = db.request();
+		const request = db.request();
 
-    const result = await request.query(queryProviders);
+		const result = await request.query(queryProviders);
 
-    const providers: IPlansColmedica[] = result.recordset;
+		const providers: IPlansColmedica[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: providers,
-    };
-  } catch (err: any) {
-    console.error("Error in getPlansColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getPlansColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: providers
+		};
+	} catch (err: any) {
+		console.error('Error in getPlansColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getPlansColmedica' }
+			}
+		};
+	}
 };
 
-export const postLoadFileNegotiationColmedica = async (formDataArray: IUploadFileColemdica[]): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+export const postLoadFileNegotiationColmedica = async (
+	formDataArray: IUploadFileColemdica[]
+): Promise<IresponseRepositoryService> => {
+	try {
+		const db = await connectToSqlServer();
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const insertedRecords = [];
-    const repeatedCodigoCups = new Set<string>();
-    const missingCodigoCups = new Set<string>();
-    const allCodigoCups = new Set<string>();
-    const codigoCupsCount = new Map<string, number>();
+		const insertedRecords = [];
+		const repeatedCodigoCups = new Set<string>();
+		const missingCodigoCups = new Set<string>();
+		const allCodigoCups = new Set<string>();
+		const codigoCupsCount = new Map<string, number>();
 
-    // Consulta inicial para obtener todos los codigoCups existentes para el idClientHoneSolutions = 9
-    const queryExistingCodigoCups = `
+		// Consulta inicial para obtener todos los codigoCups existentes para el idClientHoneSolutions = 9
+		const queryExistingCodigoCups = `
       SELECT tbm.code AS codigoCups
       FROM TB_MedicalAct AS tbm
       LEFT JOIN TB_SpecialityClientHoneSolutions AS tbsc ON tbsc.idSpeciality = tbm.idSpeciality
       WHERE tbsc.idClientHoneSolutions = 9
     `;
-    const resultExistingCodigoCups = await db.request().query(queryExistingCodigoCups);
-    if (resultExistingCodigoCups.recordset) {
-      resultExistingCodigoCups.recordset.forEach(record => {
-        allCodigoCups.add(record.codigoCups);
-      });
-    }
+		const resultExistingCodigoCups = await db.request().query(queryExistingCodigoCups);
+		if (resultExistingCodigoCups.recordset) {
+			resultExistingCodigoCups.recordset.forEach(record => {
+				allCodigoCups.add(record.codigoCups);
+			});
+		}
 
-    for (const formData of formDataArray) {
-      const {
-        id_NegotiationTabColmedica, codigoCups, codigoIPS, codigoISS, idTypeFareReferenceA, Iss2001uvrUvrOTarifa, fareGamaAltaA,
-        fareGamaHumanaA, fareGamaMediaA, fareGamaMenorA, farePreferencialA, idTypeFareReferenceH,
-        fareGamaAltaH, fareGamaHumanaH, fareGamaMediaH, fareGamaMenorH, farePreferencialH, incrementTypeReferenceA, incrementTypeReferenceH
-      } = formData;
+		for (const formData of formDataArray) {
+			const {
+				id_NegotiationTabColmedica,
+				codigoCups,
+				codigoIPS,
+				codigoISS,
+				idTypeFareReferenceA,
+				Iss2001uvrUvrOTarifa,
+				fareGamaAltaA,
+				fareGamaHumanaA,
+				fareGamaMediaA,
+				fareGamaMenorA,
+				farePreferencialA,
+				idTypeFareReferenceH,
+				fareGamaAltaH,
+				fareGamaHumanaH,
+				fareGamaMediaH,
+				fareGamaMenorH,
+				farePreferencialH,
+				incrementTypeReferenceA,
+				incrementTypeReferenceH
+			} = formData;
 
-      // Verificación de código CUPS duplicado
-      if (codigoCupsCount.has(codigoCups)) {
-        codigoCupsCount.set(codigoCups, codigoCupsCount.get(codigoCups)! + 1);
-        repeatedCodigoCups.add(codigoCups);
-        continue;
-      } else {
-        codigoCupsCount.set(codigoCups, 1);
-      }
+			// Verificación de código CUPS duplicado
+			if (codigoCupsCount.has(codigoCups)) {
+				codigoCupsCount.set(codigoCups, codigoCupsCount.get(codigoCups)! + 1);
+				repeatedCodigoCups.add(codigoCups);
+				continue;
+			} else {
+				codigoCupsCount.set(codigoCups, 1);
+			}
 
-      // Verificación de código CUPS existente
-      if (!allCodigoCups.has(codigoCups)) {
-        missingCodigoCups.add(codigoCups);
-        console.error(`No se encontró el código CUPS: ${codigoCups}`);
-        continue;
-      }
+			// Verificación de código CUPS existente
+			if (!allCodigoCups.has(codigoCups)) {
+				missingCodigoCups.add(codigoCups);
+				console.error(`No se encontró el código CUPS: ${codigoCups}`);
+				continue;
+			}
 
-      const queryMedicalAct = `
+			const queryMedicalAct = `
         SELECT idMedicalAct, idSpeciality
         FROM TB_MedicalAct
         WHERE code = @codigoCups
       `;
-      const requestMedicalAct = db.request();
-      requestMedicalAct.input('codigoCups', codigoCups);
-      const resultMedicalAct = await requestMedicalAct.query(queryMedicalAct);
+			const requestMedicalAct = db.request();
+			requestMedicalAct.input('codigoCups', codigoCups);
+			const resultMedicalAct = await requestMedicalAct.query(queryMedicalAct);
 
-      if (!resultMedicalAct.recordset || resultMedicalAct.recordset.length === 0) {
-        console.error(`No se encontró el código CUPS: ${codigoCups}`);
-        continue; 
-      }
+			if (!resultMedicalAct.recordset || resultMedicalAct.recordset.length === 0) {
+				console.error(`No se encontró el código CUPS: ${codigoCups}`);
+				continue;
+			}
 
-      let idMedicalAct: number | null = null;
-      let idSpeciality: number | null = null;
+			let idMedicalAct: number | null = null;
+			let idSpeciality: number | null = null;
 
-      for (const record of resultMedicalAct.recordset) {
-        const querySpecialityClient = `
+			for (const record of resultMedicalAct.recordset) {
+				const querySpecialityClient = `
           SELECT idSpeciality
           FROM TB_SpecialityClientHoneSolutions
           WHERE idSpeciality = @idSpeciality AND idClientHoneSolutions = 9
         `;
-        const requestSpecialityClient = db.request();
-        requestSpecialityClient.input('idSpeciality', record.idSpeciality);
-        const resultSpecialityClient = await requestSpecialityClient.query(querySpecialityClient);
+				const requestSpecialityClient = db.request();
+				requestSpecialityClient.input('idSpeciality', record.idSpeciality);
+				const resultSpecialityClient = await requestSpecialityClient.query(querySpecialityClient);
 
-        if (resultSpecialityClient.recordset && resultSpecialityClient.recordset.length > 0) {
-          idMedicalAct = record.idMedicalAct;
-          idSpeciality = resultSpecialityClient.recordset[0].idSpeciality;
-          break;
-        }
-      }
+				if (resultSpecialityClient.recordset && resultSpecialityClient.recordset.length > 0) {
+					idMedicalAct = record.idMedicalAct;
+					idSpeciality = resultSpecialityClient.recordset[0].idSpeciality;
+					break;
+				}
+			}
 
-      if (idSpeciality === null || idMedicalAct === null) {
-        console.error(`No se encontró un idSpeciality válido para el código CUPS: ${codigoCups}`);
-        continue; 
-      }
+			if (idSpeciality === null || idMedicalAct === null) {
+				console.error(`No se encontró un idSpeciality válido para el código CUPS: ${codigoCups}`);
+				continue;
+			}
 
-      // Manejo de los campos opcionales con "??" para proporcionar valores predeterminados
-      let fareNameA = idTypeFareReferenceA?.toString() ?? '';
-      let incrementValueA = incrementTypeReferenceA?.toString() ?? null;
+			// Manejo de los campos opcionales con "??" para proporcionar valores predeterminados
+			let fareNameA = idTypeFareReferenceA?.toString() ?? '';
+			let incrementValueA = incrementTypeReferenceA?.toString() ?? null;
 
-      if (fareNameA.includes('+')) {
-        const [name, increment] = fareNameA.split('+');
-        fareNameA = name.trim();
-        incrementValueA = increment.trim();
-      }
+			if (fareNameA.includes('+')) {
+				const [name, increment] = fareNameA.split('+');
+				fareNameA = name.trim();
+				incrementValueA = increment.trim();
+			}
 
-      // Solo si hay un valor en fareNameA, se realiza la consulta
-      let idTypeFareA = null;
-      if (fareNameA) {
-        const queryFareTypeA = `
+			// Solo si hay un valor en fareNameA, se realiza la consulta
+			let idTypeFareA = null;
+			if (fareNameA) {
+				const queryFareTypeA = `
           SELECT idTypeFare
           FROM TB_TypeFares
           WHERE typeFare = @fareNameA
         `;
-        const requestFareTypeA = db.request();
-        requestFareTypeA.input('fareNameA', fareNameA);
-        const resultFareTypeA = await requestFareTypeA.query(queryFareTypeA);
+				const requestFareTypeA = db.request();
+				requestFareTypeA.input('fareNameA', fareNameA);
+				const resultFareTypeA = await requestFareTypeA.query(queryFareTypeA);
 
-        if (resultFareTypeA.recordset.length === 0) {
-          console.error(`No se encontró el idTypeFare para el nombre de tarifa: ${fareNameA}`);
-          continue;
-        }
-        idTypeFareA = resultFareTypeA.recordset[0].idTypeFare;
-      }
+				if (resultFareTypeA.recordset.length === 0) {
+					console.error(`No se encontró el idTypeFare para el nombre de tarifa: ${fareNameA}`);
+					continue;
+				}
+				idTypeFareA = resultFareTypeA.recordset[0].idTypeFare;
+			}
 
-      let fareNameH = idTypeFareReferenceH?.toString() ?? '';
-      let incrementValueH = incrementTypeReferenceH?.toString() ?? null;
+			let fareNameH = idTypeFareReferenceH?.toString() ?? '';
+			let incrementValueH = incrementTypeReferenceH?.toString() ?? null;
 
-      if (fareNameH.includes('+')) {
-        const [name, increment] = fareNameH.split('+');
-        fareNameH = name.trim();
-        incrementValueH = increment.trim();
-      }
+			if (fareNameH.includes('+')) {
+				const [name, increment] = fareNameH.split('+');
+				fareNameH = name.trim();
+				incrementValueH = increment.trim();
+			}
 
-      let idTypeFareH: number | null = null;
-      if (fareNameH) {
-        const queryFareTypeH = `
+			let idTypeFareH: number | null = null;
+			if (fareNameH) {
+				const queryFareTypeH = `
           SELECT idTypeFare
           FROM TB_TypeFares
           WHERE typeFare = @fareNameH
         `;
-        const requestFareTypeH = db.request();
-        requestFareTypeH.input('fareNameH', fareNameH);
-        const resultFareTypeH = await requestFareTypeH.query(queryFareTypeH);
+				const requestFareTypeH = db.request();
+				requestFareTypeH.input('fareNameH', fareNameH);
+				const resultFareTypeH = await requestFareTypeH.query(queryFareTypeH);
 
-        if (resultFareTypeH.recordset && resultFareTypeH.recordset.length > 0) {
-          idTypeFareH = resultFareTypeH.recordset[0].idTypeFare;
-        } else {
-          console.error(`No se encontró el idTypeFare para el nombre de tarifa: ${fareNameH}`);
-          continue;
-        }
-      }
+				if (resultFareTypeH.recordset && resultFareTypeH.recordset.length > 0) {
+					idTypeFareH = resultFareTypeH.recordset[0].idTypeFare;
+				} else {
+					console.error(`No se encontró el idTypeFare para el nombre de tarifa: ${fareNameH}`);
+					continue;
+				}
+			}
 
-      // Inserción de datos en la tabla, verificando cada campo opcional
-      const queryInsert = `
+			// Inserción de datos en la tabla, verificando cada campo opcional
+			const queryInsert = `
         INSERT INTO [dbo].[TB_NegotiationTabCupsColmedica]
         (
           id_NegotiationTabColmedica, codigoCups, codigoIPS, codigoISS, contratado, idTypeFareReferenceA, Iss2001uvrUvrOTarifa, fareGamaAltaA,
@@ -1990,107 +2002,111 @@ export const postLoadFileNegotiationColmedica = async (formDataArray: IUploadFil
         );
       `;
 
-      const requestInsert = db.request();
-      requestInsert.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
-      requestInsert.input('codigoCups', codigoCups);
-      requestInsert.input('codigoIPS', codigoIPS);
-      requestInsert.input('codigoISS', codigoISS);
-      requestInsert.input('contratado', 1);
-      requestInsert.input('idTypeFareReferenceA', idTypeFareA);
-      requestInsert.input('Iss2001uvrUvrOTarifa', Iss2001uvrUvrOTarifa);
-      requestInsert.input('fareGamaAltaA', fareGamaAltaA ?? null);
-      requestInsert.input('fareGamaHumanaA', fareGamaHumanaA ?? null);
-      requestInsert.input('fareGamaMediaA', fareGamaMediaA ?? null);
-      requestInsert.input('fareGamaMenorA', fareGamaMenorA ?? null);
-      requestInsert.input('farePreferencialA', farePreferencialA ?? null);
-      requestInsert.input('idTypeFareReferenceH', idTypeFareH);
-      requestInsert.input('fareGamaAltaH', fareGamaAltaH ?? null);
-      requestInsert.input('fareGamaHumanaH', fareGamaHumanaH ?? null);
-      requestInsert.input('fareGamaMediaH', fareGamaMediaH ?? null);
-      requestInsert.input('fareGamaMenorH', fareGamaMenorH ?? null);
-      requestInsert.input('farePreferencialH', farePreferencialH ?? null);
-      requestInsert.input('idMedicalAct', idMedicalAct);
-      requestInsert.input('idSpeciality', idSpeciality);
-      requestInsert.input('incrementValueA', incrementValueA);
-      requestInsert.input('incrementValueH', incrementValueH);
-      requestInsert.input('idTypeIncrement', 0); 
+			const requestInsert = db.request();
+			requestInsert.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+			requestInsert.input('codigoCups', codigoCups);
+			requestInsert.input('codigoIPS', codigoIPS);
+			requestInsert.input('codigoISS', codigoISS);
+			requestInsert.input('contratado', 1);
+			requestInsert.input('idTypeFareReferenceA', idTypeFareA);
+			requestInsert.input('Iss2001uvrUvrOTarifa', Iss2001uvrUvrOTarifa);
+			requestInsert.input('fareGamaAltaA', fareGamaAltaA ?? null);
+			requestInsert.input('fareGamaHumanaA', fareGamaHumanaA ?? null);
+			requestInsert.input('fareGamaMediaA', fareGamaMediaA ?? null);
+			requestInsert.input('fareGamaMenorA', fareGamaMenorA ?? null);
+			requestInsert.input('farePreferencialA', farePreferencialA ?? null);
+			requestInsert.input('idTypeFareReferenceH', idTypeFareH);
+			requestInsert.input('fareGamaAltaH', fareGamaAltaH ?? null);
+			requestInsert.input('fareGamaHumanaH', fareGamaHumanaH ?? null);
+			requestInsert.input('fareGamaMediaH', fareGamaMediaH ?? null);
+			requestInsert.input('fareGamaMenorH', fareGamaMenorH ?? null);
+			requestInsert.input('farePreferencialH', farePreferencialH ?? null);
+			requestInsert.input('idMedicalAct', idMedicalAct);
+			requestInsert.input('idSpeciality', idSpeciality);
+			requestInsert.input('incrementValueA', incrementValueA);
+			requestInsert.input('incrementValueH', incrementValueH);
+			requestInsert.input('idTypeIncrement', 0);
 
-      const resultInsert = await requestInsert.query(queryInsert);
+			const resultInsert = await requestInsert.query(queryInsert);
 
-      if (resultInsert.recordset.length > 0) {
-        insertedRecords.push(resultInsert.recordset[0]);
-      }
-    }
+			if (resultInsert.recordset.length > 0) {
+				insertedRecords.push(resultInsert.recordset[0]);
+			}
+		}
 
-    return {
-      code: 200,
-      message: "ok",
-      data: {
-        insertedRecords,
-        repeatedCodigoCups: Array.from(repeatedCodigoCups),
-        missingCodigoCups: Array.from(missingCodigoCups)
-      },
-    };
-  } catch (error: any) {
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "postLoadFileNegotiationColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: {
+				insertedRecords,
+				repeatedCodigoCups: Array.from(repeatedCodigoCups),
+				missingCodigoCups: Array.from(missingCodigoCups)
+			}
+		};
+	} catch (error: any) {
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'postLoadFileNegotiationColmedica' }
+			}
+		};
+	}
 };
 
-export const deleteNegotiationTabServiceColmedica = async (idNegotiationTabServiceColmedica: number): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+export const deleteNegotiationTabServiceColmedica = async (
+	idNegotiationTabServiceColmedica: number
+): Promise<IresponseRepositoryService> => {
+	try {
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const queryDelete = `
+		const queryDelete = `
       DELETE FROM [dbo].[TB_NegotiationTabServiceColmedica]
       WHERE idNegotiationTabServiceColmedica = @idNegotiationTabServiceColmedica;
     `;
 
-    const request = db.request();
-    request.input("idNegotiationTabServiceColmedica", idNegotiationTabServiceColmedica);
+		const request = db.request();
+		request.input('idNegotiationTabServiceColmedica', idNegotiationTabServiceColmedica);
 
-    const result = await request.query(queryDelete);
+		const result = await request.query(queryDelete);
 
-    if (result.rowsAffected[0] === 0) {
-      throw new Error("No record found to delete");
-    }
+		if (result.rowsAffected[0] === 0) {
+			throw new Error('No record found to delete');
+		}
 
-    return {
-      code: 200,
-      message: "Deletion successful",
-      data: { idNegotiationTabServiceColmedica },
-    };
-  } catch (err: any) {
-    console.error("Error in deleteNegotiationTabServiceColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "deleteNegotiationTabServiceColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'Deletion successful',
+			data: { idNegotiationTabServiceColmedica }
+		};
+	} catch (err: any) {
+		console.error('Error in deleteNegotiationTabServiceColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'deleteNegotiationTabServiceColmedica' }
+			}
+		};
+	}
 };
 
-export const getGroupByIdNegotiationTabColmedica = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+export const getGroupByIdNegotiationTabColmedica = async (
+	id_NegotiationTabColmedica: string | any | undefined
+): Promise<IresponseRepositoryService> => {
+	try {
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const queryGroup = `
-      SELECT DISTINCT cts.idClasificationTypeService, cts.clasificationTypeService 
+		const queryGroup = `
+      SELECT DISTINCT cts.idClasificationTypeService, cts.clasificationTypeService
       FROM TB_NegotiationTabCupsColmedica AS ntc
       INNER JOIN TB_Speciality AS s ON s.idSpeciality = ntc.idSpeciality
       INNER JOIN TB_ClasificationTypeServiceSpeciality AS tc ON tc.idSpeciality = s.idSpeciality
@@ -2098,39 +2114,41 @@ export const getGroupByIdNegotiationTabColmedica = async (id_NegotiationTabColme
       WHERE ntc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica
     `;
 
-    const request = db.request();
-    request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+		const request = db.request();
+		request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
 
-    const result = await request.query(queryGroup);
+		const result = await request.query(queryGroup);
 
-    const group: IGroupNegotiationColmedica[] = result.recordset;
+		const group: IGroupNegotiationColmedica[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: group,
-    };
-  } catch (err: any) {
-    console.error("Error in getgrouperByIdNegotiationTabColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getgrouperByIdNegotiationTabColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: group
+		};
+	} catch (err: any) {
+		console.error('Error in getgrouperByIdNegotiationTabColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getgrouperByIdNegotiationTabColmedica' }
+			}
+		};
+	}
 };
 
-export const getSpecialityByIdNegotiationTabColmedica = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+export const getSpecialityByIdNegotiationTabColmedica = async (
+	id_NegotiationTabColmedica: string | any | undefined
+): Promise<IresponseRepositoryService> => {
+	try {
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const querySpeciality = `
+		const querySpeciality = `
       SELECT DISTINCT s.idSpeciality, s.speciality FROM TB_NegotiationTabCupsColmedica AS ntc
       INNER JOIN TB_Speciality AS s ON s.idSpeciality = ntc.idSpeciality
       INNER JOIN TB_ClasificationTypeServiceSpeciality AS tc ON tc.idSpeciality = s.idSpeciality
@@ -2139,77 +2157,81 @@ export const getSpecialityByIdNegotiationTabColmedica = async (id_NegotiationTab
       WHERE ntc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica AND schs.idClientHoneSolutions = 9
     `;
 
-    const request = db.request();
-    request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+		const request = db.request();
+		request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
 
-    const result = await request.query(querySpeciality);
+		const result = await request.query(querySpeciality);
 
-    const speciality: ISpecialityNegotiationColmedica[] = result.recordset;
+		const speciality: ISpecialityNegotiationColmedica[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: speciality,
-    };
-  } catch (err: any) {
-    console.error("Error in getSpecialityByIdNegotiationTabColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getSpecialityByIdNegotiationTabColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: speciality
+		};
+	} catch (err: any) {
+		console.error('Error in getSpecialityByIdNegotiationTabColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getSpecialityByIdNegotiationTabColmedica' }
+			}
+		};
+	}
 };
 
-export const getTypeFareByIdNegotiationTabColmedica = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+export const getTypeFareByIdNegotiationTabColmedica = async (
+	id_NegotiationTabColmedica: string | any | undefined
+): Promise<IresponseRepositoryService> => {
+	try {
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const queryTypeFare = `
+		const queryTypeFare = `
       SELECT DISTINCT tf.idTypeFare,tf.typeFare FROM TB_NegotiationTabCupsColmedica AS ntc
       INNER JOIN TB_TypeFares AS tf ON tf.idTypeFare = ntc.idTypeFareReferenceA
       WHERE ntc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica
     `;
 
-    const request = db.request();
-    request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+		const request = db.request();
+		request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
 
-    const result = await request.query(queryTypeFare);
+		const result = await request.query(queryTypeFare);
 
-    const typeFare: ITypeFareNegotiationColmedica[] = result.recordset;
+		const typeFare: ITypeFareNegotiationColmedica[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: typeFare,
-    };
-  } catch (err: any) {
-    console.error("Error in getTypeFareByIdNegotiationTabColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getTypeFareByIdNegotiationTabColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: typeFare
+		};
+	} catch (err: any) {
+		console.error('Error in getTypeFareByIdNegotiationTabColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getTypeFareByIdNegotiationTabColmedica' }
+			}
+		};
+	}
 };
 
-export const getByIdNegotiationTabColmedica = async (filters: IInfoByIdNegotiationTabColmedica): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+export const getByIdNegotiationTabColmedica = async (
+	filters: IInfoByIdNegotiationTabColmedica
+): Promise<IresponseRepositoryService> => {
+	try {
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    let queryNegotiation = `
+		let queryNegotiation = `
         SELECT DISTINCT tbntc.idNegotiationTabCupsColmedica,
           tbntc.id_NegotiationTabColmedica,
           tbcts.idClasificationTypeService,
@@ -2238,211 +2260,219 @@ export const getByIdNegotiationTabColmedica = async (filters: IInfoByIdNegotiati
       FROM TB_NegotiationTabCupsColmedica AS tbntc
       LEFT JOIN TB_Speciality AS tbs ON tbs.idSpeciality = tbntc.idSpeciality
       LEFT JOIN TB_ClasificationTypeServiceSpeciality AS tbcts ON tbcts.idSpeciality = tbs.idSpeciality
-      LEFT JOIN TB_ClasificationTypeService AS tbcc ON tbcc.idClasificationTypeService = tbcts.idClasificationTypeService 
+      LEFT JOIN TB_ClasificationTypeService AS tbcc ON tbcc.idClasificationTypeService = tbcts.idClasificationTypeService
       LEFT JOIN TB_MedicalAct AS tbm ON tbm.idMedicalAct = tbntc.idMedicalAct
       LEFT JOIN TB_TypeFares AS tfA ON tfA.idTypeFare = tbntc.idTypeFareReferenceA
       LEFT JOIN TB_TypeFares AS tfH ON tfH.idTypeFare = tbntc.idTypeFareReferenceH
       WHERE tbntc.id_NegotiationTabColmedica = @id_NegotiationTabColmedica AND (tfA.idTypeFare IS NOT NULL OR tfH.idTypeFare IS NOT NULL)
     `;
 
-    if (filters.idSpeciality) {
-      queryNegotiation += ` AND tbntc.idSpeciality = @idSpeciality`;
-    }
-    if (filters.idClasificationTypeService) {
-      queryNegotiation += ` AND tbcts.idClasificationTypeService = @idClasificationTypeService`;
-    }
-    if (filters.codigoCups) {
-      queryNegotiation += ` AND tbntc.codigoCups = @codigoCups`;
-    }
-    if (filters.codigoIPS) {
-      queryNegotiation += ` AND tbntc.codigoIPS = @codigoIPS`;
-    }
-    if (filters.codigoISS) {
-      queryNegotiation += ` AND tbntc.codigoISS = @codigoISS`;
-    }
-    if (filters.idTypeFareReferenceA) {
-      queryNegotiation += ` AND tfA.idTypeFare = @idTypeFareReferenceA`;
-    }
-    if (filters.idTypeFareReferenceH) {
-      queryNegotiation += ` AND tfH.idTypeFare = @idTypeFareReferenceH`;
-    }
+		if (filters.idSpeciality) {
+			queryNegotiation += ` AND tbntc.idSpeciality = @idSpeciality`;
+		}
+		if (filters.idClasificationTypeService) {
+			queryNegotiation += ` AND tbcts.idClasificationTypeService = @idClasificationTypeService`;
+		}
+		if (filters.codigoCups) {
+			queryNegotiation += ` AND tbntc.codigoCups = @codigoCups`;
+		}
+		if (filters.codigoIPS) {
+			queryNegotiation += ` AND tbntc.codigoIPS = @codigoIPS`;
+		}
+		if (filters.codigoISS) {
+			queryNegotiation += ` AND tbntc.codigoISS = @codigoISS`;
+		}
+		if (filters.idTypeFareReferenceA) {
+			queryNegotiation += ` AND tfA.idTypeFare = @idTypeFareReferenceA`;
+		}
+		if (filters.idTypeFareReferenceH) {
+			queryNegotiation += ` AND tfH.idTypeFare = @idTypeFareReferenceH`;
+		}
 
-    const request = db.request();
-    request.input('id_NegotiationTabColmedica', filters.id_NegotiationTabColmedica);
+		const request = db.request();
+		request.input('id_NegotiationTabColmedica', filters.id_NegotiationTabColmedica);
 
-    if (filters.idSpeciality) {
-      request.input('idSpeciality', filters.idSpeciality);
-    }
-    if (filters.idClasificationTypeService) {
-      request.input('idClasificationTypeService', filters.idClasificationTypeService);
-    }
-    if (filters.codigoCups) {
-      request.input('codigoCups', filters.codigoCups);
-    }
-    if (filters.codigoIPS) {
-      request.input('codigoIPS', filters.codigoIPS);
-    }
-    if (filters.codigoISS) {
-      request.input('codigoISS', filters.codigoISS);
-    }
-    if (filters.idTypeFareReferenceA) {
-      request.input('idTypeFareReferenceA', filters.idTypeFareReferenceA);
-    }
-    if (filters.idTypeFareReferenceH) {
-      request.input('idTypeFareReferenceH', filters.idTypeFareReferenceH);
-    }
+		if (filters.idSpeciality) {
+			request.input('idSpeciality', filters.idSpeciality);
+		}
+		if (filters.idClasificationTypeService) {
+			request.input('idClasificationTypeService', filters.idClasificationTypeService);
+		}
+		if (filters.codigoCups) {
+			request.input('codigoCups', filters.codigoCups);
+		}
+		if (filters.codigoIPS) {
+			request.input('codigoIPS', filters.codigoIPS);
+		}
+		if (filters.codigoISS) {
+			request.input('codigoISS', filters.codigoISS);
+		}
+		if (filters.idTypeFareReferenceA) {
+			request.input('idTypeFareReferenceA', filters.idTypeFareReferenceA);
+		}
+		if (filters.idTypeFareReferenceH) {
+			request.input('idTypeFareReferenceH', filters.idTypeFareReferenceH);
+		}
 
-    const result = await request.query(queryNegotiation);
-    const negotiation: INegotiationColmedica[] = result.recordset;
+		const result = await request.query(queryNegotiation);
+		const negotiation: INegotiationColmedica[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: negotiation,
-    };
-  } catch (err: any) {
-    console.error("Error in getByIdNegotiationTabColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getByIdNegotiationTabColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: negotiation
+		};
+	} catch (err: any) {
+		console.error('Error in getByIdNegotiationTabColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getByIdNegotiationTabColmedica' }
+			}
+		};
+	}
 };
 
-export const getCodeIpsByIdNegotiationTabColmedica = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+export const getCodeIpsByIdNegotiationTabColmedica = async (
+	id_NegotiationTabColmedica: string | any | undefined
+): Promise<IresponseRepositoryService> => {
+	try {
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const queryCodeIps = `
-      SELECT DISTINCT codigoIPS FROM TB_NegotiationTabCupsColmedica 
+		const queryCodeIps = `
+      SELECT DISTINCT codigoIPS FROM TB_NegotiationTabCupsColmedica
       WHERE id_NegotiationTabColmedica = @id_NegotiationTabColmedica
     `;
 
-    const request = db.request();
-    request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+		const request = db.request();
+		request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
 
-    const result = await request.query(queryCodeIps);
+		const result = await request.query(queryCodeIps);
 
-    const codeIps: ICodeIpsNegotiationColmedica[] = result.recordset;
+		const codeIps: ICodeIpsNegotiationColmedica[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: codeIps,
-    };
-  } catch (err: any) {
-    console.error("Error in getCodeIpsByIdNegotiationTabColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getCodeIpsByIdNegotiationTabColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: codeIps
+		};
+	} catch (err: any) {
+		console.error('Error in getCodeIpsByIdNegotiationTabColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getCodeIpsByIdNegotiationTabColmedica' }
+			}
+		};
+	}
 };
 
-export const getCodeCupsByIdNegotiationTabColmedica = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+export const getCodeCupsByIdNegotiationTabColmedica = async (
+	id_NegotiationTabColmedica: string | any | undefined
+): Promise<IresponseRepositoryService> => {
+	try {
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const queryCodeCups = `
-      SELECT DISTINCT codigoCups FROM TB_NegotiationTabCupsColmedica 
+		const queryCodeCups = `
+      SELECT DISTINCT codigoCups FROM TB_NegotiationTabCupsColmedica
       WHERE id_NegotiationTabColmedica= @id_NegotiationTabColmedica
     `;
 
-    const request = db.request();
-    request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+		const request = db.request();
+		request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
 
-    const result = await request.query(queryCodeCups);
+		const result = await request.query(queryCodeCups);
 
-    const codeCups: ICodeCupsNegotiationColmedica[] = result.recordset;
+		const codeCups: ICodeCupsNegotiationColmedica[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: codeCups,
-    };
-  } catch (err: any) {
-    console.error("Error in getCodeCupsByIdNegotiationTabColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getCodeCupsByIdNegotiationTabColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: codeCups
+		};
+	} catch (err: any) {
+		console.error('Error in getCodeCupsByIdNegotiationTabColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getCodeCupsByIdNegotiationTabColmedica' }
+			}
+		};
+	}
 };
 
-export const getCodeIssByIdNegotiationTabColmedica = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+export const getCodeIssByIdNegotiationTabColmedica = async (
+	id_NegotiationTabColmedica: string | any | undefined
+): Promise<IresponseRepositoryService> => {
+	try {
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const queryCodeIss = `
-      SELECT DISTINCT codigoISS FROM TB_NegotiationTabCupsColmedica 
+		const queryCodeIss = `
+      SELECT DISTINCT codigoISS FROM TB_NegotiationTabCupsColmedica
       WHERE id_NegotiationTabColmedica = @id_NegotiationTabColmedica
     `;
 
-    const request = db.request();
-    request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+		const request = db.request();
+		request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
 
-    const result = await request.query(queryCodeIss);
+		const result = await request.query(queryCodeIss);
 
-    const codeIss: ICodeIsssNegotiationColmedica[] = result.recordset;
+		const codeIss: ICodeIsssNegotiationColmedica[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: codeIss,
-    };
-  } catch (err: any) {
-    console.error("Error in getCodeIssByIdNegotiationTabColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getCodeIssByIdNegotiationTabColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: codeIss
+		};
+	} catch (err: any) {
+		console.error('Error in getCodeIssByIdNegotiationTabColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getCodeIssByIdNegotiationTabColmedica' }
+			}
+		};
+	}
 };
 
-export const getTypeReferenceByIdNegotiationTabColmedica = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+export const getTypeReferenceByIdNegotiationTabColmedica = async (
+	id_NegotiationTabColmedica: string | any | undefined
+): Promise<IresponseRepositoryService> => {
+	try {
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const queryFareReference = `
+		const queryFareReference = `
           WITH FareReferences AS (
-              SELECT 
-                  tf.idTypeFare, 
+              SELECT
+                  tf.idTypeFare,
                   typeFare + ' ' + ISNULL(CAST(incrementTypeReferenceA AS VARCHAR), '0') AS fareReference,
                   ROW_NUMBER() OVER (PARTITION BY tf.idTypeFare ORDER BY ntc.idNegotiationTabCupsColmedica) AS rn
               FROM TB_NegotiationTabCupsColmedica AS ntc
               INNER JOIN TB_TypeFares AS tf ON tf.idTypeFare = ntc.idTypeFareReferenceA
               WHERE ntc.id_NegotiationTabColmedica =  @id_NegotiationTabColmedica
               UNION
-              SELECT 
-                  tf.idTypeFare, 
+              SELECT
+                  tf.idTypeFare,
                   typeFare + ' ' + ISNULL(CAST(incrementTypeReferenceH AS VARCHAR), '0') AS fareReference,
                   ROW_NUMBER() OVER (PARTITION BY tf.idTypeFare ORDER BY ntc.idNegotiationTabCupsColmedica) AS rn
               FROM TB_NegotiationTabCupsColmedica AS ntc
@@ -2454,189 +2484,211 @@ export const getTypeReferenceByIdNegotiationTabColmedica = async (id_Negotiation
           WHERE rn = 1;
     `;
 
-    const request = db.request();
-    request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+		const request = db.request();
+		request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
 
-    const result = await request.query(queryFareReference);
+		const result = await request.query(queryFareReference);
 
-    const fareReferences: ITypeFareReferenceNegotiationColmedica[] = result.recordset;
+		const fareReferences: ITypeFareReferenceNegotiationColmedica[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: fareReferences,
-    };
-  } catch (err: any) {
-    console.error("Error in getTypeReferenceByIdNegotiationTabColmedica", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getTypeReferenceByIdNegotiationTabColmedica" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: fareReferences
+		};
+	} catch (err: any) {
+		console.error('Error in getTypeReferenceByIdNegotiationTabColmedica', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getTypeReferenceByIdNegotiationTabColmedica' }
+			}
+		};
+	}
 };
 
+export const updateNegotiationTabCupsColmedicaController = async (
+	data: IUpdateNegotiationTabColmedica
+): Promise<IresponseRepositoryService> => {
+	try {
+		const {
+			idNegotiationTabColmedica,
+			idTypeFareReferenceA,
+			idTypeFareReferenceH,
+			incrementTypeReferenceA,
+			incrementTypeReferenceH,
+			idTypeIncrement,
+			newValueA,
+			newValueH
+		} = data;
+		const db = await connectToSqlServer();
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-export const updateNegotiationTabCupsColmedicaController = async (data: IUpdateNegotiationTabColmedica): Promise<IresponseRepositoryService> => {
-  try {
-    const { idNegotiationTabColmedica, idTypeFareReferenceA, idTypeFareReferenceH, incrementTypeReferenceA, incrementTypeReferenceH,
-      idTypeIncrement, newValueA, newValueH } = data; 
-    const db = await connectToSqlServer();
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		const idTypeFareReferenceANum =
+			idTypeFareReferenceA !== null ? Number(idTypeFareReferenceA) : null;
+		const idTypeFareReferenceHNum =
+			idTypeFareReferenceH !== null ? Number(idTypeFareReferenceH) : null;
+		const incrementTypeReferenceANum =
+			incrementTypeReferenceA !== null ? Number(incrementTypeReferenceA) : null;
+		const incrementTypeReferenceHNum =
+			incrementTypeReferenceH !== null ? Number(incrementTypeReferenceH) : null;
+		const idTypeIncrementNum = Number(idTypeIncrement);
+		const newValueANum = newValueA !== undefined ? Number(newValueA) : undefined;
+		const newValueHNum = newValueH !== undefined ? Number(newValueH) : undefined;
 
-    const idTypeFareReferenceANum = idTypeFareReferenceA !== null ? Number(idTypeFareReferenceA) : null;
-    const idTypeFareReferenceHNum = idTypeFareReferenceH !== null ? Number(idTypeFareReferenceH) : null;
-    const incrementTypeReferenceANum = incrementTypeReferenceA !== null ? Number(incrementTypeReferenceA) : null;
-    const incrementTypeReferenceHNum = incrementTypeReferenceH !== null ? Number(incrementTypeReferenceH) : null;
-    const idTypeIncrementNum = Number(idTypeIncrement);
-    const newValueANum = newValueA !== undefined ? Number(newValueA) : undefined;
-    const newValueHNum = newValueH !== undefined ? Number(newValueH) : undefined;
+		let newIncrementValueA: number | null = null;
+		let newIncrementValueH: number | null = null;
 
-    let newIncrementValueA: number | null = null;
-    let newIncrementValueH: number | null = null;
+		if (newValueANum !== undefined && incrementTypeReferenceANum !== null) {
+			if (idTypeIncrementNum === 1) {
+				newIncrementValueA = (newValueANum + incrementTypeReferenceANum) / 100;
+			} else if (idTypeIncrementNum === 2) {
+				newIncrementValueA =
+					((1 + newValueANum * 100) * (1 + incrementTypeReferenceANum * 100) - 1) / 100;
+			}
+		} else {
+			newIncrementValueA = incrementTypeReferenceANum;
+		}
 
-    if (newValueANum !== undefined && incrementTypeReferenceANum !== null) {
-      if (idTypeIncrementNum === 1) {
-        newIncrementValueA = (newValueANum + incrementTypeReferenceANum) / 100;
-      } else if (idTypeIncrementNum === 2) {
-        newIncrementValueA = ((1 + newValueANum * 100) * (1 + incrementTypeReferenceANum * 100) - 1) / 100;
-      }
-    } else {
-      newIncrementValueA = incrementTypeReferenceANum;
-    }
+		if (newValueHNum !== undefined && incrementTypeReferenceHNum !== null) {
+			if (idTypeIncrementNum === 1) {
+				newIncrementValueH = (newValueHNum + incrementTypeReferenceHNum) / 100;
+			} else if (idTypeIncrementNum === 2) {
+				newIncrementValueH =
+					((1 + newValueHNum * 100) * (1 + incrementTypeReferenceHNum * 100) - 1) / 100;
+			}
+		} else {
+			newIncrementValueH = incrementTypeReferenceHNum;
+		}
 
-    if (newValueHNum !== undefined && incrementTypeReferenceHNum !== null) {
-      if (idTypeIncrementNum === 1) {
-        newIncrementValueH = (newValueHNum + incrementTypeReferenceHNum) / 100;
-      } else if (idTypeIncrementNum === 2) {
-        newIncrementValueH = ((1 + newValueHNum * 100) * (1 + incrementTypeReferenceHNum * 100) - 1) / 100;
-      }
-    } else {
-      newIncrementValueH = incrementTypeReferenceHNum; 
-    }
+		if (
+			(newValueANum !== undefined && newIncrementValueA === null) ||
+			(newValueHNum !== undefined && newIncrementValueH === null)
+		) {
+			throw new Error('Error en el cálculo de los incrementos.');
+		}
 
-    if ((newValueANum !== undefined && newIncrementValueA === null) || (newValueHNum !== undefined && newIncrementValueH === null)) {
-      throw new Error("Error en el cálculo de los incrementos.");
-    }
+		if (!Array.isArray(idNegotiationTabColmedica)) {
+			throw new Error('idNegotiationTabColmedica debe ser un array de números');
+		}
 
-    if (!Array.isArray(idNegotiationTabColmedica)) {
-      throw new Error("idNegotiationTabColmedica debe ser un array de números");
-    }
+		const idNegotiationTabColmedicaArray = idNegotiationTabColmedica.join(',');
 
-    const idNegotiationTabColmedicaArray = idNegotiationTabColmedica.join(',');
-
-    const queryUpdate = `
+		const queryUpdate = `
       UPDATE [dbo].[TB_NegotiationTabCupsColmedica]
-      SET 
+      SET
         idTypeFareReferenceA = COALESCE(@idTypeFareReferenceA, idTypeFareReferenceA),
         idTypeFareReferenceH = COALESCE(@idTypeFareReferenceH, idTypeFareReferenceH),
         incrementTypeReferenceA = COALESCE(@newIncrementValueA, incrementTypeReferenceA),
         incrementTypeReferenceH = COALESCE(@newIncrementValueH, incrementTypeReferenceH),
         idTypeIncrement = @idTypeIncrement
-      WHERE idNegotiationTabCupsColmedica IN (${idNegotiationTabColmedicaArray}) ; 
+      WHERE idNegotiationTabCupsColmedica IN (${idNegotiationTabColmedicaArray}) ;
     `;
 
-    const requestUpdate = db.request();
-    requestUpdate.input('idTypeFareReferenceA', idTypeFareReferenceANum ?? null);
-    requestUpdate.input('idTypeFareReferenceH', idTypeFareReferenceHNum ?? null);
-    requestUpdate.input('newIncrementValueA', newIncrementValueA);
-    requestUpdate.input('newIncrementValueH', newIncrementValueH);
-    requestUpdate.input('idTypeIncrement', idTypeIncrementNum);
+		const requestUpdate = db.request();
+		requestUpdate.input('idTypeFareReferenceA', idTypeFareReferenceANum ?? null);
+		requestUpdate.input('idTypeFareReferenceH', idTypeFareReferenceHNum ?? null);
+		requestUpdate.input('newIncrementValueA', newIncrementValueA);
+		requestUpdate.input('newIncrementValueH', newIncrementValueH);
+		requestUpdate.input('idTypeIncrement', idTypeIncrementNum);
 
-    const resultUpdate = await requestUpdate.query(queryUpdate);
+		const resultUpdate = await requestUpdate.query(queryUpdate);
 
-    return {
-      code: 200,
-      message: "Campos actualizados correctamente",
-      data: resultUpdate.rowsAffected[0],
-    };
-  } catch (error: any) {
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "updateFareReference" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'Campos actualizados correctamente',
+			data: resultUpdate.rowsAffected[0]
+		};
+	} catch (error: any) {
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'updateFareReference' }
+			}
+		};
+	}
 };
 
-export const getTypeFareByIdNegotiationTabColmedicaAmbulatorio = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+export const getTypeFareByIdNegotiationTabColmedicaAmbulatorio = async (
+	id_NegotiationTabColmedica: string | any | undefined
+): Promise<IresponseRepositoryService> => {
+	try {
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const queryCodeCups = `
+		const queryCodeCups = `
       SELECT DISTINCT tbntc.idTypeFareReferenceA, tbtf.typeFare FROM TB_NegotiationTabCupsColmedica AS tbntc
-      LEFT JOIN TB_TypeFares AS tbtf ON tbtf.idTypeFare = tbntc.idTypeFareReferenceA  
+      LEFT JOIN TB_TypeFares AS tbtf ON tbtf.idTypeFare = tbntc.idTypeFareReferenceA
       WHERE tbntc.idTypeFareReferenceA IS NOT NULL AND tbtf.typeFare IS NOT NULL AND id_NegotiationTabColmedica =  @id_NegotiationTabColmedica
     `;
 
-    const request = db.request();
-    request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+		const request = db.request();
+		request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
 
-    const result = await request.query(queryCodeCups);
+		const result = await request.query(queryCodeCups);
 
-    const codeCups: ITypeFareNegotiationColmedicaA[] = result.recordset;
+		const codeCups: ITypeFareNegotiationColmedicaA[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: codeCups,
-    };
-  } catch (err: any) {
-    console.error("Error in getTypeFareByIdNegotiationTabColmedicaAmbulatorio", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getTypeFareByIdNegotiationTabColmedicaAmbulatorio" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: codeCups
+		};
+	} catch (err: any) {
+		console.error('Error in getTypeFareByIdNegotiationTabColmedicaAmbulatorio', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getTypeFareByIdNegotiationTabColmedicaAmbulatorio' }
+			}
+		};
+	}
 };
 
-export const getTypeFareByIdNegotiationTabColmedicaHospitalario = async (id_NegotiationTabColmedica: string | any | undefined): Promise<IresponseRepositoryService> => {
-  try {
-    const db = await connectToSqlServer();
+export const getTypeFareByIdNegotiationTabColmedicaHospitalario = async (
+	id_NegotiationTabColmedica: string | any | undefined
+): Promise<IresponseRepositoryService> => {
+	try {
+		const db = await connectToSqlServer();
 
-    if (!db) {
-      throw new Error("Database connection failed");
-    }
+		if (!db) {
+			throw new Error('Database connection failed');
+		}
 
-    const queryCodeCups = `
+		const queryCodeCups = `
       SELECT DISTINCT tbntc.idTypeFareReferenceH, tbtf.typeFare FROM TB_NegotiationTabCupsColmedica AS tbntc
-      LEFT JOIN TB_TypeFares AS tbtf ON tbtf.idTypeFare = tbntc.idTypeFareReferenceH  
+      LEFT JOIN TB_TypeFares AS tbtf ON tbtf.idTypeFare = tbntc.idTypeFareReferenceH
       WHERE tbntc.idTypeFareReferenceH IS NOT NULL AND tbtf.typeFare IS NOT NULL AND id_NegotiationTabColmedica =  @id_NegotiationTabColmedica
     `;
 
-    const request = db.request();
-    request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
+		const request = db.request();
+		request.input('id_NegotiationTabColmedica', id_NegotiationTabColmedica);
 
-    const result = await request.query(queryCodeCups);
+		const result = await request.query(queryCodeCups);
 
-    const codeCups: ITypeFareNegotiationColmedicaH[] = result.recordset;
+		const codeCups: ITypeFareNegotiationColmedicaH[] = result.recordset;
 
-    return {
-      code: 200,
-      message: "ok",
-      data: codeCups,
-    };
-  } catch (err: any) {
-    console.error("Error in getTypeFareByIdNegotiationTabColmedicaHospitalario", err);
-    return {
-      code: 400,
-      message: {
-        translationKey: "global.error_in_repository",
-        translationParams: { name: "getTypeFareByIdNegotiationTabColmedicaHospitalario" },
-      },
-    };
-  }
+		return {
+			code: 200,
+			message: 'ok',
+			data: codeCups
+		};
+	} catch (err: any) {
+		console.error('Error in getTypeFareByIdNegotiationTabColmedicaHospitalario', err);
+		return {
+			code: 400,
+			message: {
+				translationKey: 'global.error_in_repository',
+				translationParams: { name: 'getTypeFareByIdNegotiationTabColmedicaHospitalario' }
+			}
+		};
+	}
 };
