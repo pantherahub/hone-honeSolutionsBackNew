@@ -7,7 +7,7 @@ import { validateApiKEY } from "../middlewares/validate-apikey";
 const routes = Router();
 
 //Rutas Bolivar
-routes.get("/departamentos", validateApiKEY, getDepartments);
+routes.get("/departamentos",  getDepartments);
 
 routes.get("/cities", validateApiKEY, getCities);
 
