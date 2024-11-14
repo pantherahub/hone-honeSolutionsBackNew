@@ -19,7 +19,7 @@ const configSQL: sql.config = {
 
 if (isProduction) {
 	configSQL.options = {
-		encrypt: true,
+		encrypt: false,
 		trustServerCertificate: false
 	};
 }
