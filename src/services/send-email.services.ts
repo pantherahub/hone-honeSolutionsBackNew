@@ -2,16 +2,21 @@ import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 import dotenv from 'dotenv';
 dotenv.config();
 
+export interface IEmailTo {
+	email: string;
+	name: string;
+}
+
 export interface ISendEmail {
 	body: string;
-	typeBody: string;
 	subject: string;
-	userName: string;
-	userEmail: string;
+	toArray: IEmailTo[];
 }
 
 export class SendEmailServices {
 	async sendEmailBySES(options: ISendEmail) {
+		const toArray: string[] = this.createToArray(options);
+
 		const sesClient = new SESClient({
 			region: process.env.EMAIL_AWS_REGION || '',
 			credentials: {
@@ -23,7 +28,7 @@ export class SendEmailServices {
 		const params = {
 			Source: `Hone Solutions <${process.env.EMAIL_EMAIL_SENDER}>`,
 			Destination: {
-				ToAddresses: [`${options.userName}<${options.userEmail}>`]
+				ToAddresses: toArray
 			},
 
 			Message: {
@@ -41,5 +46,14 @@ export class SendEmailServices {
 		}
 
 		return options.body;
+	}
+
+	private createToArray(options: ISendEmail) {
+		let toArray: string[] = [];
+		for (const to of options.toArray) {
+			toArray.push(`${to.name} <${to.email}>`);
+		}
+
+		return toArray;
 	}
 }

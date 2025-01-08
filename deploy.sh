@@ -5,6 +5,7 @@ set -e
 
 # Ruta a la aplicación Angular
 APP_DIR=$(pwd)
+ENVIRONMENT=${1:-"prod"}
 
 # Usar nvm para seleccionar la versión de Node.js
 export NVM_DIR="$HOME/.nvm"
@@ -16,9 +17,18 @@ cd "$APP_DIR"
 
 # Instalar dependencias
 echo "Instalando dependencias..."
-npm install
+sudo npm install
 
-sudo pm2 restart prestadores-back
+if sudo pm2 restart prestadores-back ; then
+	echo "El proceso se ha reiniciado correctamente."
+else
+	echo "Iniciando el proceso.."
+	if [ "$ENVIRONMENT" = "prod" ]; then
+		sudo pm2 start ecosystem.config.js --env production
+	else
+		sudo pm2 start ecosystem.config.js --env development
+	fi
+fi
 sudo pm2 logs
 
 echo "Completo!"
