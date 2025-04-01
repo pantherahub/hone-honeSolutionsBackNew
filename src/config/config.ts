@@ -16,6 +16,7 @@ export default {
 	db_port: port,
 	db_table_name_ticket: 'TB_tickets',
 	db_table_name_email_notification: 'TB_EmailNotificationByClient',
+	db_table_sending_email_log: 'TB_SendingEmailLogs',
 	db_table_name_type_request: 'TB_Tipodesolicitud',
 	db_table_name_providers: 'TB_Provider',
 	db_table_name_status: 'TB_Status',
