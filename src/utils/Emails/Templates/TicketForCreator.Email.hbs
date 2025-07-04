@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <title>Confirmación de Ticket</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f6f6f6;
+      }
+	  .obs {
+        overflow-x: auto;
+        background-color: #f9f9f9;
+        border-radius: 6px;
+        font-size: 15px;
+      }
+    </style>
+  </head>
+
+  <body style="margin:0;padding:0;background-color:#f6f6f6;">
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div
+      role="article"
+      aria-roledescription="email"
+      lang="en"
+      style="
+        text-size-adjust:100%;
+        -webkit-text-size-adjust:100%;
+        -ms-text-size-adjust:100%;
+        padding: 40px 20px;
+        display: flex;
+        justify-content: center;
+        color: #333333;
+      "
+    >
+      <div
+        style="
+          max-width: 600px;
+          width: 100%;
+          background-color: #ffffffcc;
+          padding: 36px 32px;
+          border-radius: 12px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+          text-align: left;
+          line-height: 1.6;
+        "
+      >
+        <!-- LOGO -->
+        <div style="text-align: center; margin-bottom: 36px;">
+          <img
+            src="https://honesolutions.blob.core.windows.net/documents/photo5154410902588598764.jpg"
+            alt="Logo Hone Solutions"
+            style="width: 160px; mix-blend-mode: darken;"
+          />
+        </div>
+
+        <!-- CONTENIDO DEL MENSAJE -->
+        <p style="margin-bottom: 18px;">Estimado Usuario,</p>
+
+        <p style="margin-bottom: 24px;">
+          Queremos darte una cordial bienvenida y comunicarte que tu radicación ha sido exitosa.
+        </p>
+
+        <p style="margin-bottom: 12px;"><strong>Ticket:</strong> {{idTickets}}</p>
+        <p style="margin-bottom: 12px;"><strong>Perteneciente a:</strong> {{email}}</p>
+
+        <hr>
+        <p style="margin-bottom: 12px;">
+         <strong>Observaciones:</strong>
+        </p>
+        <div class="obs" style="margin: 0 0 10px 0;">
+          {{{observaciones}}}
+        </div>
+
+      </div>
+    </div>
+
+  </body>
+</html>
