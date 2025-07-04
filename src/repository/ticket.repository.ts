@@ -17,7 +17,14 @@ export const createTicket = async (request: IRequestCreate) => {
 		const adminEmail: any = await EmailNotification.findAll({ where: { idClientHone: 7 } });
 		if (recordEmail || data.email) {
 			const email = recordEmail ? recordEmail.email : data.email;
-			await sendEmail(request.idRole, 'provider', [{ email, name: 'User HoneSolutions' }], ticket);
+			if (emailIsValid(email)) {
+				await sendEmail(
+					request.idRole,
+					'provider',
+					[{ email, name: 'User HoneSolutions' }],
+					ticket
+				);
+			}
 		}
 		if (adminEmail) {
 			const adminEmails: IEmailTo[] = adminEmail.map((email: any) => {
@@ -102,4 +109,9 @@ const formatDate = (date = new Date()): string => {
 	const d = new Date(date);
 	d.setUTCHours(d.getUTCHours() - 5);
 	return d.toISOString().slice(0, 19).replace('T', ' ');
+};
+
+export const emailIsValid = (email: string) => {
+	const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	return regex.test(email);
 };
