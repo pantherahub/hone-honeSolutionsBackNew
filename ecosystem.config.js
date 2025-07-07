@@ -4,12 +4,12 @@ module.exports = {
 			name: 'prestadores-back',
 			script: 'src/app.ts', // El archivo TypeScript principal
 			interpreter: 'node', // Ejecuta con Node.js
-			interpreter_args: '-r ts-node/register -r tsconfig-paths/register', // Usar ts-node para ejecutar archivos .ts
+			interpreter_args: '--max-old-space-size=3072 -r ts-node/register -r tsconfig-paths/register',
 			watch: true, // Opcional, para reiniciar la app cuando los archivos cambien
 			ignore_watch: ['node_modules'],
 			autorestart: false,
 			time: true,
-			log_date_format: "YYYY-MM-DD HH:mm:ss",
+			log_date_format: 'YYYY-MM-DD HH:mm:ss',
 			env: {
 				NODE_ENV: 'development'
 			},
