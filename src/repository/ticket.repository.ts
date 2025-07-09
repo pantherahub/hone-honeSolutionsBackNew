@@ -1,24 +1,36 @@
-import config from '../config/config';
 import { IRequestCreate, ITicketModel } from '../interface/ticket.interface';
 import Ticket from '../models/ticket.model';
 import EmailNotification from '../models/emailNotification.model';
 import { basicTemplate } from './templates/ticket/html.template';
-import { SendEmailServices } from '../services/send-email.services';
+import { SendEmailServices, IEmailTo } from '../services/send-email.services';
 
 export const createTicket = async (request: IRequestCreate) => {
 	try {
 		const data = prepareData(request);
 		const ticket = await Ticket.create(data);
-		const recordEmail = await EmailNotification.findOne({
-			where: { idClientHone: ticket.idClientHoneSolutions }
-		});
-		const adminEmail = await EmailNotification.findOne({ where: { idClientHone: 7 } });
+		let recordEmail: any = null;
+		if (ticket.idClientHoneSolutions != 7) {
+			recordEmail = await EmailNotification.findOne({
+				where: { idClientHone: ticket.idClientHoneSolutions }
+			});
+		}
+		const adminEmail: any = await EmailNotification.findAll({ where: { idClientHone: 7 } });
 
 		if (recordEmail) {
-			await sendEmail(request.idRole, recordEmail.email, ticket);
+			await sendEmail(
+				request.idRole,
+				[{ email: recordEmail.email, name: 'Admin HoneSolutions' }],
+				ticket
+			);
 		}
 		if (adminEmail) {
-			await sendEmail(request.idRole, adminEmail.email, ticket);
+			const adminEmails: IEmailTo[] = adminEmail.map((email: any) => {
+				return {
+					email: email.email,
+					name: 'Admin HoneSolutions'
+				};
+			});
+			await sendEmail(request.idRole, adminEmails, ticket);
 		}
 
 		return {
@@ -38,16 +50,14 @@ export const createTicket = async (request: IRequestCreate) => {
 	}
 };
 
-const sendEmail = async (idRole: number, email: string, ticket?: Ticket): Promise<boolean> => {
+const sendEmail = async (idRole: number, emails: IEmailTo[], ticket?: Ticket): Promise<boolean> => {
 	const sendEmailService = new SendEmailServices();
 	const template = getTemplate(idRole, ticket);
 	try {
 		await sendEmailService.sendEmailBySES({
 			body: template,
-			typeBody: 'html',
 			subject: 'Nuevo Ticket Registrado',
-			userName: 'Admin HoneSolutions',
-			userEmail: email
+			toArray: emails
 		});
 		return true;
 	} catch (error) {
