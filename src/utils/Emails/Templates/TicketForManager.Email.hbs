@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <title>Creación de Ticket</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f6f6f6;
+      }
+	  .obs {
+        overflow-x: auto;
+        background-color: #f9f9f9;
+        padding: 5px;
+        border-radius: 6px;
+        font-size: 15px;
+      }
+    </style>
+  </head>
+
+  <body style="margin:0;padding:0;background-color:#f6f6f6;">
+
+    <div
+      role="article"
+      aria-roledescription="email"
+      lang="es"
+      style="
+        display: flex;
+        justify-content: center;
+        padding: 40px 20px;
+        text-size-adjust: 100%;
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+      "
+    >
+      <div
+        style="
+          max-width: 600px;
+          width: 100%;
+          background-color: #ffffff;
+          border-radius: 12px;
+          padding: 40px 32px;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+          text-align: left;
+          font-size: 16px;
+          line-height: 1.7;
+          letter-spacing: 0.3px;
+          color: #333;
+        "
+      >
+        <!-- Logo -->
+        <div style="text-align: center; margin-bottom: 36px;">
+          <img
+            src="https://honesolutions.blob.core.windows.net/documents/photo5154410902588598764.jpg"
+            alt="Logo Hone Solutions"
+            style="width: 160px; mix-blend-mode: darken;"
+          />
+        </div>
+
+        <!-- Contenido -->
+        <p style="margin-bottom: 20px;">
+          Estimado Cliente,
+        </p>
+
+        <p style="margin-bottom: 24px;">
+           Se creo una radicación de un nuevo ticket exitosamente para su gestion.
+        </p>
+
+        <p style="margin-bottom: 20px;">
+          <strong>Ticket:</strong> {{idTickets}}
+        </p>
+
+        <p style="margin-bottom: 20px;">
+          <strong>Perteneciente a:</strong> {{email}}
+        </p>
+
+        <p style="margin-bottom: 12px;">
+         <strong>Observaciones:</strong>
+        </p>
+        <div class="obs" style="margin: 0 0 10px 0;">
+          {{{observaciones}}}
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
