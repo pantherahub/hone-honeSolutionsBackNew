@@ -65,7 +65,7 @@ export class SendEmailServices {
 
 	private createToArray(options: ISendEmail) {
 		let toArray: string[] = [];
-		if (process.env.APP_ENVIRONMENT != 'production') {
+		if (process.env.APP_ENV != 'production') {
 			toArray.push(`test <${this.emailDefault}>`);
 		} else {
 			for (const to of options.toArray) {
