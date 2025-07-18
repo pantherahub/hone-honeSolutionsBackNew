@@ -19,6 +19,10 @@ cd "$APP_DIR"
 echo "Instalando dependencias..."
 sudo npm install
 
+# Compilar la aplicación
+echo "Compilando la aplicación..."
+sudo npm run build
+
 if sudo pm2 restart prestadores-back ; then
 	echo "El proceso se ha reiniciado correctamente."
 else
@@ -29,9 +33,10 @@ else
 		sudo pm2 start ecosystem.config.js --env development
 	fi
 fi
+echo "Completo!"
+sudo pm2 list
 sudo pm2 logs
 
-echo "Completo!"
 
 
 
