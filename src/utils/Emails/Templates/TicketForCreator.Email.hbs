@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="x-apple-disable-message-reformatting" />
+    <title>Confirmación de Ticket</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #f6f6f6;
+      }
+    </style>
+  </head>
+
+  <body style="margin: 0; padding: 0; background-color: #f6f6f6;">
+    <center style="width: 100%; background-color: #f6f6f6;">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td align="center" style="padding: 40px 20px;">
+            <table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); font-family: Arial, sans-serif; color: #333333;">
+              <tr>
+                <td style="padding: 36px 32px; font-size: 16px; line-height: 1.6; text-align: left;">
+
+                  <!-- LOGO -->
+                  <div style="text-align: center; margin-bottom: 36px;">
+                    <img
+                      src="https://honesolutions.blob.core.windows.net/documents/photo5154410902588598764.jpg"
+                      alt="Logo Hone Solutions"
+                      style="width: 160px; mix-blend-mode: darken;"
+                    />
+                  </div>
+
+                  <!-- CONTENIDO -->
+                  <p style="margin-bottom: 18px;">Estimado Usuario,</p>
+
+                  <p style="margin-bottom: 24px;">
+                    Queremos darte una cordial bienvenida y comunicarte que tu radicación ha sido exitosa.
+                  </p>
+
+                  <p style="margin-bottom: 12px;"><strong>Ticket:</strong> {{idTickets}}</p>
+                  <p style="margin-bottom: 12px;"><strong>Perteneciente a:</strong> {{email}}</p>
+
+                  <hr style="border: none; border-top: 1px solid #cccccc; margin: 24px 0;" />
+
+                  <p style="margin-bottom: 12px;"><strong>Observaciones:</strong></p>
+                  <div style="overflow-x: auto; background-color: #f9f9f9; border-radius: 6px; font-size: 15px; padding: 10px; margin-bottom: 10px;">
+                    {{{observaciones}}}
+                  </div>
+
+				<p style="font-size: 12px; color: #777777; border-top: 1px solid #dddddd; padding-top: 15px; margin-top: 30px; text-align: center;">
+                    Este mensaje fue generado automáticamente por Lissom de Hone Solutions. Por favor, no responda a este correo.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </center>
+  </body>
+</html>

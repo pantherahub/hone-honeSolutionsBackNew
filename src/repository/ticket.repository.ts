@@ -1,8 +1,8 @@
 import { IRequestCreate, ITicketModel } from '../interface/ticket.interface';
 import Ticket from '../models/ticket.model';
 import EmailNotification from '../models/emailNotification.model';
-import { basicTemplate } from './templates/ticket/html.template';
 import { SendEmailServices, IEmailTo } from '../services/send-email.services';
+import { renderView } from '@src/utils/Emails/Render.Handlebars';
 
 export const createTicket = async (request: IRequestCreate) => {
 	try {
@@ -15,13 +15,16 @@ export const createTicket = async (request: IRequestCreate) => {
 			});
 		}
 		const adminEmail: any = await EmailNotification.findAll({ where: { idClientHone: 7 } });
-
-		if (recordEmail) {
-			await sendEmail(
-				request.idRole,
-				[{ email: recordEmail.email, name: 'Admin HoneSolutions' }],
-				ticket
-			);
+		if (recordEmail || data.email) {
+			const email = recordEmail ? recordEmail.email : data.email;
+			if (emailIsValid(email)) {
+				await sendEmail(
+					request.idRole,
+					'provider',
+					[{ email, name: 'User HoneSolutions' }],
+					ticket
+				);
+			}
 		}
 		if (adminEmail) {
 			const adminEmails: IEmailTo[] = adminEmail.map((email: any) => {
@@ -30,7 +33,7 @@ export const createTicket = async (request: IRequestCreate) => {
 					name: 'Admin HoneSolutions'
 				};
 			});
-			await sendEmail(request.idRole, adminEmails, ticket);
+			await sendEmail(request.idRole, 'admin', adminEmails, ticket);
 		}
 
 		return {
@@ -50,9 +53,14 @@ export const createTicket = async (request: IRequestCreate) => {
 	}
 };
 
-const sendEmail = async (idRole: number, emails: IEmailTo[], ticket?: Ticket): Promise<boolean> => {
+const sendEmail = async (
+	idRole: number,
+	type: 'admin' | 'provider',
+	emails: IEmailTo[],
+	ticket: Ticket
+): Promise<boolean> => {
 	const sendEmailService = new SendEmailServices();
-	const template = getTemplate(idRole, ticket);
+	const template = getTemplate(ticket, idRole, type);
 	try {
 		await sendEmailService.sendEmailBySES({
 			body: template,
@@ -66,13 +74,17 @@ const sendEmail = async (idRole: number, emails: IEmailTo[], ticket?: Ticket): P
 	}
 };
 
-const getTemplate = (idRole: number, ticket?: Ticket): string => {
-	const newData = {
+const getTemplate = (ticket: Ticket, idRole?: number, type?: 'admin' | 'provider'): string => {
+	let template =
+		idRole == 10
+			? renderView('TicketForCreatorNuevaEPS.Email')
+			: renderView('TicketForCreator.Email');
+	if (type === 'admin') template = renderView('TicketForManager.Email');
+	return template({
 		idTickets: ticket?.idTickets,
 		email: ticket?.email,
 		observaciones: ticket?.observaciones
-	};
-	return basicTemplate(newData);
+	});
 };
 
 const prepareData = (request: IRequestCreate): ITicketModel => {
@@ -97,4 +109,9 @@ const formatDate = (date = new Date()): string => {
 	const d = new Date(date);
 	d.setUTCHours(d.getUTCHours() - 5);
 	return d.toISOString().slice(0, 19).replace('T', ' ');
+};
+
+export const emailIsValid = (email: string) => {
+	const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	return regex.test(email);
 };
