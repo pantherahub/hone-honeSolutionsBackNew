@@ -4,7 +4,7 @@ module.exports = {
 			name: 'prestadores-back',
 			script: 'dist/app.js',
 			interpreter: 'node',
-			node_args: '--max-old-space-size=400',
+			node_args: '--max-old-space-size=512',
 			autorestart: true,
 			watch: true,
 			time: true,
