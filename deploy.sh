@@ -19,6 +19,10 @@ cd "$APP_DIR"
 echo "Instalando dependencias..."
 sudo npm install
 
+# Eliminar proceso en PM2
+echo "Eliminando el proceso.."
+sudo pm2 delete prestadores-back || true
+
 if [ -d "dist" ]; then
 echo "Eliminando dist..."
   sudo rm -rf dist
@@ -28,10 +32,7 @@ fi
 echo "Compilando la aplicación..."
 sudo npm run build
 
-# Montar PM2
-echo "Eliminando el proceso.."
-sudo pm2 delete prestadores-back
-
+# Iniciar el proceso pm2
 echo "Iniciando el proceso.."
 if [ "$ENVIRONMENT" = "prod" ]; then
 	sudo pm2 start ecosystem.config.js --env production
@@ -40,7 +41,6 @@ else
 fi
 
 echo "Completo!"
-sudo pm2 list
 sudo pm2 log prestadores-back
 
 
