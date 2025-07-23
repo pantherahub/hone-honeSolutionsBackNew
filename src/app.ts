@@ -1,3 +1,5 @@
-import Server from '@src/models/server';
+import 'newrelic';
+import Server from './models/server';
+
 const server = new Server();
 server.listen();
