@@ -19,23 +19,29 @@ cd "$APP_DIR"
 echo "Instalando dependencias..."
 sudo npm install
 
+# Eliminar proceso en PM2
+echo "Eliminando el proceso.."
+sudo pm2 delete prestadores-back || true
+
+if [ -d "dist" ]; then
+echo "Eliminando dist..."
+  sudo rm -rf dist
+fi
+
 # Compilar la aplicación
 echo "Compilando la aplicación..."
 sudo npm run build
 
-if sudo pm2 restart prestadores-back ; then
-	echo "El proceso se ha reiniciado correctamente."
+# Iniciar el proceso pm2
+echo "Iniciando el proceso.."
+if [ "$ENVIRONMENT" = "prod" ]; then
+	sudo pm2 start ecosystem.config.js --env production
 else
-	echo "Iniciando el proceso.."
-	if [ "$ENVIRONMENT" = "prod" ]; then
-		sudo pm2 start ecosystem.config.js --env production
-	else
-		sudo pm2 start ecosystem.config.js --env development
-	fi
+	sudo pm2 start ecosystem.config.js --env development
 fi
+
 echo "Completo!"
-sudo pm2 list
-sudo pm2 logs
+sudo pm2 log prestadores-back
 
 
 
