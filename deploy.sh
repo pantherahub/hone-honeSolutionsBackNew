@@ -10,7 +10,7 @@ ENVIRONMENT=${1:-"prod"}
 # Usar nvm para seleccionar la versión de Node.js
 export NVM_DIR="$HOME/.nvm"
 source "$NVM_DIR/nvm.sh"
-nvm use 18
+nvm use 22
 
 # Cambiar al directorio de la aplicación
 cd "$APP_DIR"
